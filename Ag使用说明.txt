@@ -15,3 +15,6 @@
     #用于检查字符串是否是以指定子字符串开头，如果是则返回 True，否则返回 False。
     if not obj.__module__.startswith(module.__name__):
         return False
+
+2019-12-06
+6、使用github管理
