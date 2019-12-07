@@ -14,7 +14,7 @@ import manimlib.constants
 
 def open_file_if_needed(file_writer, **config):
     if config["quiet"]:
-        #丢弃掉输出信息
+        # 丢弃掉输出信息
         curr_stdout = sys.stdout
         sys.stdout = open(os.devnull, "w")
 
@@ -59,7 +59,7 @@ def open_file_if_needed(file_writer, **config):
 
 
 def is_child_scene(obj, module):
-    #module未使用
+    # module本未使用
     if not inspect.isclass(obj):
         return False
     if not issubclass(obj, Scene):
@@ -67,8 +67,8 @@ def is_child_scene(obj, module):
     if obj == Scene:
         return False
     
-    #Ag增加 2019-12-05
-    #用于检查字符串是否是以指定子字符串开头，如果是则返回 True，否则返回 False。
+    # Ag增加 2019-12-05
+    # 用于检查字符串是否是以指定子字符串开头，如果是则返回 True，否则返回 False。
     if not obj.__module__.startswith(module.__name__):
         return False
 
@@ -136,10 +136,13 @@ def get_scene_classes_from_module(module):
 
 
 def main(config):
+    # 获取module
     module = config["module"]
+    # 获取module中的所有Scene
     all_scene_classes = get_scene_classes_from_module(module)
+    # 获取需要渲染的Scene
     scene_classes_to_render = get_scenes_to_render(all_scene_classes, config)
-
+    # 提取Scene的配置，使用可迭代对象创建字典
     scene_kwargs = dict([
         (key, config[key])
         for key in [
@@ -155,14 +158,19 @@ def main(config):
     for SceneClass in scene_classes_to_render:
         try:
             # By invoking, this renders the full scene
+            print("Start creating a Scene:",SceneClass)
+            # 创建给定的Scene
             scene = SceneClass(**scene_kwargs)
+            # 渲染完成打开文件
             open_file_if_needed(scene.file_writer, **config)
+            # 如果参数中给定--sound参数，完成渲染后播放play_finish_sound
             if config["sound"]:
                 play_finish_sound()
         except Exception:
             print("\n\n")
             traceback.print_exc()
             print("\n\n")
+            # 如果有异常，播放play_error_sound
             if config["sound"]:
                 play_error_sound()
 

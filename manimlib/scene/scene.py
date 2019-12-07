@@ -31,6 +31,7 @@ class Scene(Container):
     }
 
     def __init__(self, **kwargs):
+        # 把kwargs字典给到Container类中，进行属性增加
         Container.__init__(self, **kwargs)
         self.camera = self.camera_class(**self.camera_config)
         self.file_writer = SceneFileWriter(

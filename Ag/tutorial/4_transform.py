@@ -1,5 +1,11 @@
 from Ag.Grid import *
 
+class TestCirle(Scene):
+	def construct(self):
+		circle1 = Circle(color=WHITE)
+		self.play(ShowCreation(circle1))
+		self.wait()
+
 class TransformationText1V1(Scene):
 	def construct(self):
 		texto1 = TextMobject("First text")

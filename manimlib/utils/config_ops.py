@@ -14,6 +14,7 @@ def get_all_descendent_classes(Class):
 
 def filtered_locals(caller_locals):
     result = caller_locals.copy()
+    #过滤掉self和kwargs参数
     ignored_local_args = ["self", "kwargs"]
     for arg in ignored_local_args:
         result.pop(arg, caller_locals)
@@ -29,20 +30,29 @@ def digest_config(obj, kwargs, caller_locals={}):
     be easily passed into instantiation, and is attached
     as an attribute of the object.
     """
-
+    # print(kwargs,'\n\n')
     # Assemble list of CONFIGs from all super classes
+    # classes_in_hierarchy为创建的最子类（包括Scene）
     classes_in_hierarchy = [obj.__class__]
+    # print(kwargs,'\n\n')
     static_configs = []
     while len(classes_in_hierarchy) > 0:
+        # 弹出最子类
         Class = classes_in_hierarchy.pop()
+        # 增加一个上基类
         classes_in_hierarchy += Class.__bases__
+        # print(classes_in_hierarchy)
         if hasattr(Class, "CONFIG"):
+            # 把创建的类所有基类参数加到static_configs里
             static_configs.append(Class.CONFIG)
 
     # Order matters a lot here, first dicts have higher priority
+    # 这里的顺序很重要
     caller_locals = filtered_locals(caller_locals)
+    # 收集所有的字典
     all_dicts = [kwargs, caller_locals, obj.__dict__]
     all_dicts += static_configs
+    #收集所有的参数在一个对象的字典中，这样对象就用对应的属性了
     obj.__dict__ = merge_dicts_recursively(*reversed(all_dicts))
 
 

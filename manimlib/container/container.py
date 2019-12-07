@@ -9,6 +9,8 @@ from manimlib.utils.config_ops import digest_config
 
 class Container(object):
     def __init__(self, **kwargs):
+        # print('\n',kwargs,len(kwargs))
+        # print(self.__class__)
         digest_config(self, kwargs)
 
     def add(self, *items):
