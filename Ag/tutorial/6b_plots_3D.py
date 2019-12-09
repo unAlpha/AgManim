@@ -1,4 +1,4 @@
-from big_ol_pile_of_manim_imports import *
+from Ag.Grid import *
 
 #There seems to be no change between Scene and ThreeDScene
 class CameraPosition1(ThreeDScene):
@@ -152,7 +152,7 @@ class ParametricCurve2(ThreeDScene):
         self.wait()
 
 
-class ParametricCurve2(ThreeDScene):
+class ParametricCurve3(ThreeDScene):
     def construct(self):
         curve1=ParametricFunction(
                 lambda u : np.array([
@@ -165,11 +165,11 @@ class ParametricCurve2(ThreeDScene):
                 lambda u : np.array([
                 1.2*np.cos(u),
                 1.2*np.sin(u),
-                u
+                0
             ]),color=RED,t_min=-TAU,t_max=TAU,
             )
 
-        curve1.set_shade_in_3d(True)
+        curve1.set_shade_in_3d(False)
         curve2.set_shade_in_3d(True)
 
         axes = ThreeDAxes()
@@ -306,7 +306,7 @@ class Text3D3(ThreeDScene):
             ]),v_min=0,v_max=TAU,u_min=-PI/2,u_max=PI/2,checkerboard_colors=[RED_D, RED_E],
             resolution=(15, 32)).scale(2)
 
-        self.play(LaggedStart(ShowCreation,sphere))
+        self.play(LaggedStart(ShowCreation(sphere)))
         self.wait(2)
 
 

@@ -748,6 +748,7 @@ class Mobject(Container):
         return self.get_critical_point(direction)
 
     def get_corner(self, direction):
+        # 获得关键点
         return self.get_critical_point(direction)
 
     def get_center(self):
@@ -761,15 +762,19 @@ class Mobject(Container):
         index = np.argmax(np.dot(all_points, np.array(direction).T))
         return all_points[index]
 
+    # 获得对象top的坐标 obj.get_top()
     def get_top(self):
         return self.get_edge_center(UP)
 
+    # 获得对象bottom的坐标 obj.get_bottom()
     def get_bottom(self):
         return self.get_edge_center(DOWN)
 
+    # 获得对象right的坐标 obj.get_right()
     def get_right(self):
         return self.get_edge_center(RIGHT)
 
+    # 获得对象left的坐标 obj.get_left()
     def get_left(self):
         return self.get_edge_center(LEFT)
 

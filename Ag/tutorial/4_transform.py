@@ -165,7 +165,7 @@ class CopyTwoFormulas1(Scene):
 				"\\neg",		#3
 				"P(x)"			#4
 			)
-		#整体放大和位置控制
+		# 整体放大和位置控制
 		for size,pos,formula in [(3,2*UP,formula1),(2,2*DOWN,formula2)]:
 			formula.scale(size)
 			formula.move_to(pos)
@@ -329,11 +329,12 @@ class MoveText(Scene):
 		text.shift(LEFT*2)
 		self.play(Write(text))
 		self.wait()
-		#变换的路径
+		# 变换的路径
 		self.play(
                 text.shift, RIGHT*2,
                 run_time=2,
-                path_arc=-np.pi #Change 0 by -np.pi
+                path_arc=-np.pi/2,  #Change 0 by -np.pi
+				rate_func=double_smooth,
             )
 		self.wait()
 
@@ -344,7 +345,7 @@ class ChangeColorAndSizeAnimation(Scene):
 		text.shift(LEFT*2)
 		self.play(Write(text))
 		self.wait()
-		#接受多个.func动作
+		# 接受多个.func动作
 		self.play(
                 text.shift, RIGHT*2,
                 text.scale, 2,

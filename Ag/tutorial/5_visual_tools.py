@@ -115,6 +115,7 @@ class Arrow1(Scene):
 		step2.next_to(arrow,RIGHT,buff = .1)
 		self.play(Write(step1))
 		self.wait()
+        # GrowArrow方法特别用于arrow对象
 		self.play(GrowArrow(arrow))
 		self.play(Write(step2))
 		self.wait()
@@ -125,7 +126,7 @@ class Arrow2(Scene):
 		step2 = TextMobject("Step 2")
 		step1.move_to(LEFT*2+DOWN*2)
 		step2.move_to(4*RIGHT+2*UP)
-		arrow1 = Arrow(step1.get_right(),step2.get_left(),buff=0.1)
+		arrow1 = Arrow(step1.get_right(),step2.get_left(),buff=1)
 		arrow1.set_color(RED)
 		arrow2 = Arrow(step1.get_top(),step2.get_bottom(),buff=0.1)
 		arrow2.set_color(BLUE)

@@ -17,6 +17,7 @@ from manimlib.utils.rate_functions import squish_rate_func
 
 class Transform(Animation):
     CONFIG = {
+        # 动作路径的弧度
         "path_arc": 0,
         "path_arc_axis": OUT,
         "path_func": None,

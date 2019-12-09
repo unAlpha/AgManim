@@ -1,36 +1,67 @@
-from big_ol_pile_of_manim_imports import *
+from Ag.Grid import *
 
+class PlotDemo(GraphScene):
+    CONFIG ={
+        "x_min" : 0,
+        "x_max" : 10,
+        "x_tick_frequency" : 1,
+        "y_min" : 0,
+        "y_max" : 1000,
+        "y_tick_frequency" : 200,
+        "graph_origin": 3 * DOWN + 4 * LEFT,
+    }
+    def construct(self):
+        self.setup_axes(animate=False)
+
+        screen_grid = ScreenGrid()
+        self.play(FadeIn(screen_grid))
+
+        self.x_axis.add_numbers(*[0,1,2,3])
+        self.y_axis.add_numbers(*[200,400,600])
+
+        graghFuncXX = self.get_graph(lambda x: x**3,
+                                    x_min = 1, 
+                                    x_max = 9)
+        self.play(ShowCreation(graghFuncXX),run_time=2)
 
 class PlotGraph(GraphScene):
     CONFIG = {
-        "y_max" : 50,
+        "y_max" : 60,
         "y_min" : 20,
-        "x_max" : 7,
+        "x_max" : 8,
         "x_min" : 4,
         "y_tick_frequency" : 5, 
-        "x_tick_frequency" : 0.5, 
+        "x_tick_frequency" : 1, 
         "axes_color" : BLUE,
-        "y_labeled_nums": range(30,60,10),
-        "x_labeled_nums": list(np.arange(4, 7.0+0.5, 0.5)),
+        "y_labeled_nums": range(30,70,10),
+        "x_labeled_nums": list(np.arange(4, 9, 1)),
         "x_label_decimal":1,
         "graph_origin": 3 * DOWN + 6 * LEFT,
         "x_label_direction":DOWN,
         "y_label_direction":RIGHT,
-        "x_axis_label": None,
-        "x_axis_width":10
+        "y_axis_label": "$f(x)$",
+        "x_axis_width":12,
     }
 
     def construct(self):
         self.setup_axes(animate=False) #animate=True to add animation
+
         self.x_axis.shift(LEFT*abs(self.y_axis[0].points[0]-self.x_axis[0].points[0]))
         self.y_axis.shift(DOWN*abs(self.y_axis[0].points[0]-self.x_axis[0].points[0]))
+        
         self.y_axis_label_mob.next_to(self.y_axis[0].get_end(),UP)
+        self.x_axis_label_mob.next_to(self.x_axis[0].get_end(),RIGHT)
+
         p=Dot().move_to(self.coords_to_point(self.x_min, self.y_min))
+
+        screen_grid = ScreenGrid()
+        self.play(FadeIn(screen_grid))
+
         self.add(p)
         graph = self.get_graph(lambda x : x**2, 
                                     color = GREEN,
-                                    x_min = 5, 
-                                    x_max = 7
+                                    x_min = 4.5, 
+                                    x_max = 7.5
                                     )
 
         self.play(
@@ -47,24 +78,20 @@ class Plot1(GraphScene):
     CONFIG = {
         "y_max" : 50,
         "y_min" : 0,
-        "x_max" : 7,
+        "x_max" : 8,
         "x_min" : 0,
         "y_tick_frequency" : 5, 
         "x_tick_frequency" : 0.5, 
         "axes_color" : BLUE, 
         "y_labeled_nums": range(0,60,10),
-        "x_labeled_nums": list(np.arange(2, 7.0+0.5, 0.5)),
-        "x_label_decimal":1,
-        "y_label_direction": RIGHT,
-        "x_label_direction": UP,
-        "y_label_decimal":3
+        "x_labeled_nums": list(np.arange(0, 8, 1)),
     }
     def construct(self):
         self.setup_axes(animate=True)
         graph = self.get_graph(lambda x : x**2,  
                                     color = GREEN,
                                     x_min = 2, 
-                                    x_max = 4
+                                    x_max = 7
                                     )
         self.play(
         	ShowCreation(graph),
@@ -246,6 +273,7 @@ class Plot5(GraphScene):
         for x_val, x_tex in values_x:
             tex = TexMobject(x_tex) # Convert string to tex
             tex.scale(0.7) 
+            # coords_to_point 获取指定值的点坐标
             tex.next_to(self.coords_to_point(x_val, 0), DOWN) #Put tex on the position
             self.x_axis_labels.add(tex) #Add tex in graph
         self.play(
@@ -403,16 +431,18 @@ class PlotSinCos(GraphScene):
         step_x = PI/2
         end_val_x = 3*PI/2
         # List of the positions of x labels
-        values_decimal_x=Range(init_val_x,end_val_x,step_x)
+        values_decimal_x=Range(init_val_x,end_val_x,step_x) 
         # List of tex objects
         list_x=TexMobject("-\\frac{3\\pi}{2}", #   -3pi/2
                             "-\\pi", #              -pi 
                             "-\\frac{\\pi}{2}", #   -pi/2
-                            "\\,", #                 0 (space)
+                            "0", #                   0 (space)
                             "\\frac{\\pi}{2}", #     pi/2
                             "\\pi",#                 pi
-                            "\\frac{3\\pi}{2}" #     3pi/2
+                            "\\frac{3\\pi}{2}", #     3pi/2
                           )
+        # .set_opacity()是函数，需要在()中写入参数
+        list_x[3].set_opacity(0)
         #List touples (position,label)
         values_x = [(i,j)
             for i,j in zip(values_decimal_x,list_x)

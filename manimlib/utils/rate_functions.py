@@ -3,6 +3,7 @@ import numpy as np
 from manimlib.utils.bezier import bezier
 from manimlib.utils.simple_functions import sigmoid
 
+# rate_func 可获得以下方法
 
 def linear(t):
     return t

@@ -30,6 +30,7 @@ class GraphScene(Scene):
         "x_min": -1,
         "x_max": 10,
         "x_axis_width": 9,
+        # x刻度间隔
         "x_tick_frequency": 1,
         "x_leftmost_tick": None,  # Change if different from x_min
         "x_labeled_nums": None,
@@ -37,12 +38,13 @@ class GraphScene(Scene):
         "y_min": -1,
         "y_max": 10,
         "y_axis_height": 6,
+        # y刻度间隔
         "y_tick_frequency": 1,
         "y_bottom_tick": None,  # Change if different from y_min
         "y_labeled_nums": None,
         "y_axis_label": "$y$",
         "axes_color": GREY,
-        "graph_origin": 2.5 * DOWN + 4 * LEFT,
+        "graph_origin": 2.6 * DOWN + 4 * LEFT,
         "exclude_zero_label": True,
         "default_graph_colors": [BLUE, GREEN, YELLOW],
         "default_derivative_color": GREEN,
@@ -131,15 +133,17 @@ class GraphScene(Scene):
             self.play(Write(VGroup(x_axis, y_axis)))
         else:
             self.add(x_axis, y_axis)
+        # 给对象绑定x_axis和y_axis属性
         self.x_axis, self.y_axis = self.axes = VGroup(x_axis, y_axis)
         self.default_graph_colors = it.cycle(self.default_graph_colors)
 
+    # 坐标到点
     def coords_to_point(self, x, y):
         assert(hasattr(self, "x_axis") and hasattr(self, "y_axis"))
         result = self.x_axis.number_to_point(x)[0] * RIGHT
         result += self.y_axis.number_to_point(y)[1] * UP
         return result
-
+    # 点到坐标
     def point_to_coords(self, point):
         return (self.x_axis.point_to_number(point),
                 self.y_axis.point_to_number(point))
