@@ -1,5 +1,6 @@
 from manimlib.imports import *
 
+
 class MoveBraces(Scene):
     def construct(self):
         text=TexMobject(

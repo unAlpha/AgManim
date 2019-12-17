@@ -1,4 +1,130 @@
-from Ag.Grid import *
+from manimlib.imports import *
+
+class WriteText(Scene): 
+    def construct(self): 
+        text = TextMobject("This is a regular text")
+        self.play(Write(text))
+        self.wait(3)
+
+class TypesOfText(Scene): 
+    def construct(self): 
+        tipesOfText = TextMobject("""
+            This is a regular text,
+            $this is a formula$,
+            $$this is a formula$$
+            """)
+        self.play(Write(tipesOfText))
+        self.wait(3)
+
+class TypesOfText2(Scene): 
+    def construct(self): 
+        tipesOfText = TextMobject("""
+            This is a regular text,
+            $\\frac{x}{y}$,
+            $$x^2+y^2=a^2,$$
+            $x^2+y^2=a^2$
+            """)
+        self.play(Write(tipesOfText))
+        self.wait(3)
+
+class SizeTextOnLaTeX(Scene):
+    def construct(self):
+        #Huge 字的大小
+        textHuge = TextMobject("{\\Huge Huge Text 012.\\#!?} Text")
+        texthuge = TextMobject("{\\huge huge Text 012.\\#!?} Text")
+        textLARGE = TextMobject("{\\LARGE LARGE Text 012.\\#!?} Text")
+        textLarge = TextMobject("{\\Large Large Text 012.\\#!?} Text")
+        textlarge = TextMobject("{\\large large Text 012.\\#!?} Text")
+        textNormal = TextMobject("{\\normalsize normal Text 012.\\#!?} Text")
+        textsmall = TextMobject("{\\small small Text 012.\\#!?} Texto normal")
+        textfootnotesize = TextMobject("{\\footnotesize footnotesize Text 012.\\#!?} Text")
+        textscriptsize = TextMobject("{\\scriptsize scriptsize Text 012.\\#!?} Text")
+        texttiny = TextMobject("{\\tiny tiny Texto 012.\\#!?} Text normal")
+        textHuge.to_edge(UP)
+        texthuge.next_to(textHuge,DOWN,buff=0.1)
+        textLARGE.next_to(texthuge,DOWN,buff=0.1)
+        textLarge.next_to(textLARGE,DOWN,buff=0.1)
+        textlarge.next_to(textLarge,DOWN,buff=0.1)
+        textNormal.next_to(textlarge,DOWN,buff=0.1)
+        textsmall.next_to(textNormal,DOWN,buff=0.1)
+        textfootnotesize.next_to(textsmall,DOWN,buff=0.1)
+        textscriptsize.next_to(textfootnotesize,DOWN,buff=0.1)
+        texttiny.next_to(textscriptsize,DOWN,buff=0.1)
+        self.add(textHuge,texthuge,textLARGE,textLarge,textlarge,textNormal,textsmall,textfootnotesize,textscriptsize,texttiny)
+        self.wait(3)
+
+class TextFonts(Scene):
+    def construct(self):
+        textNormal = TextMobject("{Roman serif text 012.\\#!?} Text")
+        textItalic = TextMobject("\\textit{Italic text 012.\\#!?} Text")
+        textTypewriter = TextMobject("\\texttt{Typewritter text 012.\\#!?} Text")
+        textBold = TextMobject("\\textbf{Bold text 012.\\#!?} Text")
+        textSL = TextMobject("\\textsl{Slanted text 012.\\#!?} Text")
+        textSC = TextMobject("\\textsc{Small caps text 012.\\#!?} Text")
+        textNormal.to_edge(UP)
+        textItalic.next_to(textNormal,DOWN,buff=.5)
+        textTypewriter.next_to(textItalic,DOWN,buff=.5)
+        textBold.next_to(textTypewriter,DOWN,buff=.5)
+        textSL.next_to(textBold,DOWN,buff=.5)
+        textSC.next_to(textSL,DOWN,buff=.5)
+        self.add(textNormal,textItalic,textTypewriter,textBold,textSL,textSC)
+        self.wait(3)
+
+class TypesText1(Scene): 
+    def construct(self): 
+        tipesOfText1 = TexMobject(
+            "\\frac{\\text{d}y}{\\text{d}x}=f\\left( x \\right) g\\left( y \\right) ",
+            "\\int{\\frac{\\text{d}y}{g\\left( y \\right)}}=\\int{f\\left( x \\right) \\text{d}x}+C"
+            )
+        # 推荐这个方法
+        tipesOfText2 = TextMobject(
+            "$$\\frac{\\text{d}y}{\\text{d}x}=f\\left( x \\right) g\\left( y \\right)$$",
+            "$$\\int{\\frac{\\text{d}y}{g\\left( y \\right)}}=\\int{f\\left( x \\right) \\text{d}x}+C$$"
+            )
+        tipesOfText3 = TexMobject(
+            r"\frac{\text{d}y}{\text{d}x}=f\left( x \right) g\left( y \right)",
+            r"\int{f\left( x \right) \text{d}x}+C"
+            )
+        tipesOfText1[0].set_color(RED)
+        tipesOfText2[0].set_color(YELLOW)
+        tipesOfText3.set_color(BLUE)
+
+        tipesOfText2.set_color_by_tex("\\frac",PINK)
+        tipesOfText1.shift(2*UP)
+        tipesOfText2.next_to(tipesOfText1,DOWN,buff=1.5)
+        tipesOfText3[0].next_to(tipesOfText2[0],RIGHT,buff=1)
+        tipesOfText3[1].next_to(tipesOfText2[0],LEFT,buff=1)
+
+        self.play(Write(tipesOfText1))
+        self.play(Write(tipesOfText2))
+        self.play(Write(tipesOfText3))
+        self.wait()
+
+class TypesText2(Scene): 
+    def construct(self): 
+        tipesOfText4 = TextMobject("""
+            $$\\frac{\\text{d}y}{\\text{d}x}=f\\left( x \\right) g\\left( y \\right)$$
+            $$\\int{\\frac{\\text{d}y}{g\\left( y \\right)}}=\\int{f\\left( x \\right) \\text{d}x}+C$$
+            """)
+        self.play(Write(tipesOfText4))
+        self.wait()
+
+    
+class TypesText3(Scene): 
+    def construct(self): 
+        tipesOfText4 = TextMobject("""
+                $$
+                \\boldsymbol{A}_{m\\times n}=\\left[ \\begin{matrix}{l}
+                    a_{11}&		a_{12}&		\\cdots&		a_{1n}\\\\
+                    a_{21}&		a_{22}&		\\cdots&		a_{2n}\\\\
+                    \\vdots&	\\vdots&	\\ddots&		\\vdots\\\\
+                    a_{m1}&		a_{m2}&		\\cdots&		a_{mn}\\\\
+                \\end{matrix} \\right] =\\left[ a_{ij} \\right] 
+                $$
+            """,
+            background_stroke_width=0)
+        self.play(Write(tipesOfText4))
+        self.wait()
 
 COLOR_P="#3EFC24"
 

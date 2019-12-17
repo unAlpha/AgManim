@@ -90,7 +90,7 @@ class ScreenGrid(VGroup):
             self.add(puntos)
 
 ## Example:
-# class CoordScreen(Scene):
-#     def construct(self):
-#         screen_grid = ScreenGrid()
-#         self.add(screen_grid)
+class CoordScreen(Scene):
+    def construct(self):
+        screen_grid = ScreenGrid()
+        self.add(screen_grid)

@@ -1,4 +1,44 @@
-from Ag.Grid import *
+from manimlib.imports import *
+
+class PlotFunc(GraphScene):
+    CONFIG = {
+        "x_min" : -10,
+        "x_max" : 10.3,
+        "y_min" : -1.5,
+        "y_max" : 1.5,
+        "graph_origin" : ORIGIN,
+        "function_color" : RED,
+        "axes_color" : GREEN,
+        "x_labeled_unms" : range(-10,12,2)
+    }
+    def construct(self):
+        self.setup_axes(animate=True)
+        #获得图线
+        func_cos_graph = self.get_graph(self.func_cos, self.function_color)
+        func_sin_graph = self.get_graph(self.func_sin)
+        #设置垂线
+        vert_line = self.get_vertical_line_to_graph(TAU, func_cos_graph, color=YELLOW)
+        #设置标签
+        cos_label = self.get_graph_label(func_cos_graph, label="\\cos(x)")
+        sin_label = self.get_graph_label(func_sin_graph, label="\\sin(x)", x_val=-10, direction=UP/2)
+
+        twoPI = TexMobject("x=2\\pi")
+
+        #获得坐标点的位置
+        label_Coord = self.input_to_graph_point(TAU,func_cos_graph)
+        twoPI.shift(label_Coord, UP/3)
+
+        self.play(ShowCreation(func_cos_graph), ShowCreation(func_sin_graph))
+        self.play(ShowCreation(vert_line),
+                ShowCreation(cos_label),
+                ShowCreation(sin_label),
+                ShowCreation(twoPI)
+        )
+
+    def func_cos(self, x):
+        return np.cos(x)
+    def func_sin(self, x):
+        return np.sin(x)
 
 class PlotDemo(GraphScene):
     CONFIG ={
