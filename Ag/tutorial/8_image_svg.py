@@ -1,10 +1,10 @@
-from big_ol_pile_of_manim_imports import *
+from manimlib.imports import *
 
 class CheckSVG(Scene):
     CONFIG={
     "camera_config":{"background_color": WHITE},
     "svg_type":"svg",
-    "file":"",
+    "file":"/Users/pengyinzhong/Dropbox/manim/AgManim/assets/svg_images/push_pin",
     "svg_scale":0.9,
     "angle":0,
     "flip_svg":False,

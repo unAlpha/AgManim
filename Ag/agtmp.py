@@ -2,6 +2,282 @@
 # from manimlib.imports import *
 from Ag.Grid import *
 
+
+class ShowPassingFlashAroundExample(Scene):
+    def construct(self):
+        mobjects = VGroup(
+                Circle(),
+                Circle(fill_opacity=1),
+                TextMobject("Text").scale(2)
+            )
+        mobjects.scale(1.5)
+        mobjects.arrange_submobjects(RIGHT,buff=2)
+
+        self.add(mobjects)
+
+        self.play(
+            *[ShowPassingFlashAround(mob) for mob in mobjects]
+        )
+        self.play(
+            *[ShowCreationThenDestructionAround(mob) for mob in mobjects]
+        )
+        self.play(
+            *[ShowCreationThenFadeAround(mob) for mob in mobjects]
+        )
+        self.play(
+            *[ApplyWave(mob) for mob in mobjects]
+        )
+        self.play(
+            *[WiggleOutThenIn(mob) for mob in mobjects]
+        )
+        self.play(
+            *[TurnInsideOut(mob) for mob in mobjects]
+        )
+
+        self.wait()
+
+
+class CircleIndicateExample(Scene):
+    def construct(self):
+        mobjects = VGroup(
+            Dot(),
+            TexMobject("x")
+        ).scale(2)
+        mobjects.arrange_submobjects(RIGHT,buff=2)
+
+        self.add(mobjects)
+        self.wait(0.2)
+
+        for obj in mobjects:
+            self.play(CircleIndicate(obj))
+
+
+class FlashExample(Scene):
+    def construct(self):
+        mobjects = VGroup(
+            Dot(),
+            TexMobject("x")
+        ).scale(2)
+        mobjects.arrange_submobjects(RIGHT,buff=2)
+
+        mobject_or_coord = [
+            *mobjects,                    # Mobjects: Dot and "x"
+            mobjects.get_right()+RIGHT*2  # Coord
+        ]
+
+        colors=[GRAY,RED,BLUE]
+
+        self.add(mobjects)
+
+        for obj,color in zip(mobject_or_coord,colors):
+            self.play(Flash(obj,color=color,flash_radius=0.5))
+
+        self.wait(0.3)
+
+
+class IndicateExample(Scene):
+    def construct(self):
+        #                     0    1   2
+        formula = TexMobject("f(","x",")")
+        dot = Dot()
+
+        VGroup(formula,dot)\
+                           .scale(3)\
+                           .arrange_submobjects(DOWN,buff=3)
+
+        self.add(formula,dot)
+
+        for mob in [formula[1],dot]:
+            self.play(Indicate(mob))
+
+        self.wait(0.3)
+
+
+class FocusOnExample(Scene):
+    def construct(self):
+        mobjects = VGroup(
+            Dot(),
+            TexMobject("x")
+        )
+        mobjects.arrange_submobjects(RIGHT,buff=2)
+
+        mobject_or_coord = [
+            *mobjects,                    # Mobjects: Dot and "x"
+            mobjects.get_right()+RIGHT*2  # Coord
+        ]
+
+        colors=[GRAY,RED,BLUE]
+
+        self.add(mobjects)
+
+        for obj,color in zip(mobject_or_coord,colors):
+            self.play(FocusOn(obj,color=color))
+
+        self.wait(0.3)
+
+
+class ShrinkToCenterExample(Scene):
+    def construct(self):
+        mobjects = VGroup(
+                Square(),
+                RegularPolygon(fill_opacity=1),
+                TextMobject("Text").scale(2)
+            )
+        mobjects.scale(1.5)
+        mobjects.arrange_submobjects(RIGHT,buff=2)
+
+        self.play(
+            *[ShrinkToCenter(mob) for mob in mobjects]
+        )
+
+        self.wait()
+
+
+class SpinInFromNothingExample(Scene):
+    def construct(self):
+        mobjects = VGroup(
+                Square(),
+                RegularPolygon(fill_opacity=1),
+                TextMobject("Text").scale(2)
+            )
+        mobjects.scale(1.5)
+        mobjects.arrange_submobjects(RIGHT,buff=2)
+
+        self.play(
+            *[SpinInFromNothing(mob,path_arc=PI/2) for mob in mobjects]
+        )
+
+        self.wait()
+
+
+class GrowFromEdgeExample(Scene):
+    def construct(self):
+        mobjects = VGroup(
+                Circle(),
+                Circle(fill_opacity=1),
+                TextMobject("Text").scale(2)
+            )
+        mobjects.arrange_submobjects(RIGHT,buff=2)
+
+        directions=[UP,LEFT,DOWN,RIGHT]
+
+        for direction in directions:
+            self.play(
+                *[GrowFromEdge(mob,direction) for mob in mobjects]
+            )
+
+        self.wait()
+
+
+class GrowFromPointExample(Scene):
+    def construct(self):
+        mobjects = VGroup(
+                Circle(),
+                Circle(fill_opacity=1),
+                TextMobject("Text").scale(2)
+            )
+        mobjects.arrange_submobjects(RIGHT,buff=2)
+
+        directions=[UP,LEFT,DOWN,RIGHT]
+
+        for direction in directions:
+            self.play(
+                *[GrowFromPoint(mob,mob.get_center()+direction*3) for mob in mobjects]
+            )
+
+        self.wait()
+
+
+class FadeInFromLargeExample(Scene):
+    def construct(self):
+        mobjects = VGroup(
+                Circle(),
+                Circle(fill_opacity=1),
+                TextMobject("Text").scale(2)
+            )
+        mobjects.scale(1.5)
+        mobjects.arrange_submobjects(RIGHT,buff=2)
+
+        scale_factors=[0.3,0.8,1,1.3,1.8]
+
+        for scale_factor in scale_factors:
+            t_scale_factor = TextMobject(f"\\tt scale\\_factor = {scale_factor}")
+            t_scale_factor.to_edge(UP)
+
+            self.add(t_scale_factor)
+            # 对于for，play(*[])每次播放一个
+            self.play(
+                *[FadeInFromLarge(mob,scale_factor) for mob in mobjects]
+            )
+
+            self.remove(t_scale_factor)
+
+        self.wait(0.3)
+
+
+class FadeOutAndShiftExample(Scene):
+    def construct(self):
+        mobjects = VGroup(
+                Circle(),
+                Circle(fill_opacity=1),
+                TextMobject("Text").scale(2)
+            )
+        mobjects.scale(1.5)
+        mobjects.arrange_submobjects(RIGHT,buff=2)
+
+        directions=[UP,LEFT,DOWN,RIGHT]
+
+        self.add(mobjects)
+        self.wait(0.3)
+
+        for direction in directions:
+            self.play(
+                *[FadeOutAndShift(mob,direction) for mob in mobjects]
+            )
+
+        self.wait()
+
+
+class FadeInFromExample(Scene):
+    def construct(self):
+        mobjects = VGroup(
+                Circle(),
+                Circle(fill_opacity=1),
+                TextMobject("Text").scale(2)
+            )
+        mobjects.scale(1.5)
+        mobjects.arrange_submobjects(RIGHT,buff=2)
+
+        directions=[UP,LEFT,DOWN,RIGHT]
+
+        for direction in directions:
+            self.play(
+                *[FadeInFrom(mob,direction) for mob in mobjects]
+            )
+
+        self.wait()
+
+
+class UncreateExample(Scene):
+    def construct(self):
+        mobjects = VGroup(
+                Circle(),
+                Circle(fill_opacity=1),
+                TextMobject("Text").scale(2)
+            )
+        mobjects.scale(1.5)
+        mobjects.arrange_submobjects(RIGHT,buff=2)
+
+        self.add(mobjects)
+
+        self.wait(0.3)
+
+        self.play(
+            *[Uncreate(mob) for mob in mobjects]
+        )
+
+        self.wait()
+
 class CoordScreen(Scene):
     def construct(self):
         screen_grid = ScreenGrid()

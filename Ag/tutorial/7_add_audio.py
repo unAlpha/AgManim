@@ -1,9 +1,10 @@
-from big_ol_pile_of_manim_imports import *
+from manimlib.imports import *
 
 class SoundTest(Scene):
     CONFIG = {"include_sound": True}
     def construct(self):
         title=TextMobject("Sound Test").to_edge(UP)
         self.wait()
-        self.add_sound("sound",gain=-10)
-        self.play(Write(title))
+        #注意目录
+        self.add_sound("sound-pd",gain=-10)
+        self.play(Write(title),run_time=5)
