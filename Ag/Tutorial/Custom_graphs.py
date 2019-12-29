@@ -1,11 +1,5 @@
 from manimlib.imports import *
 
-#    __                  _   _                 
-#   / _|_   _ _ __   ___| |_(_) ___  _ __  ___ 
-#  | |_| | | | '_ \ / __| __| |/ _ \| '_ \/ __|
-#  |  _| |_| | | | | (__| |_| | (_) | | | \__ \
-#  |_|  \__,_|_| |_|\___|\__|_|\___/|_| |_|___/
-
 # This function returns data from .csv to an array
 def get_coords_from_csv(file_name):
     import csv
@@ -20,18 +14,6 @@ def get_coords_from_csv(file_name):
     return coords
 # LEARN MORE HERE:
 # https://www.youtube.com/watch?v=Xi52tx6phRU
-
-
-#        _         _                  _   
-#   __ _| |__  ___| |_ _ __ __ _  ___| |_ 
-#  / _` | '_ \/ __| __| '__/ _` |/ __| __|
-# | (_| | |_) \__ \ |_| | | (_| | (__| |_ 
-#  \__,_|_.__/|___/\__|_|  \__,_|\___|\__|
-#   ___  ___ ___ _ __   ___  ___ 
-#  / __|/ __/ _ \ '_ \ / _ \/ __|
-#  \__ \ (_|  __/ | | |  __/\__ \
-#  |___/\___\___|_| |_|\___||___/
-# Abstract scenes
 
 class GraphFromData(GraphScene):
     # Covert the data coords to the graph points
@@ -53,11 +35,6 @@ class GraphFromData(GraphScene):
         )
         return dots
 
-#       _                         
-#   ___| | __ _ ___ ___  ___  ___ 
-#  / __| |/ _` / __/ __|/ _ \/ __|
-# | (__| | (_| \__ \__ \  __/\__ \
-#  \___|_|\__,_|___/___/\___||___/
 # This classes returns graphs
 class DiscreteGraphFromSetPoints(VMobject):
     def __init__(self,set_of_points,**kwargs):
@@ -69,10 +46,6 @@ class SmoothGraphFromSetPoints(VMobject):
         super().__init__(**kwargs)
         self.set_points_smoothly(set_of_points)
 
-#   ___  ___ ___ _ __   ___  ___ 
-#  / __|/ __/ _ \ '_ \ / _ \/ __|
-#  \__ \ (_|  __/ | | |  __/\__ \
-#  |___/\___\___|_| |_|\___||___/
 # Graph with set of points
 class CustomGraph1(GraphFromData):
     def construct(self):
@@ -147,11 +120,3 @@ class CustomGraph4(Scene):
             ]
         )
         return dots
-
-        
-#               ____          _____ ____  
-#              | __ ) _   _  |_   _| __ ) 
-#              |  _ \| | | |   | | |  _ \ 
-#              | |_) | |_| |   | | | |_) |
-#              |____/ \__, |   |_| |____/ 
-#                     |___/   

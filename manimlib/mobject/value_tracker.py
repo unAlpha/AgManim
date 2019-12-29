@@ -23,6 +23,7 @@ class ValueTracker(Mobject):
         self.points[0, 0] = value
         return self
 
+    # 增值
     def increment_value(self, d_value):
         self.set_value(self.get_value() + d_value)
 
