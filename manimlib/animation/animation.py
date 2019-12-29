@@ -116,7 +116,8 @@ class Animation(object):
         keep many old scenes from breaking
         """
         self.interpolate(alpha)
-
+    
+    # 插值对象
     def interpolate_mobject(self, alpha):
         families = list(self.get_all_families_zipped())
         for i, mobs in enumerate(families):

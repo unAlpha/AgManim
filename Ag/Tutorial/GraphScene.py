@@ -3,7 +3,7 @@ from manimlib.imports import *
 class CSV(GraphScene):
     def construct(self):
         self.setup_axes()
-        coords = self.return_coords_from_csv("data")
+        coords = self.return_coords_from_csv(r"Ag\Tutorial\data")
         dots = VGroup(*[Dot().move_to(self.coords_to_point(coord[0],coord[1])) for coord in coords])
         self.add(dots)
 

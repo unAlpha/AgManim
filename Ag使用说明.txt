@@ -18,3 +18,11 @@
 
 2019-12-06
 6、使用github管理
+
+7、在scene_file_writer.py中修改
+            subprocess.call(["rm", sound_file_path])
+	为
+            if platform.system()=="Windows":
+                os.remove(sound_file_path)
+            else:
+                subprocess.call(["rm", sound_file_path])

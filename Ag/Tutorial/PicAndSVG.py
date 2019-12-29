@@ -1,10 +1,25 @@
 from manimlib.imports import *
 
+class SVGTest(Scene):
+    def construct(self):
+        svg = SVGMobject("finger")
+        #svg = SVGMobject("camera")
+        self.play(DrawBorderThenFill(svg,rate_func=linear))
+        self.wait()
+
+ 
+class ImageTest(Scene):
+    def construct(self):
+        image = ImageMobject("note")
+        self.play(FadeIn(image))
+        self.wait()
+
+
 class ShowPicture(Scene):
         CONFIG = {
-            'pic1' : 'assets\\pic\\pic1.png',
-            'facebook' : 'assets\\pic\\Facebook.png',
-            'power' : 'assets\\pic\\Power.png'
+            'pic1' : 'pic1.png',
+            'facebook' : 'Facebook.png',
+            'power' : 'Power.png'
         }
         def construct(self):
             pic1 = ImageMobject(self.pic1)

@@ -501,17 +501,19 @@ class VMobject(Mobject):
             self.add_line_to(point)
         return points
 
+    # 用顶点来生成线的点坐标
     def set_points_as_corners(self, points):
         nppcc = self.n_points_per_cubic_curve
         # 生成多维np点阵
         points = np.array(points)
         self.set_anchors_and_handles(*[
-            #　在点阵中进行nppcc个点的array插值
+            #　在点阵中进行nppcc个点的线性array插值
             interpolate(points[:-1], points[1:], a)
             for a in np.linspace(0, 1, nppcc)
         ])
         return self
 
+    # 用顶点来生成曲线的点坐标
     def set_points_smoothly(self, points):
         self.set_points_as_corners(points)
         self.make_smooth()

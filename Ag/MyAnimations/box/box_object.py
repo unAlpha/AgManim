@@ -1,4 +1,3 @@
-#from big_ol_pile_of_manim_imports import *
 from manimlib.imports import *
 
 class Box(VMobject):
@@ -8,14 +7,15 @@ class Box(VMobject):
         "stroke_color":"#D2B48C",
         "fill_color":"#cdab7e",
         "size_lid":0.95,
-        "lid_width":11,
+        "lid_width":20,
     }
     def __init__(self):
         VMobject.__init__(self)
         self.set_points_as_corners([UP*self.height+LEFT*self.width/2,
                                 LEFT*self.width/2,
                                 RIGHT*self.width/2,
-                                UP*self.height+RIGHT*self.width/2])
+                                #RIGHT*self.width+UP*self.height/2,
+                                UP*self.height+RIGHT*self.width/2],)
         self.set_stroke(width=6)
         tapaI=VMobject().set_points_as_corners([self.points[0],self.points[0]+RIGHT*self.width*self.size_lid/2]).set_stroke(width=self.lid_width)
         tapaD=VMobject().set_points_as_corners([self.points[-1],self.points[-1]+LEFT*self.width*self.size_lid/2]).set_stroke(width=self.lid_width)
