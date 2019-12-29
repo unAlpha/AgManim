@@ -430,7 +430,8 @@ class Line(TipableVMobject):
         digest_config(self, kwargs)
         self.set_start_and_end_attrs(start, end)
         VMobject.__init__(self, **kwargs)
-
+        
+    # 在Vmobject的初始化中，会调用generate_points
     def generate_points(self):
         if self.path_arc:
             arc = ArcBetweenPoints(
@@ -439,6 +440,7 @@ class Line(TipableVMobject):
             )
             self.set_points(arc.points)
         else:
+            # 生成self.points
             self.set_points_as_corners([self.start, self.end])
         self.account_for_buff()
 

@@ -1,5 +1,6 @@
 from manimlib.imports import *
 
+
 class Grid(VMobject):
     CONFIG = {
         "height": 6.0,
@@ -32,16 +33,15 @@ class ScreenGrid(VGroup):
         "columns": 14,
         "height": FRAME_Y_RADIUS * 2,
         "width": 14,
-        "grid_stroke": 0.36,
+        "grid_stroke": 0.5,
         "grid_color": WHITE,
         "axis_color": RED,
-        "axis_stroke": 0.5,
+        "axis_stroke": 2,
         "show_points": False,
         "point_radius": 0,
         "labels_scale": 0.5,
         "labels_buff": 0,
-        "number_decimals": 1,
-        "text_opacity" : 0.36,
+        "number_decimals": 2
     }
 
     def __init__(self, **kwargs):
@@ -80,7 +80,7 @@ class ScreenGrid(VGroup):
                     ubicacion = v_i + orientacion * division * i
                     punto = Dot(ubicacion, radius=self.point_radius)
                     coord = round(punto.get_center()[coordenada], self.number_decimals)
-                    leyenda = TextMobject("%s" % coord, fill_opacity=self.text_opacity).scale(self.labels_scale)
+                    leyenda = TextMobject("%s" % coord).scale(self.labels_scale)
                     leyenda.next_to(punto, direcciones_buff, buff=self.labels_buff)
                     puntos.add(punto)
                     leyendas.add(leyenda)
@@ -89,7 +89,7 @@ class ScreenGrid(VGroup):
         if self.show_points:
             self.add(puntos)
 
-## Example:
+# Example:
 class CoordScreen(Scene):
     def construct(self):
         screen_grid = ScreenGrid()

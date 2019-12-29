@@ -1,9 +1,22 @@
 from manimlib.imports import *
 
+
+class Underline(Line):
+    def __init__(self,texto,buff=0.07,**kwargs):
+        Line.__init__(self,texto.get_corner(DL),texto.get_corner(DR),**kwargs)
+        self.shift(DOWN*buff)
+
 class WriteText(Scene): 
     def construct(self): 
         text = TextMobject("This is a regular text")
+        text_underline = Underline(text)
+        text_underline.points=np.array([[ -2.4,  -0.3,  0.],
+                                        [ -0.8,  -0.3,  0.],
+                                        [  0.8,  0.3,  0.],
+                                        [  2.4,  0.3,  0.]])
+        print(text_underline.points)
         self.play(Write(text))
+        self.add(text_underline)
         self.wait(3)
 
 class TypesOfText(Scene): 
@@ -390,7 +403,7 @@ class FrameBox2(Scene):
         self.play(ShowCreation(frameBox))
         self.wait(2)
 
-class BraceText(Scene):
+class BraceText1(Scene):
     def construct(self):
         text=TexMobject(
             "\\frac{d}{dx}f(x)g(x)=","f(x)\\frac{d}{dx}g(x)","+",

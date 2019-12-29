@@ -402,10 +402,12 @@ class VMobject(Mobject):
     def get_points(self):
         return np.array(self.points)
 
+    # 让self有点属性
     def set_anchors_and_handles(self, anchors1, handles1, handles2, anchors2):
         assert(len(anchors1) == len(handles1) == len(handles2) == len(anchors2))
         nppcc = self.n_points_per_cubic_curve  # 4
         total_len = nppcc * len(anchors1)
+        # self.dim　是维数3
         self.points = np.zeros((total_len, self.dim))
         arrays = [anchors1, handles1, handles2, anchors2]
         for index, array in enumerate(arrays):
@@ -501,8 +503,10 @@ class VMobject(Mobject):
 
     def set_points_as_corners(self, points):
         nppcc = self.n_points_per_cubic_curve
+        # 生成多维np点阵
         points = np.array(points)
         self.set_anchors_and_handles(*[
+            #　在点阵中进行nppcc个点的array插值
             interpolate(points[:-1], points[1:], a)
             for a in np.linspace(0, 1, nppcc)
         ])

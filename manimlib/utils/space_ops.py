@@ -9,7 +9,7 @@ from manimlib.constants import TAU
 from manimlib.utils.iterables import adjacent_pairs
 from manimlib.utils.simple_functions import fdiv
 
-
+# 求向量的长度
 def get_norm(vect):
     return sum([x**2 for x in vect])**0.5
 
@@ -155,8 +155,10 @@ def project_along_vector(point, vector):
 
 
 def normalize(vect, fall_back=None):
+    # 获得向量的长度
     norm = get_norm(vect)
     if norm > 0:
+        # 返回归一化向量
         return np.array(vect) / norm
     else:
         if fall_back is not None:
