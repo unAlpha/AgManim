@@ -118,12 +118,12 @@ class pow4(Scene):
 
 class pow5(Scene):
     def construct(self):
-        text1 = TextMobject("1秒=1步")
-        text2 = TextMobject("\\textbf{1天=86400秒}")
+        text1 = Text("1秒=1步", font='义启魔音体')
+        text2 = Text("1天=86400秒", font='阿里巴巴普惠体 B')
         text3 = TextMobject("1年365天=31536000秒")
         text5 = TextMobject("18446744073709551615秒$\\approx$5800亿年")
         text5.set_color_by_gradient(RED,ORANGE,YELLOW)
         text=VGroup(text1,text2,text3,text5).arrange_submobjects(DOWN,aligned_edge = LEFT,buff=0.4)
         text.shift(2*LEFT)
-        self.play(ShowCreation(text[1]),run_time=2)
+        self.play(ShowCreation(text),run_time=2)
         self.wait(10)
