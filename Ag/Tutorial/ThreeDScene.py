@@ -1,4 +1,32 @@
-from Ag.Grid import *
+from manimlib.imports import *
+
+class My3DScene(ThreeDScene):
+    CONFIG = {
+    "plane_kwargs" : {
+        "color" : RED_B
+        },
+    "point_charge_loc" : 0.5*RIGHT-1.5*UP,
+    }
+    def construct(self):
+        plane = NumberPlane(**self.plane_kwargs)
+        plane.add(plane.get_axis_labels())
+        self.add(plane)
+        
+        circle = Circle(fill_color = BLUE)
+        text = TextMobject("Good night")
+        text.set_color(GREEN)
+
+        self.set_camera_orientation(phi=0, theta = 0)
+        self.wait()
+        self.move_camera(phi=PI/4,run_time=1)  #currently broken in manim
+        self.move_camera(theta=PI/4,run_time=1)
+        self.begin_ambient_camera_rotation(rate=0.1)
+        self.play(ShowCreation(circle, run_time = 3))
+        self.play(ApplyMethod(circle.shift, UP+4*OUT, run_time = 4))
+        self.move_camera(theta = -PI/2, phi=PI/5, run_time=5)
+        self.play(Transform(circle, text, run_time = 3))
+        self.wait(6)
+
 
 #There seems to be no change between Scene and ThreeDScene
 class CameraPosition1(ThreeDScene):

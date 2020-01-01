@@ -1,5 +1,19 @@
 from manimlib.imports import *
 
+class DrawAnAxis(Scene):
+    CONFIG = { "plane_kwargs" : { 
+        "x_line_frequency" : 0.5,
+        "y_line_frequency" : 0.5
+        }
+    }
+
+    def construct(self):
+        my_plane = NumberPlane(**self.plane_kwargs)
+        my_plane.add(my_plane.get_axis_labels())
+
+        self.play(Write(my_plane, run_time = 2))
+
+
 class NaturalNumberCube(Scene):
     def construct(self):
         equal = TextMobject("=", color=RED)

@@ -1,5 +1,46 @@
 from manimlib.imports import *
 
+class WhatIsCONFIG(Scene):
+    CONFIG={
+        "object_1":TextMobject("Object 1"),
+        "object_2":Square(),
+        "number":3,
+        "vector":[1,1,0]
+    }
+    def construct(self):
+        self.play(
+            Write(self.object_1)
+        )
+        self.play(
+            self.object_1.scale,self.number
+        )
+        self.play(
+            ReplacementTransform(
+                self.object_1,
+                self.object_2
+            )
+        )
+        self.play(
+            self.object_2.shift,self.vector
+        )
+        self.wait()
+
+class SceneFromAnotherScene(WhatIsCONFIG):
+    CONFIG={
+        "object_1":TextMobject("Another object"),
+        "object_2":Circle(),
+        "number":4,
+        "vector":[-1,-1,0]
+    }
+
+class ChangeBackgroundColor(Scene):
+    CONFIG={
+        "camera_config":{"background_color":RED},
+        "text":TexMobject(r"\frac{d}{dx}\Bigr|_{y=2}").scale(5)
+    }
+    def construct(self):
+        self.add(self.text)
+
 class HelloWorld(Scene):
     def construct(self):
         helloWorld = TexMobject("Hello World!", color=RED)
