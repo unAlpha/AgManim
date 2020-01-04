@@ -5,7 +5,7 @@ class Medicion(VGroup):
     CONFIG = {
         "color":RED_B,
         "buff":0.3,
-        "laterales":0.3,
+        "laterales":0.3,  
         "invertir":False,
         "dashed_segment_length":0.09,
         "dashed":False,

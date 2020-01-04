@@ -2,17 +2,17 @@ from manimlib.imports import *
 
 class Demo1(Scene):
     def construct(self):
-        text = Text('Hello, world!')
-        text = Text('Hello', color=BLUE)
-        text = Text('Hello, world!', t2c={'world':BLUE})
-        text = Text('Hello', gradient=(BLUE, GREEN))
-        text = Text('Hello, world!', t2g={'world':(BLUE, GREEN)})
-        text = Text('Hello', font='Eraser')
-        text = Text('Hello, world!', t2f={'world':'Forte'})
-        text = Text('Hello', slant=ITALIC)
-        text = Text('Hello, world!', t2s={'world':ITALIC})
-        text = Text('Hello', weight=BOLD)
-        text = Text('Hello', size=5)
+        # text = Text('Hello, world!')
+        # text = Text('Hello', color=BLUE)
+        # text = Text('Hello, world!', t2c={'world':BLUE})
+        # text = Text('Hello', gradient=(BLUE, GREEN))
+        # text = Text('Hello, world!', t2g={'world':(BLUE, GREEN)})
+        # text = Text('Hello', font='Eraser')
+        # text = Text('Hello, world!', t2f={'world':'Forte'})
+        # text = Text('Hello', slant=ITALIC)
+        # text = Text('Hello, world!', t2s={'world':ITALIC})
+        # text = Text('Hello', weight=BOLD)
+        # text = Text('Hello', size=5)
         text = Text('Hello\nWorld', lsh=1.5)
         self.play(Write(text))
 

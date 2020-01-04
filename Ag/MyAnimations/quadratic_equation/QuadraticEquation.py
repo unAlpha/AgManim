@@ -70,7 +70,7 @@ class SolveGeneralQuadraticEquation(Scene):
         self.wait(2)
 
     def import_formulas(self):
-        from quadratic_equation.formulas.formulas import formulas
+        from Ag.MyAnimations.quadratic_equation.formulas.formulas import formulas
         self.formulas=formulas
 
 

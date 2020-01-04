@@ -1,5 +1,5 @@
 from manimlib.imports import *
-from my_projects.my_objects import *
+from Ag.MyAnimations.my_projects.my_objects import *
 
 ############# MY ANIMATIONS ############
 class PassRectangleAbstract(UpdateFromAlphaFunc):

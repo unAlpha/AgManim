@@ -1,6 +1,6 @@
 from manimlib.imports import *
-from my_projects.my_objects import *
-from my_projects.my_animations import *
+from Ag.MyAnimations.my_projects.my_objects import *
+from Ag.MyAnimations.my_projects.my_animations import *
 
 # Abstract scenes (no render this scenes)
 # The "setup" method is always executed before the construct method

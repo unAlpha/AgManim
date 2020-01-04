@@ -1,5 +1,5 @@
 from manimlib.imports import *
-from quadratic_equation.svg_classes import CheckFormulaByTXT
+from Ag.MyAnimations.quadratic_equation.svg_classes import CheckFormulaByTXT
 from io import *
 
 formulas=[]
@@ -10,7 +10,7 @@ c_color=GREEN_B
 x_color=YELLOW_B
 
 for i in range(1,17):
-	formula_open=open("quadratic_equation/formulas/formula%de.txt"%i,"r")
+	formula_open=open("Ag/MyAnimations/quadratic_equation/formulas/formula%de.txt"%i,"r")
 	formula=formula_open.readlines()
 	formulas.append(TexMobject(*formula).scale(1.7))
 

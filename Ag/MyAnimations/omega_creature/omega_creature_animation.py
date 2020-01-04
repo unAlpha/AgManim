@@ -1,7 +1,7 @@
 #from big_ol_pile_of_manim_imports import *
 from manimlib.imports import *
 
-from MyAnimations.omega_creature.omega_creature_class import *
+from Ag.MyAnimations.omega_creature.omega_creature_class import *
 
 
 class OmegaDice(Scene):
