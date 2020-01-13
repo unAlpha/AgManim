@@ -1,5 +1,280 @@
 from manimlib.imports import *
 
+class ep061(Scene):
+    def construct(self):
+        text1 = TexMobject("0.25=\\frac{1}{4}",
+                           "0.333...=\\frac{1}{3}",
+                           "0.454545...=\\frac{45}{99}")\
+                               .arrange_submobjects(DOWN,aligned_edge = LEFT,buff=0.4)
+        text2 = Text("有限小数",size=0.5)
+        text2.next_to(text1[0],LEFT)
+        text3 = Text("无限循环小数",size=0.5)
+        text3.next_to(text1[1],LEFT)
+        self.play(Write(text2))
+        self.wait(1)
+        self.play(Write(text3))
+        self.wait(5)
+        for i in range(len(text1)):
+            self.play(Write(text1[i]))
+            self.wait(2)
+        brace1 = Brace(text1,RIGHT).set_color(YELLOW)
+        btext1 = brace1.get_text("\\textbf{分数}").set_color(YELLOW)
+        self.play(GrowFromCenter(brace1),FadeIn(btext1))
+        self.wait(2)
+        brace2 = Brace(VGroup(text1,text2,text3),DOWN).set_color(RED)
+        btext2 = brace2.get_text("\\textbf{有理数}").set_color(RED)
+        self.play(GrowFromCenter(brace2),FadeIn(btext2))
+        self.wait(5)
+
+
+class ep062(Scene):
+    def construct(self):
+        text1 = TexMobject("\\sqrt{2}=1.4142135623731...",
+                           "\\pi=3.1415926535897...",
+                           "... ...")\
+                               .arrange_submobjects(DOWN,aligned_edge = RIGHT,buff=0.4)
+        text1[2].shift(0.25*DOWN)
+        for i in range(len(text1)):
+            self.play(Write(text1[i]))
+            self.wait(5)
+        brace1 = Brace(text1,RIGHT)
+        btext1 = brace1.get_text("\\textbf{无理数}")
+
+        text2 = TexMobject("\\textbf{有理数}")
+        text2.next_to(btext1,5*DOWN)
+
+        brace2 = Brace(VGroup(btext1,text2),RIGHT)
+        btext2 = brace2.get_text("\\textbf{实数}")
+
+        VGroup(btext1,text2,brace2,btext2).set_color_by_gradient(YELLOW,RED)
+
+        self.play(GrowFromCenter(brace1),FadeIn(btext1))
+        self.wait(2)
+        self.play(Write(text2))
+        self.wait(2)
+        self.play(GrowFromCenter(brace2),FadeIn(btext2))
+        self.wait(5)
+
+class ep063(Scene):
+    def construct(self):
+        numberline1=NumberLine(x_min=0,
+                               x_max=6,
+                               # 箭头
+                               include_tip=True,
+                               tick_size=0.2,
+                               tick_frequency=1,
+                               color=WHITE).move_to(ORIGIN)
+        text_0=TextMobject("0")\
+               .next_to(numberline1.get_tick(0),DOWN)
+        text_1=TextMobject("1")\
+               .next_to(numberline1.get_tick(1),DOWN)
+        text_2=TextMobject("2")\
+               .next_to(numberline1.get_tick(2),DOWN)
+        text_3=TextMobject("3")\
+               .next_to(numberline1.get_tick(3),DOWN)
+        text_4=TextMobject("4")\
+               .next_to(numberline1.get_tick(4),DOWN)
+        text_5=TextMobject("5")\
+               .next_to(numberline1.get_tick(5),DOWN)
+
+        text_pi=TexMobject("\\pi")\
+               .next_to(numberline1.get_tick(3.14),UP).shift(0.11*UP).set_color(RED)
+        arrpi= Arrow(text_pi.get_bottom(),numberline1.get_tick(3.14)).set_color(RED)
+        
+        text_sqrt2=TexMobject("\\sqrt{2}")\
+               .next_to(numberline1.get_tick(1.414),UP).scale(0.618).set_color(RED)
+        arrsqrt2 = Arrow(text_sqrt2.get_bottom(),numberline1.get_tick(1.414)).set_color(RED)
+
+        self.play(ShowCreation(numberline1),run_time=3)
+        text=VGroup(text_0,text_1,text_2,text_3,text_4,text_5,text_sqrt2,arrsqrt2,text_pi,arrpi)
+        self.add(text[0:6])
+        for i in range(6,10):
+            self.play(ShowCreation(text[i]))
+        self.wait(5)
+
+class ep064(Scene):
+    def construct(self):
+        text1 = Text("假设成立",size=0.5)
+        text2 = Text("逻辑推理",size=0.5)
+        text3 = Text("矛盾",size=0.5)
+        text4 = Text("不成立",size=0.5)
+
+        VGroup(text1,text3).arrange_submobjects(RIGHT ,buff=4)
+        self.play(Write(text1))
+        self.wait(2)
+        arr1 = Arrow(text1.get_right(),text3.get_left(),color=YELLOW)
+        text2.next_to(arr1,0.5*UP)
+        self.play(Write(text2),ShowCreation(arr1),ShowCreation(text3))
+        self.wait(2)
+
+        arr2 = CurvedArrow(text3.get_bottom(),text1.get_bottom(),angle=-TAU/4,stroke_width=6,color=RED).shift(0.2*DOWN)
+        text4.next_to(arr2,DOWN)
+        self.play(ShowCreation(arr2),Write(text4))
+        self.wait(2)
+
+class ep065(Scene):
+    def construct(self):
+        text1 = Text("自然数",size=0.5)
+        text2 = Text("实数",size=0.5)
+
+        text1t = VGroup(text1,*TexMobject("1","2","3","4","5","6","7","..."))\
+            .arrange_submobjects(DOWN,buff=0.41).scale(0.8)
+
+        str1 = ["0.38602563078...",
+                "0.55350762050...",
+                "0.99356753207...",
+                "0.25763200456...",
+                "0.00005320562...",
+                "0.99035638567...",
+                "0.55522730456...",
+                "...\\ ...",
+                "0.52740712189..."]
+
+        target_list = []
+        for i in range(len(str1)):
+            text=TexMobject(*list(str1[i]))
+            target_list.append(text)
+        text2t=VGroup(text2,*target_list).arrange_submobjects(DOWN,buff=0.4).scale(0.8)
+        text2t[-1].shift(0.2*DOWN)
+        
+        text1t.next_to(text2t,3*LEFT).align_to(text2t,TOP)
+        self.play(Write(text2))
+        self.wait()
+        for j in range(1,len(str1)):
+            self.add(text2t[j])
+            self.wait(0.2)
+        self.wait(2)
+        self.play(Write(text1t),run_time=2)
+        self.wait(8)
+
+        textX = Text("X =",size=0.42).set_color(RED).next_to(text2t[-1],LEFT)
+        self.add(textX)
+        self.play(Indicate(textX,scale_factor=1.5))
+        self.wait(5)
+        for i in range(len(str1)-2):
+            self.play(Transform(text2t[1+i][2+i],text2t[1+i][2+i].set_color(RED)),Indicate(text2t[1+i][2+i],scale_factor=1.5))
+            self.wait(3)
+        self.wait(10)
+        self.play(Write(text2t[-1].set_color_by_gradient(RED,ORANGE,YELLOW)))
+        self.wait(10)
+
+
+class ep066(Scene):
+    def construct(self):
+        text1 = Text("线段上的点的个数")
+        text2 = Text("=",size=0.8)
+        text3 = Text("实数的个数")
+        text4 = Text(">",size=0.8)
+        text5 = Text("自然数的个数")
+        VgText = VGroup(text1,text2,text3,text4,text5).arrange_submobjects(RIGHT,buff=0.4).scale(0.8)
+        self.play(Write(VgText[2:]))
+        self.wait()
+        self.play(Indicate(text4,scale_factor=1.5))
+        self.wait(3)
+        self.play(Write(VgText[:2]))
+        self.wait()
+        self.play(Indicate(text2,scale_factor=1.5))
+        self.wait(3)
+        VgText2 = VGroup(text1,text4,text5).copy().arrange_submobjects(RIGHT,buff=0.4)
+        VgText2.align_to(VgText,RIGHT)
+        self.play(Transform(VgText,VgText2))
+        self.wait(5)
+
+    
+class ep0671(GraphScene):
+    CONFIG ={
+        "x_min" : -5,
+        "x_max" : 5,
+        "y_max" : 5,
+        "y_axis_height": 5,
+        "x_axis_label": None,
+        "y_axis_label": None,
+        "graph_origin": 1.2*DOWN,
+        "xyStrokeOpacity": 0
+    }
+    def construct(self):
+        self.setup_axes(animate=False)
+        graghFuncXX = self.get_graph(lambda x: x**2,
+                                    x_min = -2, 
+                                    x_max = 2)
+        self.play(ShowCreation(graghFuncXX),run_time=1)
+        text1 = Text("抛物线",size=0.5).next_to(graghFuncXX,2*DOWN)
+        self.play(Write(text1))
+        self.wait(10)
+
+class ep0672(GraphScene):
+    CONFIG ={
+        "x_min" : -5,
+        "x_max" : 5,
+        "y_max" : 5,
+        "y_axis_height": 5,
+        "x_axis_label": None,
+        "y_axis_label": None,
+        "graph_origin": UP,
+        "xyStrokeOpacity": 0
+    }
+    def construct(self):
+        self.setup_axes(animate=False)
+        graghFuncXX = self.get_graph(lambda x: np.sin(x),
+                                    x_min = -TAU/2, 
+                                    x_max = TAU/2)
+        self.play(ShowCreation(graghFuncXX),run_time=1)
+        text1 = Text("正弦线",size=0.5).next_to(graghFuncXX,2*DOWN)
+        self.play(Write(text1))
+        self.wait(10)
+
+class ep0673(GraphScene):
+    def construct(self):
+        curve1=ParametricFunction(lambda x : np.array([2*np.cos(x),1*np.sin(x),0]),\
+            color=BLUE,t_min=-TAU,t_max=TAU)
+        self.play(ShowCreation(curve1),run_time=1)
+        text1 = Text("椭圆",size=0.5).next_to(curve1,2*DOWN)
+        self.play(Write(text1))
+        self.wait(10)
+
+class ep0674(GraphScene):
+    CONFIG = {
+        "y_max" : 10,
+        "y_min" : -10,
+        "x_max" : 5,
+        "x_min" : -5,
+        "graph_origin" : ORIGIN,
+        "x_axis_label": None,
+        "y_axis_label": None,
+        "xyStrokeOpacity": 0
+    }
+    def construct(self):
+        self.setup_axes()
+        tan_function = lambda x: np.tan(x)
+        tan_graph = VGroup()
+        approx_factor = 0.934
+        for n in range(-1,2):
+            graph = self.get_graph(tan_function, 
+                                    color = BLUE,
+                                    x_min = (-PI/2)*approx_factor+n*PI,
+                                    x_max = (PI/2)*approx_factor+n*PI
+                                    )
+            tan_graph.add(graph)
+        self.play(ShowCreation(tan_graph))
+        text1 = Text("正切线",size=0.5).next_to(tan_graph,2*DOWN)
+        self.play(Write(text1))
+        self.wait(10)
+
+
+class ep0675(GraphScene):
+    def construct(self):
+        tan_graph = VGroup()
+        approx_factor = 0.8
+        for n in range(-1,2):
+            curve1=ParametricFunction(lambda x : np.array([1/np.cos(x),0.5*np.tan(x),0]),\
+                color=BLUE,t_min=(-PI/2)*approx_factor+n*PI,t_max=(PI/2)*approx_factor+n*PI)
+            tan_graph.add(curve1)
+        self.play(ShowCreation(tan_graph.shift(UP)),run_time=1)
+        text1 = Text("双曲线",size=0.5).next_to(tan_graph,2*DOWN)
+        self.play(Write(text1))
+        self.wait(10)
+
+        
 class ep051(Scene):
     def construct(self):
         text1 = Text("整数：1、2、3、4、...", font='阿里巴巴普惠体 B',size=0.5).move_to(1.5*LEFT)

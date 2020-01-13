@@ -194,9 +194,6 @@ class PlotDemo(GraphScene):
     def construct(self):
         self.setup_axes(animate=False)
 
-        screen_grid = ScreenGrid()
-        self.play(FadeIn(screen_grid))
-
         self.x_axis.add_numbers(*[0,1,2,3])
         self.y_axis.add_numbers(*[200,400,600])
 

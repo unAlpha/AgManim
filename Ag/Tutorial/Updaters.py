@@ -396,14 +396,30 @@ class SuccessionExample2(Scene):
         
         self.play(
                     ApplyMethod(triangle.shift,RIGHT*4,rate_func=linear,run_time=4),
-                    Succession(Animation, Mobject(), {"run_time" : 1},
-                    Write,text_1),
-                    Succession(Animation, Mobject(), {"run_time" : 2},
-                    Write,text_2),
-                    Succession(Animation, Mobject(), {"run_time" : 3},
-                    Write,text_3),
-                    Succession(Animation, Mobject(), {"run_time" : 4},
-                    Write,text_4)
+                    AnimationGroup(
+                        Animation(Mobject(),run_time=1),
+                        Write(text_1),lag_ratio=1
+                    ),
+                    AnimationGroup(
+                        Animation(Mobject(),run_time=1),
+                        Write(text_2),lag_ratio=1
+                    ),
+                    AnimationGroup(
+                        Animation(Mobject(),run_time=1),
+                        Write(text_3),lag_ratio=1
+                    ),
+                    AnimationGroup(
+                        Animation(Mobject(),run_time=1),
+                        Write(text_4),lag_ratio=1
+                    )
+                    # Succession(Animation, Mobject(), {"run_time" : 1},
+                    # Write,text_1),
+                    # Succession(Animation, Mobject(), {"run_time" : 2},
+                    # Write,text_2),
+                    # Succession(Animation, Mobject(), {"run_time" : 3},
+                    # Write,text_3),
+                    # Succession(Animation, Mobject(), {"run_time" : 4},
+                    # Write,text_4)
             )
 
         self.wait()
