@@ -204,20 +204,20 @@ class ep0671(GraphScene):
 
 class ep0672(GraphScene):
     CONFIG ={
-        "x_min" : -5,
-        "x_max" : 5,
+        "x_min" : 0,
+        "x_max" : 10,
         "y_max" : 5,
         "y_axis_height": 5,
         "x_axis_label": None,
         "y_axis_label": None,
-        "graph_origin": UP,
+        "graph_origin": LEFT*TAU/2,
         "xyStrokeOpacity": 0
     }
     def construct(self):
         self.setup_axes(animate=False)
         graghFuncXX = self.get_graph(lambda x: np.sin(x),
-                                    x_min = -TAU/2, 
-                                    x_max = TAU/2)
+                                    x_min = 0, 
+                                    x_max = TAU)
         self.play(ShowCreation(graghFuncXX),run_time=1)
         text1 = Text("正弦线",size=0.5).next_to(graghFuncXX,2*DOWN)
         self.play(Write(text1))

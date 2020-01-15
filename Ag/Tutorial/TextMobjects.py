@@ -22,10 +22,6 @@ class RotateAndHighlight(Scene):
         self.play(FadeIn(label2_group))
         self.play(FadeIn(label3))
 
-class Underline(Line):
-    def __init__(self,texto,buff=0.07,**kwargs):
-        Line.__init__(self,texto.get_corner(DL),texto.get_corner(DR),**kwargs)
-        self.shift(DOWN*buff)
 
 class WriteText(Scene): 
     def construct(self): 

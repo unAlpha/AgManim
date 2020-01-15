@@ -431,7 +431,7 @@ class Line(TipableVMobject):
         self.set_start_and_end_attrs(start, end)
         VMobject.__init__(self, **kwargs)
         
-    # 在Vmobject的初始化中，会调用generate_points
+    # 在Mobject的初始化中，会调用generate_points
     def generate_points(self):
         if self.path_arc:
             arc = ArcBetweenPoints(
@@ -526,6 +526,10 @@ class Line(TipableVMobject):
                 sm.set_opacity(opacity, family)
         return self
 
+class Underline(Line):
+    def __init__(self,texto,buff=0.07,**kwargs):
+        Line.__init__(self,texto.get_corner(DL),texto.get_corner(DR),**kwargs)
+        self.shift(DOWN*buff)
 
 class DashedLine(Line):
     CONFIG = {
@@ -598,7 +602,7 @@ class TangentLine(Line):
         )
         self.scale(self.length / self.get_length())
 
-
+# 肘角
 class Elbow(VMobject):
     CONFIG = {
         "width": 0.2,

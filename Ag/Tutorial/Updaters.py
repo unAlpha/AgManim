@@ -102,18 +102,18 @@ class AddUpdater3(Scene):
 
 class UpdateNumber(Scene):
     def construct(self):
-        number_line = NumberLine(x_min=-1,x_max=1)
+        number_line = NumberLine(x_min=-2,x_max=2)
         triangle = RegularPolygon(3,start_angle=-PI/2)\
                    .scale(0.2)\
                    .next_to(number_line.get_left(),UP,buff=SMALL_BUFF)
         decimal = DecimalNumber(
                 0,
-                num_decimal_places=3,
+                num_decimal_places=1,
                 include_sign=True,
                 unit="\\rm cm", # Change this with None
             )
 
-        decimal.add_updater(lambda d: d.next_to(triangle, UP*0.1))
+        decimal.add_updater(lambda d: d.next_to(triangle, UP*0.5))
         # [0] [1] [2]表示x y z
         decimal.add_updater(lambda d: d.set_value(triangle.get_center()[0]))
         # You can get the value of decimal with: .get_value()
@@ -137,11 +137,7 @@ class UpdateValueTracker1(Scene):
 
         line_2.rotate(theta.get_value(),about_point=ORIGIN)
 
-        line_2.add_updater(
-                lambda m: m.set_angle(
-                                    theta.get_value()
-                                )
-            )
+        line_2.add_updater(lambda m: m.set_angle(theta.get_value()))
 
         self.add(line_1,line_2)
 
@@ -157,7 +153,7 @@ class UpdateValueTracker2(Scene):
         "theta":PI/2,
         "increment_theta":PI/2,
         "final_theta":PI,
-        "radius":0.7,
+        "radius":0.2,
         "radius_color":YELLOW,
     }
     def construct(self):
@@ -167,11 +163,7 @@ class UpdateValueTracker2(Scene):
         line_2= Line(ORIGIN,RIGHT*self.lines_size,color=self.line_2_color)
 
         line_2.rotate(theta.get_value(),about_point=ORIGIN)
-        line_2.add_updater(
-                lambda m: m.set_angle(
-                                    theta.get_value()
-                                )
-            )
+        line_2.add_updater(lambda m: m.set_angle(theta.get_value()))
 
         angle= Arc(
                     radius=self.radius,
@@ -181,13 +173,11 @@ class UpdateValueTracker2(Scene):
             )
 
         # Show the objects
-
         self.play(*[
-                ShowCreation(obj)for obj in [line_1,line_2,angle]
+                ShowCreation(obj) for obj in [line_1,line_2,angle]
             ])
 
         # Set update function to angle
-
         angle.add_updater(
                     lambda m: m.become(
                             Arc(
@@ -199,6 +189,7 @@ class UpdateValueTracker2(Scene):
                         )
             )
         # Remember to add the objects again to the screen 
+        # 需要再次add()
         # when you add the add_updater method.
         self.add(angle)
 
@@ -213,6 +204,7 @@ class UpdateFunctionWithDt1(Scene):
     CONFIG={
         "amp": 2.3,
         "t_offset": 0,
+        # 移动的速度
         "rate": TAU/4,
         "sine_graph_config":{
             "x_min": -TAU/2,
@@ -223,43 +215,79 @@ class UpdateFunctionWithDt1(Scene):
     }
  
     def construct(self):
-
-        def update_curve(c, dt):
+        # 更新函数, dt是一个特殊的存在
+        def update_curve(fig, dt):
             rate = self.rate * dt
-            c.become(self.get_sin_graph(self.t_offset + rate))
+            # 变化对象
+            fig.become(self.get_sin_graph(self.t_offset + rate))
             # Every frame, the t_offset increase rate / fps
             self.t_offset += rate
+            # 移动对象
+            fig.shift(np.array([-self.t_offset,0,0]))
+   
+        sinGraph = self.get_sin_graph(0)
 
-       
-        c = self.get_sin_graph(0)
+        self.play(ShowCreation(sinGraph))
 
-        self.play(ShowCreation(c))
         print(f"fps: {self.camera.frame_rate}")
         print(f"dt: {1 / self.camera.frame_rate}")
         print(f"rate: {self.rate / self.camera.frame_rate}")
-        print(f"cy_start: {c.points[0][1]}")
-        print(f"cy_end:   {c.points[-1][1]}")
+        print(f"cy_start: {sinGraph.points[0][1]}")
+        print(f"cy_end:   {sinGraph.points[-1][1]}")
         print(f"t_offset: {self.t_offset}\n")
 
-        c.add_updater(update_curve)
-        self.add(c)
+        sinGraph.add_updater(update_curve)
+        self.add(sinGraph)
 
         # The animation begins
         self.wait(4)
         
-        c.remove_updater(update_curve)
+        sinGraph.remove_updater(update_curve)
         self.wait()
 
-        print(f"cy_start:  {c.points[0][1]}")
-        print(f"cy_end:    {c.points[-1][1]}")
+        print(f"cy_start:  {sinGraph.points[0][1]}")
+        print(f"cy_end:    {sinGraph.points[-1][1]}")
         print(f"t_offset: {self.t_offset}\n")
 
     def get_sin_graph(self, dx):
-        c = FunctionGraph(
+        sineGraph = FunctionGraph(
                 lambda x: self.amp * np.sin(x - dx),
                 **self.sine_graph_config
                 )
-        return c
+        return sineGraph
+
+class UpdateFunctionMydt(Scene):
+    CONFIG={
+        "amp": 2.3,
+        "sine_graph_config":{
+            "x_min": -TAU,
+            "x_max": TAU,
+            "color": RED,
+            },
+    }
+    def construct(self):
+        theta = ValueTracker(-TAU)
+        sinGraph = self.get_sin_graph(theta.get_value())
+
+        def update_curve(fig):
+            fig.become(self.get_sin_graph(theta.get_value()))
+        sinGraph.add_updater(update_curve)
+
+        self.play(ShowCreation(sinGraph))
+        self.add(sinGraph)
+        self.wait()
+        # 在全长的时间里折成rate_func的0到1内,点的密度会改变
+        self.play(theta.increment_value,TAU,rate_func=linear,run_time=5)
+        # The animation begins
+        sinGraph.remove_updater(update_curve)
+        self.wait()
+
+    def get_sin_graph(self, dx):
+        sinGraph = FunctionGraph(
+                lambda x: self.amp * np.sin(x - dx),
+                **self.sine_graph_config
+                )
+        return sinGraph
 
 class UpdateFunctionWithDt2(Scene):
     def construct(self):
