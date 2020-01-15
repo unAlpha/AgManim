@@ -211,11 +211,11 @@ class UpdateFunctionWithDt1(Scene):
             "x_max": TAU/2,
             "color": RED,
             },
-        "wait_time":15,
     }
  
     def construct(self):
-        # 更新函数, dt是一个特殊的存在
+        # 更新函数, dt是一个特殊的存在,根据视频的长度来的
+        # 如果不想用dt,可以用def update_curve(c, alpha):
         def update_curve(fig, dt):
             rate = self.rate * dt
             # 变化对象
@@ -270,14 +270,16 @@ class UpdateFunctionMydt(Scene):
         sinGraph = self.get_sin_graph(theta.get_value())
 
         def update_curve(fig):
-            fig.become(self.get_sin_graph(theta.get_value()))
+            vlu = theta.get_value()
+            fig.become(self.get_sin_graph(vlu))
+            fig.shift(np.array([-vlu,0,0]))
         sinGraph.add_updater(update_curve)
 
         self.play(ShowCreation(sinGraph))
         self.add(sinGraph)
         self.wait()
         # 在全长的时间里折成rate_func的0到1内,点的密度会改变
-        self.play(theta.increment_value,TAU,rate_func=linear,run_time=5)
+        self.play(theta.increment_value,TAU,rate_func=linear,run_time=3)
         # The animation begins
         sinGraph.remove_updater(update_curve)
         self.wait()
@@ -289,30 +291,66 @@ class UpdateFunctionMydt(Scene):
                 )
         return sinGraph
 
-class UpdateFunctionWithDt2(Scene):
+class PlanetScene1(Scene):
     def construct(self):
-        #Se objects
         self.t_offset=0
-        orbit=Ellipse(color=GREEN).scale(2.5)
+        orbit=Ellipse(color=GREEN).scale(5)
         planet=Dot()
         text=TextMobject("Update function")
 
         planet.move_to(orbit.point_from_proportion(0))
 
         def update_planet(mob,dt):
-            rate=dt*0.3
-            mob.move_to(orbit.point_from_proportion((self.t_offset + rate)%1))
+            rate=dt*0.2
+            # 0.8为一圈的百分比
+            if self.t_offset>0.8:
+                rate = 0
+            mob.move_to(orbit.point_from_proportion(((self.t_offset + rate))%1))
             self.t_offset += rate
 
         planet.add_updater(update_planet)
         self.add(orbit,planet)
-        self.wait(4)
+        self.wait(3)
         self.play(Write(text))
-        self.wait(4)
-        planet.clear_updaters()
-        self.wait(2)
-        self.play(FadeOut(text))
-        self.wait()
+        self.wait(3)
+
+t_offset=0
+c_t=0
+class PlanetScene2(Scene):
+    def construct(self):
+        # FPS
+        velocity_factor=0.2
+        frame_rate = self.camera.frame_rate
+        self.dt=1/frame_rate
+        # ----------------
+        orbit=Ellipse(color=GREEN).scale(2.5)
+        planet=Dot()
+        text=TextMobject("Update function")
+
+        planet.move_to(orbit.point_from_proportion(0))
+        reference_planet=planet.copy()
+        reference_planet.set_color(RED)
+        self.add(reference_planet)
+        def update_planet(mob,dt):
+            global t_offset,c_t
+            if dt==0 and c_t==0:
+                rate=velocity_factor*self.dt
+                c_t+=1
+            else:
+                rate=dt*velocity_factor
+            if dt>0:
+                c_t=0
+            mob.move_to(orbit.point_from_proportion(((t_offset + rate))%1))
+            t_offset += rate
+
+        planet.add_updater(update_planet)
+        self.add(orbit,planet)
+        self.wait(3)
+        self.play(Write(text))
+        self.wait(3)
+        self.play(Write(text,rate_func=lambda t:smooth(1-t)))
+        self.wait(3)
+
 
 class UpdateCurve(Scene):
     def construct(self):
@@ -324,6 +362,25 @@ class UpdateCurve(Scene):
  
         def update_curve(c, alpha):
             dx = interpolate(1, 4, alpha)
+            c_c = f(dx)
+            c.become(c_c)
+ 
+        self.play(ShowCreation(axes), ShowCreation(c))
+        self.wait()
+        self.play(UpdateFromAlphaFunc(c,update_curve),rate_func=there_and_back,run_time=4)
+        self.wait()
+
+class UpdateSinCurve(Scene):
+    def construct(self):
+        def f(dx=1):
+            return FunctionGraph(lambda x: np.sin(x-dx),x_min=-TAU/2,x_max=TAU/2)
+
+        c = f()
+        axes=Axes(y_min=-3, y_max=3)
+
+        # 摆掉dt的限制
+        def update_curve(c, alpha):
+            dx = interpolate(1, 10, alpha)
             c_c = f(dx)
             c.become(c_c)
  
