@@ -135,6 +135,7 @@ class Succession(AnimationGroup):
 
 class LaggedStart(AnimationGroup):
     CONFIG = {
+        # 滞后率
         "lag_ratio": DEFAULT_LAGGED_START_LAG_RATIO,
     }
 

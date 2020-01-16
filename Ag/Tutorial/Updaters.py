@@ -386,7 +386,7 @@ class UpdateSinCurve(Scene):
  
         self.play(ShowCreation(axes), ShowCreation(c))
         self.wait()
-        self.play(UpdateFromAlphaFunc(c,update_curve),rate_func=there_and_back,run_time=4)
+        self.play(UpdateFromAlphaFunc(c,update_curve),rate_func=linear,run_time=4)
         self.wait()
         
 class InterpolateColorScene(Scene):
@@ -395,24 +395,44 @@ class InterpolateColorScene(Scene):
         shape.set_color(RED)
 
         def update_color(mob,alpha):
+            # 插值单个值
             dcolor = interpolate(0,mob.alpha_color,alpha)
             mob.set_color(self.interpolate_color_mob(mob.initial_state,shape.new_color,dcolor))
 
         self.add(shape)
-        self.change_init_values(shape,TEAL,0.5)
+        self.change_init_values(shape,WHITE,1)
         self.play(UpdateFromAlphaFunc(shape,update_color))
 
-        self.change_init_values(shape,PINK,0.9)
+        self.change_init_values(shape,PINK,1)
         self.play(UpdateFromAlphaFunc(shape,update_color))
         self.wait()
-
-    def interpolate_color_mob(self,mob,color,alpha):
-        return interpolate_color(mob.get_color(),color,alpha)
-
+    
+    # 颜色初始化
     def change_init_values(self,mob,color,alpha):
         mob.initial_state = mob.copy()
         mob.new_color = color
         mob.alpha_color = alpha
+
+    # 插值RGB
+    def interpolate_color_mob(self,mob,color,alpha):
+        # 返回args1和args2之前的插值颜色RGB
+        return interpolate_color(mob.get_color(),color,alpha)
+
+
+class FadeToColorExample(Scene):
+    def construct(self):
+        text = TextMobject("Text")\
+               .set_width(FRAME_WIDTH)
+
+        colors=[RED,PURPLE,GOLD,TEAL]
+
+        self.add(text)
+
+        for color in colors:
+            self.play(FadeToColor(text,color))
+
+        self.wait(0.3)
+
 
 class SuccessionExample1Fail(Scene):
     def construct(self):
@@ -427,16 +447,11 @@ class SuccessionExample1Fail(Scene):
 
         self.add(number_line)
         self.wait(0.3)
-        self.play(
-                ShowCreationThenDestruction(
-                                dashed_line,
-                                submobject_mode="lagged_start"
-                                            ),
-                run_time=5
-            )
+        self.play(ShowCreationThenDestruction(dashed_line),run_time=5)
         self.play(Write(text))
 
         self.wait()
+
 
 class SuccessionExample1(Scene):
     def construct(self):
@@ -447,17 +462,20 @@ class SuccessionExample1(Scene):
                                 number_line.get_left(),
                                 number_line.get_right(),
                                 color=YELLOW,
-                              ).set_stroke(width=11)
+                              ).set_stroke(width=100)
 
         self.add(number_line)
         self.wait(0.3)
         
         self.play(
-                    ShowCreationThenDestruction(dashed_line,submobject_mode="lagged_start",run_time=5),
-                    Succession(Animation, Mobject(), {"run_time" : 2.1},
-                    Write,text)
+                    LaggedStart(
+                        *[ShowCreationThenDestruction(dashed_segment)
+                        for dashed_segment in dashed_line],
+                        run_time=5
+                    ),
+                    # Animation(Mobject(),run_time=2.1)空动画运行2.1秒,再加上lag_ratio的滞后时间
+                    AnimationGroup(Animation(Mobject(),run_time=2.1),Write(text),lag_ratio=10)
             )
-
         self.wait()
 
 class SuccessionExample2(Scene):
@@ -481,30 +499,23 @@ class SuccessionExample2(Scene):
         
         self.play(
                     ApplyMethod(triangle.shift,RIGHT*4,rate_func=linear,run_time=4),
+                    # 用于时间配合
                     AnimationGroup(
                         Animation(Mobject(),run_time=1),
                         Write(text_1),lag_ratio=1
                     ),
                     AnimationGroup(
-                        Animation(Mobject(),run_time=1),
+                        Animation(Mobject(),run_time=2),
                         Write(text_2),lag_ratio=1
                     ),
                     AnimationGroup(
-                        Animation(Mobject(),run_time=1),
+                        Animation(Mobject(),run_time=3),
                         Write(text_3),lag_ratio=1
                     ),
                     AnimationGroup(
-                        Animation(Mobject(),run_time=1),
+                        Animation(Mobject(),run_time=4),
                         Write(text_4),lag_ratio=1
                     )
-                    # Succession(Animation, Mobject(), {"run_time" : 1},
-                    # Write,text_1),
-                    # Succession(Animation, Mobject(), {"run_time" : 2},
-                    # Write,text_2),
-                    # Succession(Animation, Mobject(), {"run_time" : 3},
-                    # Write,text_3),
-                    # Succession(Animation, Mobject(), {"run_time" : 4},
-                    # Write,text_4)
             )
 
         self.wait()
@@ -526,13 +537,15 @@ class SuccessionExample2Compact(Scene):
         
         self.play(
                     ApplyMethod(triangle.shift,RIGHT*4,rate_func=linear,run_time=4),
-                    *[Succession(Animation, Mobject(), {"run_time" : i+1},
-                    Write,numbers[i])for i in range(4)],
+                    *[AnimationGroup(
+                        Animation(Mobject(),run_time=i+1),
+                        Write(numbers[i]),lag_ratio=1
+                    )for i in range(4)],
             )
 
         self.wait()
 
-class SuccessionExample4Fail(Scene):
+class SuccessionExample3(Scene):
     def construct(self):
         number_line=NumberLine(x_min=-2,x_max=2)
         text_1=TextMobject("Theorem of")\
@@ -545,12 +558,18 @@ class SuccessionExample4Fail(Scene):
                                 color=YELLOW,
                               ).set_stroke(width=11)
 
-        self.add(number_line)
+        self.add(number_line,text_1)
         
         self.play(
-                    ShowCreationThenDestruction(dashed_line,submobject_mode="lagged_start",run_time=5),
-                    Succession(Animation,text_1, {"run_time" : 2},
-                    ReplacementTransform,text_1,text_2),
+                    LaggedStart(
+                        *[ShowCreationThenDestruction(dashed_segment)
+                        for dashed_segment in dashed_line],
+                        run_time=5
+                    ),
+                    AnimationGroup(
+                        Animation(Mobject(),run_time=2.1),
+                        ReplacementTransform(text_1,text_2),lag_ratio=1
+                    )
             )
 
         self.wait()
