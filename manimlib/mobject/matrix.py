@@ -133,6 +133,7 @@ class Matrix(VMobject):
     def get_mob_matrix(self):
         return self.mob_matrix
 
+    # 获取条目
     def get_entries(self):
         return VGroup(*self.get_mob_matrix().flatten())
 

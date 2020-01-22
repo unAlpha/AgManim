@@ -7,6 +7,7 @@ from manimlib.utils.bezier import interpolate
 from manimlib.utils.config_ops import digest_config
 from manimlib.utils.iterables import remove_list_redundancies
 from manimlib.utils.rate_functions import linear
+from manimlib.utils.rate_functions import squish_rate_func
 
 
 DEFAULT_LAGGED_START_LAG_RATIO = 0.05
