@@ -1,5 +1,92 @@
 from manimlib.imports import *
 
+class ep071(Scene):
+    def construct(self):
+        text1 = Text("5 质数", font='义启魔音体')
+        text2 = Text("8=2x4 合数", font='义启魔音体')
+        VGroup(text1,text2).arrange_submobjects(DOWN,aligned_edge = RIGHT,buff=0.4)
+        self.play(Write(text1),run_time=2)
+        self.wait()
+        self.play(Write(text2),run_time=2)
+        self.wait(5)
+
+class ep072(Scene):
+    def construct(self):
+        text1 = Text("哥德巴赫猜想", font='义启魔音体')
+        text2 = Text("孪生素数猜想", font='义启魔音体')
+        text3 = Text("费马猜想", font='义启魔音体')
+        VGroup(text1,text2,text3).arrange_submobjects(DOWN,buff=0.4)
+        self.add(text1)
+        self.play(Indicate(text1,scale_factor=1.5))
+        self.wait()
+        self.add(text2)
+        self.play(Indicate(text2,scale_factor=1.5))
+        self.wait()
+        self.add(text3)
+        self.play(Indicate(text3,scale_factor=1.5))
+        self.wait()
+        self.wait(5)
+
+class ep073(Scene):
+    def construct(self):
+        text1 = TexMobject("y(N)=N^2-N+41").set_color_by_gradient(YELLOW,RED).scale(2)
+
+        self.play(Write(text1))
+        self.wait(2)
+        # self.play(ReplacementTransform(text1,text1.copy().scale(0.5).to_edge(UP)))
+        self.play(
+                text1.to_edge, UP,
+                text1.scale, 0.5,
+                text1.set_color, RED,
+                run_time=2,
+            )
+        self.wait(2)
+
+        text2 = TexMobject(
+                            "y(1)=%s" %(self.yN(1)),
+                            "y(2)=%s" %(self.yN(2)),
+                            "y(3)=%s" %(self.yN(3)),
+                            "y(4)=%s" %(self.yN(4)),
+                            "...\\ \\ ...",
+                            "y(40)=%s" %(self.yN(40)),
+                            "y(41)=%s" %(self.yN(41))
+                            )
+
+        VGroup(text1,*text2).arrange_submobjects(DOWN,aligned_edge = LEFT,buff=0.4)
+
+        ttmp = []
+        for i in range(len(text2)-1):
+            if i!=4:
+                text = Text("质数", font='义启魔音体',size=0.5)
+                if i<4:
+                    text.next_to(text2[i],RIGHT,buff=1.75)
+                else:
+                    text.next_to(text2[i],RIGHT,buff=1)
+            ttmp.append(text)
+
+        text4 = Text("合数", font='义启魔音体',size=0.5,color=RED)
+        text4.next_to(text2[-1],RIGHT,buff=1)
+        text3 = VGroup(*ttmp)
+
+        text2[0:4].shift(0.22*RIGHT)
+        text2[4].shift(0.96*RIGHT)
+        text2[5:7].shift(0.036*LEFT)
+
+        for i in range(len(text2)-1):
+            self.add(text2[i],text3[i])
+            self.wait(0.5)
+
+        self.wait()
+        self.play(Write(text2[-1]))
+        self.wait()
+        self.add(text4)
+        self.play(Indicate(text4,scale_factor=1.5))
+        self.wait()
+        self.wait(5)
+        
+    def yN(self,n):
+        return n**2-n+41
+
 class ep061(Scene):
     def construct(self):
         text1 = TexMobject("0.25=\\frac{1}{4}",
@@ -299,6 +386,9 @@ class ep052(Scene):
         scl=0.8
         bead1=ImageMobject("bead").move_to(np.array([x,y+2,0]))
         copperCoin1=ImageMobject("copperCoin").move_to(np.array([x,y,0]))
+        # 更好的方法使用Group排列
+        # group1 = Group(bead1,copperCoin1).arrange_submobjects(DOWN,aligned_edge = LEFT,buff=0.4)
+        # self.add(group1)
         bead1.scale(scl)
         copperCoin1.scale(scl)
         self.play(FadeIn(bead1),FadeIn(copperCoin1))
@@ -406,7 +496,7 @@ class ep041(Scene):
                 grid.scale(0.25)
                 grid.move_to(np.array([-2+j*0.5,2-i*0.5,0]))
                 target_list.append(grid)
-                gridALL=VGroup(*target_list)
+        gridALL=VGroup(*target_list)
         self.play(FadeInFromPoint(gridALL,gridALL.get_center()))
         self.wait()
         text = TexMobject("1",

@@ -20,3 +20,11 @@ class SumPOW(Scene):
                 **self.sine_graph_config
                 )
         return sin_graph
+
+class SumTyping(Scene):
+    def construct(self):
+        # text1 = Text("D 这是一个测试")
+        # Add animation Typing (unfinished)\
+        # https://github.com/xy-23/manim/commit/f4d45d13017e3c061fce4a0fd907e4247626ccda
+        # self.play(Typing(text1),run_time=1)
+        self.wait(2)

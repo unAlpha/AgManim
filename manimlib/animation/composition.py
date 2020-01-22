@@ -132,14 +132,14 @@ class Succession(AnimationGroup):
             self.active_animation = animation
         animation.interpolate(subalpha)
 
-
+# 逐个播放*Animation
 class LaggedStart(AnimationGroup):
     CONFIG = {
         # 滞后率
         "lag_ratio": DEFAULT_LAGGED_START_LAG_RATIO,
     }
 
-
+# 逐个播放Animation
 class LaggedStartMap(LaggedStart):
     CONFIG = {
         "run_time": 2,
