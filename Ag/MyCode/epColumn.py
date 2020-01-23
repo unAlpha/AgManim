@@ -1,5 +1,217 @@
 from manimlib.imports import *
 
+class ep085(Scene):
+    def construct(self):
+        AndrewWiles = ImageMobject("AndrewWiles").set_height(FRAME_HEIGHT+1).shift(0.1*BOTTOM)
+        FieldsMedalFront = ImageMobject("FieldsMedalFront").set_height(FRAME_HEIGHT/2).shift(2*LEFT+UP)
+        FieldsMedalFrontText = Text("菲尔兹奖", 
+                        font='阿里巴巴普惠体 B',
+                        size=0.5).next_to(FieldsMedalFront,DOWN)
+        FieldsMedalFrontText.rect = SurroundingRectangle(
+            FieldsMedalFrontText,
+            color=BLUE,
+            # fill_color=BLUE,
+            # fill_opacity=1
+            )
+        self.play(FadeInFromLarge(AndrewWiles))
+        self.wait()
+        self.add(FieldsMedalFront)
+        self.play(
+            LaggedStart(
+            Flash(FieldsMedalFront,num_lines=72,flash_radius=2.2),
+            ShowCreation(FieldsMedalFrontText.rect),
+            Write(FieldsMedalFrontText),
+            lag_ratio=0.5
+                )
+            )
+        self.wait()
+
+
+class ep084(Scene):
+    def construct(self):
+        Taniyama = ImageMobject("Taniyama").shift(4*LEFT).scale(2)
+        Taniyama.rect = SurroundingRectangle(Taniyama,color=WHITE,stroke_width=8,buff=0)
+        TaniyamaGroup = Group(Taniyama, Taniyama.rect)
+        TaniyamaText = Text("谷山丰", 
+                        font='阿里巴巴普惠体 B',
+                        size=0.5).next_to(Taniyama,DOWN)
+        Wiles = ImageMobject("Wiles").shift(4*RIGHT).scale(2)
+        Wiles.rect = SurroundingRectangle(Wiles,color=WHITE,stroke_width=8,buff=0)
+        WilesGroup = Group(Wiles, Wiles.rect)
+        WilesText = Text("怀尔斯", 
+                        font='阿里巴巴普惠体 B',
+                        size=0.5).next_to(Wiles,DOWN)
+
+        text1 = Text("谷山丰猜想", 
+                        font='阿里巴巴普惠体 B',
+                        size=0.5,
+                        color="#daab53")
+        text1.rect = SurroundingRectangle(text1)
+
+        text2 = Text("建立了椭圆曲线和模形式之间的重要联系", 
+                        font='阿里巴巴普惠体 B',
+                        size=0.2,
+                        color="#daab53").next_to(text1,DOWN)
+
+        VGroup(text1,text2).arrange_submobjects(DOWN,buff=0.4)
+
+        text3 = Text("费马猜想", 
+                        font='阿里巴巴普惠体 B',
+                        size=0.5).next_to(text1,UP*5)
+        text4 = Text("费马大定理", 
+                        font='阿里巴巴普惠体 B',
+                        size=0.5).next_to(text1,UP*5)
+
+        arr1 = Arrow(text1.get_top(),text3.get_bottom())
+
+        text1.rect = SurroundingRectangle(text1)
+        self.play(FadeInFromLarge(TaniyamaGroup))
+        self.play(Write(TaniyamaText))
+        self.wait()
+
+        self.play(Write(text1),run_time=2)
+        self.play(ShowCreation(text1.rect),Write(text2),run_time=2)
+        self.wait()
+
+        self.play(FadeInFromLarge(WilesGroup),ShowCreation(arr1),Write(WilesText))
+
+        self.wait()
+        self.add(text3)
+        self.play(Indicate(text3,scale_factor=1.5))
+        self.wait()
+        self.play(Transform(text3,text4))
+        self.wait(5)
+
+
+class ep083(Scene):
+    def construct(self):
+        text1 = Text("当整数 n<269 的时候，关于x,y,z的方程：", 
+                        font='阿里巴巴普惠体 B',
+                        size=0.5,
+                        color="#daab53",
+                        t2c={'n<269':WHITE }
+        )
+        text2 = TexMobject("x^n+y^n=z^n")
+        text3 = Text("都没有正整数解。", font='阿里巴巴普惠体 B',size=0.5)
+
+        text2.rect = SurroundingRectangle(text2)
+
+        VGroup(text1,text2,text3).arrange_submobjects(DOWN,buff=0.4)
+        self.play(Write(text1),run_time=2)
+        self.wait()
+        self.play(Write(text2),run_time=2)
+        self.wait()
+        self.play(Write(text3),run_time=2)
+        self.wait()
+        self.play(ShowCreation(text2.rect),run_time=2)
+        self.wait(5)
+
+
+class ep082(Scene):
+    def construct(self):   
+        Fermat = ImageMobject("Fermat").shift(5*LEFT+UP).scale(2)
+        Fermat.rect = SurroundingRectangle(Fermat,color=WHITE,stroke_width=8,buff=0)
+        FermatGroup = Group(Fermat, Fermat.rect)
+        FermatText = Text("费马", 
+                        font='阿里巴巴普惠体 B',
+                        size=0.5).next_to(Fermat,DOWN)
+
+        DiophantusMath = ImageMobject("DiophantusMath").shift(2*LEFT+0.25*BOTTOM).scale(2)
+        DiophantusMath.rect = SurroundingRectangle(DiophantusMath,color=WHITE,stroke_width=4,buff=0)
+
+        DiophantusMathText = Text("丢番图《算术》", 
+                        font='阿里巴巴普惠体 B',
+                        size=0.5).next_to(DiophantusMath,DOWN)
+
+        DiophantusMathGroup = Group(DiophantusMath, DiophantusMath.rect,DiophantusMathText).scale(0.6)
+
+        DiophantusMathText2 = Text("空白太小", 
+                        font='阿里巴巴普惠体 B',
+                        color=RED,
+                        size=0.5).next_to(DiophantusMath.rect,RIGHT).scale(0.6).shift(0.18*BOTTOM)
+        arr1 = Arrow(DiophantusMathText2.get_left(),DiophantusMath.rect.get_right(),buff=20,color=RED)
+        arr1.shift(LEFT*0.1)
+        text1 = TexMobject("x^2+y^2=z^2")
+        text2 = Text("有无穷多整数解。", font='阿里巴巴普惠体 B',color="#daab53",size=0.5).next_to(text1,RIGHT)
+        text12 = VGroup(text1,text2)
+        text3 = Text("当整数n>2时，关于x,y,z的方程：", font='阿里巴巴普惠体 B', size=0.5, color = YELLOW )
+        text4 = TexMobject("x^n+y^n=z^n")
+        text5 = Text("没有正整数解。", font='阿里巴巴普惠体 B',size=0.5)
+
+        self.play(FadeInFromLarge(FermatGroup))
+        self.wait()
+        self.play(Write(FermatText))
+        self.wait()
+        self.play(ShowCreation(DiophantusMathGroup))
+        self.wait()
+        VGroup(text12,text3,text4,text5).arrange_submobjects(DOWN,buff=0.4).shift(2*RIGHT+0.6*UP)
+        text12.shift(0.36*UP)
+        self.play(Write(text12),run_time=2)
+        self.wait()
+        self.play(Write(text3),run_time=2)
+        self.wait()
+        self.play(Write(text4),run_time=2)
+        self.wait()
+        self.play(FadeInFromLarge(text5),run_time=2)
+        self.wait(3)
+        self.play(ShowCreation(arr1),Write(DiophantusMathText2))
+        self.wait()
+
+
+class ep081(Scene):
+    def construct(self):
+        Diophantus = ImageMobject("Diophantus").shift(5*LEFT+UP).scale(2)
+        Diophantus.rect = SurroundingRectangle(Diophantus,color=WHITE,stroke_width=8,buff=0)
+        DiophantusText = Text("丢番图", 
+                        font='阿里巴巴普惠体 B',
+                        size=0.5).next_to(Diophantus,DOWN)
+        DiophantusGroup = Group(Diophantus, Diophantus.rect,DiophantusText)
+
+        text1 = TexMobject("x^2+y^2=z^2")
+        text2 = Text("x,y,z 如果都是整数时，有多少组解呢？", font='阿里巴巴普惠体 B',color="#daab53",size=0.5)
+        text3 = Text("毕达哥拉斯三角形", font='阿里巴巴普惠体 B',size=0.5)
+
+        text = VGroup(text1,text2).arrange_submobjects(DOWN,aligned_edge = LEFT,buff=0.2).move_to(3*UP).shift(RIGHT*2)
+        text3.next_to(text2,2*DOWN)
+
+        shape1 = self.shapes(3,   4,  5,   2, 1.2)
+        shape2 = self.shapes(5,  12, 13,   3, 2.2, 2)
+        shape3 = self.shapes(24,  7, 25, 1.8, 2.3, 3, 2.5)
+        
+        VGroup(shape1,shape2,shape3).arrange_submobjects(RIGHT,buff=1).next_to(text,2.5*DOWN)
+        
+        self.play(FadeInFromLarge(DiophantusGroup))
+        self.wait()
+        self.play(Write(text1),run_time=2)
+        self.wait()
+        self.play(Write(text2),run_time=4)
+        self.wait()
+
+        self.play(FadeInFromLarge(shape1))
+        self.wait()
+
+        self.play(Write(text3),run_time=2)
+        self.wait()
+
+        self.play(FadeInFromLarge(shape2))
+        self.wait()
+        self.play(FadeInFromLarge(shape3))
+
+
+        self.wait(5)
+
+    def shapes(self,x,y,z,width=2,texSize=1,buff=0,x_axis=0):
+        line1 = Line([0,0,0],[y,0,0])
+        line2 = Line([y,0,0],[y,x,0])
+        line3 = Line([y,x,0],[0,0,0])
+        y = TexMobject("%s" % y).next_to(line1,DOWN+buff*DOWN).scale(texSize)
+        x = TexMobject("%s" % x).next_to(line2,RIGHT+buff*RIGHT).scale(texSize)
+        z = TexMobject("%s" % z).next_to(line3.get_center(),1.5*UP+buff*UP+LEFT*x_axis).scale(texSize)
+        poly3 = VGroup(line1,line2,line3,x,y,z)
+        poly3.set_width(width)
+        return poly3
+
+
 class ep071(Scene):
     def construct(self):
         text1 = Text("5 质数", font='义启魔音体')
