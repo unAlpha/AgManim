@@ -1,5 +1,216 @@
 from manimlib.imports import *
 
+class ep095(Scene):
+    def construct(self):
+        pic1 = self.imageObjAndText("ChenJinRun","陈景润")
+
+        text1 = TexMobject("“1+2”")
+
+        text2 = Text("""
+                “任何一个大偶数都可以写成1个
+                质数及不超过2个质数的乘积之和。”
+            """,
+            font='阿里巴巴普惠体 B',
+            size=0.5,
+            lsh=0.8
+        )
+
+        text3 = Text("即:",           
+            font='阿里巴巴普惠体 B',
+            size=0.5
+        )
+
+        textab = TexMobject(
+            "X",
+            "=",
+            "a+b",
+            "\\\\or",
+            tex_to_color_map={
+                "X" : RED
+            }
+        )
+        textab[-1].shift(1.2*LEFT)
+        textabc = TexMobject(
+            "X",
+            "=",
+            "a+bc",
+            tex_to_color_map={
+                "X" : RED
+            }
+        )
+
+        abVG = VGroup(textab,textabc).arrange(DOWN,aligned_edge = LEFT,buff=MED_SMALL_BUFF).next_to(text1,DOWN,buff=LARGE_BUFF)
+        jiVG = VGroup(text3,abVG).arrange(RIGHT,aligned_edge = UP,buff=MED_SMALL_BUFF)
+        textVG = VGroup(text2,jiVG).arrange(DOWN,buff=MED_LARGE_BUFF)
+        text1.next_to(textVG,4*UP)
+
+        text4 = TextMobject("偶数")
+        brace1 = Brace(textabc[2])
+        brace1t1 = brace1.get_text("a,b,c是质数")
+        text4.next_to(textabc[0],DOWN+0.1*LEFT,buff=0.8)
+        arr = Arrow(text4.get_top(),textabc[0].get_bottom(),buff=SMALL_BUFF)
+
+        allVG = VGroup(text1,textVG,text4,brace1,brace1t1,arr)
+        allVG.next_to(pic1,RIGHT,buff= MED_LARGE_BUFF)
+        text1.rect = SurroundingRectangle(text1)
+
+        self.play(FadeInFromLarge(pic1))
+        self.wait()
+        self.play(Write(text1),ShowCreation(text1.rect))
+        self.wait()
+        self.play(Write(text2),run_time=2)
+        self.wait()
+        self.play(Write(text3))
+        self.wait()
+        self.add(textab[0])
+        self.play(Indicate(textab[0]))
+        self.play(Write(textab[1:3]))
+        self.play(LaggedStartMap(FadeInFromDown,(textab[-1],textabc,arr,text4,brace1,brace1t1)))
+        self.wait(5)
+
+    def imageObjAndText(self,imageName,text):
+        pic = ImageMobject(imageName).shift(4*LEFT).scale(2)
+        pic.rect = SurroundingRectangle(pic,color=WHITE,stroke_width=8,buff=0)
+        picText = Text(text, 
+                        font='阿里巴巴普惠体 B',
+                        size=0.5).next_to(pic,DOWN)
+        return Group(pic,pic.rect,picText)
+
+
+class ep094(Scene):
+    def construct(self):
+        text1 = TexMobject("“1+3”").to_edge(UP)
+        text1.rect = SurroundingRectangle(text1)
+
+        textab = TexMobject(
+            "X",
+            "=",
+            "a+b",
+            "\\\\or",
+            tex_to_color_map={
+                "X" : RED
+            }
+        )
+        textab[-1].shift(1.2*LEFT)
+        textabc = TexMobject(
+            "X",
+            "=",
+            "a+bc",
+            "\\\\or",
+            tex_to_color_map={
+                "X" : RED
+            }
+        )
+        textabc[-1].shift(1.43*LEFT)
+        textabcd = TexMobject(
+            "X",
+            "=",
+            "a+bcd",
+            tex_to_color_map={
+                "X" : RED
+            }
+        )
+
+        VGroup(textab,textabc,textabcd).arrange(DOWN,aligned_edge = LEFT,buff=MED_SMALL_BUFF).next_to(text1,DOWN,buff=MED_LARGE_BUFF)
+
+        text3 = TextMobject("偶数")
+        brace1 = Brace(textabcd[2])
+        brace1t1 = brace1.get_text("a,b,c,d是质数")
+
+        text3.next_to(textabcd[0],DOWN+0.1*LEFT,buff=0.8)
+        arr = Arrow(text3.get_top(),textabcd[0].get_bottom(),buff=SMALL_BUFF)
+
+        self.play(Write(text1),ShowCreation(text1.rect))
+        self.wait()
+        self.play(FadeInFromDown(textab[0:3]))
+        self.wait()
+        self.play(FadeInFromDown(VGroup(textab[-1],textabc[0:3])))
+        self.wait()
+        self.play(LaggedStartMap(FadeInFromDown,(textabc[-1],textabcd,arr,text3,brace1t1,brace1)),run_time=2)
+        self.wait(2)
+
+
+class ep093(Scene):
+    def construct(self):
+        text1 = Text("布朗",size=0.65).to_edge(TOP)
+        text2 = TexMobject(
+            "X",
+            "=",
+            "a_1 a_2 a_3 \\dots a_m+b_1 b_2 b_3 \\dots b_n",
+            tex_to_color_map={
+                "X" : RED
+            }
+        ).next_to(text1,DOWN,buff=MED_LARGE_BUFF)
+        text3 = TextMobject("偶数")
+        text4 = TexMobject("m,n \\le 9 \\\\","“9+9”").arrange(DOWN,buff=MED_LARGE_BUFF)
+        brace1 = Brace(text2[2])
+        brace1t1 = TextMobject("$$a_i,b_i$$","是质数").arrange(RIGHT)
+        brace1.put_at_tip(brace1t1)
+
+        text3.next_to(text2[0],DOWN,buff=0.8)
+        arr = Arrow(text3.get_top(),text2[0].get_bottom(),buff=SMALL_BUFF)
+        text4.next_to(brace1t1,DOWN,buff=MED_SMALL_BUFF)
+
+        self.play(Write(text1))
+        self.wait()
+        self.play(LaggedStartMap(FadeInFromDown,(text2,arr,text3,brace1t1,brace1)),run_time=2)
+        self.wait()
+        self.play(Write(text4))
+        self.wait()
+        self.play(ShowCreation(SurroundingRectangle(text4[1])))
+        self.wait(5)
+
+class ep092(Scene):
+    def construct(self):
+        text1 = Text("史尼尔曼",size=0.65).to_edge(TOP)
+        text2 = TexMobject(
+            "X",
+            "=",
+            "a_1 + a_2+ \\dots + a_k",
+            tex_to_color_map={
+                "X" : RED
+            }
+        ).next_to(text1,DOWN,buff=MED_LARGE_BUFF)
+        text3 = TextMobject("偶数")
+        text4 = TexMobject("k \\le 800000")
+        brace1 = Brace(text2[2])
+        brace1t1 = TextMobject("$$a_i$$","是质数").arrange(RIGHT)
+        brace1.put_at_tip(brace1t1)
+
+        text3.next_to(text2[0],DOWN,buff=0.8)
+        arr = Arrow(text3.get_top(),text2[0].get_bottom(),buff=SMALL_BUFF)
+        text4.next_to(brace1t1,DOWN,buff=MED_LARGE_BUFF)
+        self.play(Write(text1))
+        self.wait()
+        self.add(text2[0])
+        self.play(Indicate(text2[0]))
+        self.wait()
+        self.play(ShowCreation(arr),Write(text3))
+        self.wait()
+        self.play(LaggedStartMap(FadeInFromDown,(text2[1:3],brace1,brace1t1)),run_time=2)
+        self.wait()
+        self.add(text4)
+        self.play(ShowCreation(SurroundingRectangle(text4)))
+        self.wait(3)
+
+
+class ep091(Scene):
+    def construct(self):
+        text1 = Text("偶数=质数+质数",size=0.5,gradient=(YELLOW,RED))
+        text2 = TexMobject(
+            "4=2+2",
+            "6=3+3",
+            "8=3+5",
+            "10=3+7",
+            "\\dots"
+        )
+        VGroup(text1,*text2).arrange(DOWN,buff=MED_LARGE_BUFF)
+
+        self.add(text1)
+        self.play(Indicate(text1,color=None))
+        self.play(LaggedStartMap(FadeInFromDown,text2,lag_ratio=1.2),run_time=5)
+        self.wait(3)
+
 class ep085(Scene):
     def construct(self):
         AndrewWiles = ImageMobject("AndrewWiles").set_height(FRAME_HEIGHT+1).shift(0.1*BOTTOM)
