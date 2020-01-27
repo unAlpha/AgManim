@@ -3,6 +3,7 @@ import random
 
 from manimlib.animation.transform import ReplacementTransform
 from manimlib.animation.transform import Transform
+from manimlib.animation.transform import ApplyPointwiseFunction
 from manimlib.animation.composition import LaggedStart
 from manimlib.animation.update import UpdateFromAlphaFunc
 from manimlib.constants import *

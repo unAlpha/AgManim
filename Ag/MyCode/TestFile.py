@@ -1,5 +1,17 @@
 from manimlib.imports import *
 
+class Sum1(Scene):
+    def construct(self):
+        equation1 = TexMobject("a", "^2", "+", "b", "^2", "=", "c", "^2")
+        equation2 = TexMobject("aa", "^2", "+", "bb", "^2", "=", "cc", "^2")
+        equation3 = TexMobject("A", "^2", "+", "bB", "^2", "=", "CcCCC", "^2")
+        # list对象
+        equation = VGroup(equation1,equation2,equation3).arrange(DOWN)
+        equation1.next_to(equation3, DOWN, MED_LARGE_BUFF)
+        equation1.shift_onto_screen(buff=5)
+        # equation1.center()
+        self.add(equation)
+
 class SumPOW(Scene):
     CONFIG={
         "amp": 2.3,
