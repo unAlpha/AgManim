@@ -520,11 +520,14 @@ class PythagoreanProof(Scene):
             triangle.get_corner(UP+RIGHT),
             triangle.get_corner(DOWN+LEFT),
         )
-        # get_length()
+        # get_length()获得长度
         c_square.set_width(hyp_line.get_length())
+        # 移动到中心点上方
         c_square.move_to(hyp_line.get_center(), UP)
         c_square.rotate(
+            # 旋转的角度
             hyp_line.get_angle(), 
+            # 旋转的基点
             about_point = hyp_line.get_center()
         )
 

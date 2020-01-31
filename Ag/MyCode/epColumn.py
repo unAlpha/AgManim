@@ -1,5 +1,420 @@
 from manimlib.imports import *
 
+class DataRead(GraphScene):
+    CONFIG ={
+        "x_min" : -1,
+        "x_max" : 10,
+        "y_min" : -1,
+        "y_max" : 10,
+        "x_axis_label" : "实数",
+        "y_axis_label" : "虚数",
+    }
+    def construct(self):
+        self.setup_axes()
+        arr = Arrow(self.coords_to_point(0,0),self.coords_to_point(2,2),buff=0)
+        self.add(arr)
+        self.wait()
+
+
+
+class ep1011(Scene):
+    def construct(self):
+        def fsin(dx=1):
+            return FunctionGraph(lambda x: np.sin(x-dx),x_min=-TAU/2-1.5,x_max=TAU/2+1).set_color(RED)
+        def fcos(dx=1):
+            return FunctionGraph(lambda x: np.cos(x-dx),x_min=-TAU/2-1.5,x_max=TAU/2+1).set_color(YELLOW)
+
+        gsin = fsin()
+        gcos = fcos()
+        axes=Axes(x_min=-5,x_max=5.5,y_min=-2, y_max=2)
+
+        text1 = Text("功率=电压x电流",size=0.8).shift(UP)
+        text2 = Text("电压",size=0.5).move_to(2.5*UP+4*RIGHT).set_color(RED)
+        line1 = Line(start=ORIGIN, end=RIGHT).next_to(text2,LEFT).set_color(RED)
+        text3 = Text("电流",size=0.5).next_to(text2,DOWN).set_color(YELLOW)
+        line2 = Line(start=ORIGIN, end=RIGHT).next_to(text3,LEFT).set_color(YELLOW)
+
+        self.play(Write(text1))
+        self.wait()
+        self.play(
+            text1.to_corner,UP+LEFT
+        )
+        self.wait()
+        # 摆掉dt的限制
+        def update_curveSin(func, alpha):
+            dx = interpolate(1, 20, alpha)
+            funcdx = fsin(dx)
+            func.become(funcdx)
+
+        def update_curveCos(func, alpha):
+            dx = interpolate(1, 20, alpha)
+            funcdx = fcos(dx)
+            func.become(funcdx)
+
+        self.play(
+            ShowCreation(axes),
+            ShowCreation(gsin),
+            ShowCreation(gcos),
+            ShowCreation(VGroup(text2,line1)),
+            ShowCreation(VGroup(text3,line2))
+            )
+        self.wait(2)
+        self.play(
+            UpdateFromAlphaFunc(gsin,update_curveSin),
+            UpdateFromAlphaFunc(gcos,update_curveCos),
+            rate_func=linear,
+            run_time=20
+            )
+        self.wait(5)
+
+class ep1010(Scene):
+    def construct(self):
+        tex1 = TexMobject("\\sqrt{-1}=i").set_color_by_gradient(YELLOW,RED)
+        tex2 = TexMobject("i^2=(\\sqrt{-1})^2=-1")
+        tex3 = TexMobject("i^3=i^2 \\times i=-i")
+        tex4 = TexMobject("i^4=i^2 \\times i^2 =(-1)^2=1")
+        tex5 = TexMobject("\\sqrt{-9}=\\sqrt{9}\\times \\sqrt{-1}=3i")
+        tex6 = TexMobject("\\sqrt{-4}=\\sqrt{4}\\times \\sqrt{-1}=2i")
+        tex7 = TexMobject("(","5+\\sqrt{15}i",")","\\times","(","5-\\sqrt{15}i",")","=40")
+        allVG= VGroup(tex1,tex2,tex3,tex4,tex5,tex6,tex7).arrange(DOWN,aligned_edge = LEFT,buff=MED_SMALL_BUFF)
+        rect1 = SurroundingRectangle(tex7[1])
+        rect2 = SurroundingRectangle(tex7[5])
+        rect1t = TextMobject("\\textbf{复数}").set_color(YELLOW).next_to(rect1,DOWN)
+        rect2t = TextMobject("\\textbf{复数}").set_color(YELLOW).next_to(rect2,DOWN)
+        self.play(LaggedStartMap(Write,[obj for obj in allVG],lag_ratio=2),run_time=12)
+        self.wait()
+        self.play(ShowCreation(rect1),ShowCreation(rect2),Write(rect1t),Write(rect2t))
+        self.wait()
+
+
+class ep109(GraphScene):
+    CONFIG ={
+        "x_min" : -10,
+        "x_max" : 10,
+        "x_tick_frequency" : 1,
+        "y_min" : -5,
+        "y_max" : 5,
+        "y_tick_frequency" : 1,
+        "graph_origin": ORIGIN,
+        "x_axis_label" : "实数",
+        "y_axis_label" : "虚数",
+    }
+    def construct(self):
+        self.setup_axes()
+        mirror = ImageMobject("mirror").set_height(self.y_axis.get_height()-MED_LARGE_BUFF).shift(LEFT*0.038)
+        mirror.rotate(-PI/4)
+        text3 = Text("魔镜",size=0.5).shift(UP+RIGHT)
+        self.wait()
+        self.play(FadeInFromLarge(mirror),Write(text3))
+        self.wait()
+
+
+    def setup_axes(self):
+        GraphScene.setup_axes(self)
+        values_y = [
+            (1,"i"),
+            (2,"2i"),
+            (3,"3i"),
+            (4,"4i"),
+            (-1,"-i"),
+            (-2,"-2i"),
+            (-3,"-3i"),
+            (-4,"-4i"),
+        ]
+        self.y_axis_label_mob.set_color(RED)
+        self.x_axis_label_mob.set_color(YELLOW)
+        self.x_axis.add_numbers(*[i for i in range(-10,12,2)])
+        self.y_axis_labels = VGroup()
+        for y_val, y_tex in values_y:
+            tex = TexMobject(y_tex) # Convert string to tex
+            tex.scale(0.7) 
+            # coords_to_point 获取指定值的点坐标
+            tex.next_to(self.coords_to_point(0 ,y_val), LEFT)
+            self.y_axis_labels.add(tex)
+        self.play(
+            Write(self.y_axis_labels),
+            Write(self.x_axis.numbers)
+        )
+        self.wait()
+
+class ep108(GraphScene):
+    CONFIG ={
+        "x_min" : -10,
+        "x_max" : 10,
+        "x_tick_frequency" : 1,
+        "y_min" : -50,
+        "y_max" : 50,
+        "y_tick_frequency" : 10,
+        "graph_origin": ORIGIN,
+    }
+    def construct(self):
+        self.setup_axes(animate=True)
+        self.x_axis.add_numbers(*[i for i in range(-10,12,2)])
+
+        text1 = TextMobject("正数").shift(2*(UP+1.5*RIGHT)).set_color(YELLOW)
+        text2 = TextMobject("负数").shift(2*(UP+1.5*LEFT)).set_color(RED)
+
+        self.play(Write(self.x_axis.numbers),Write(text1),Write(text2))
+        mirror = ImageMobject("mirror").set_height(self.y_axis.get_height()-LARGE_BUFF).shift(LEFT*0.038)
+
+        text3 = Text("镜子",size=0.5).shift(UP)
+        self.wait()
+        self.play(FadeInFromLarge(mirror),Write(text3))
+        self.wait(2)
+        
+class ep107(Scene):
+    def construct(self):
+        tex1 = TexMobject("(\\sqrt{-15})^2=-15").set_color_by_gradient(YELLOW,RED)
+        tex2 = TexMobject("a=5+\\sqrt{-15},\\ \\","b=5-\\sqrt{-15}")
+        tex4 = TexMobject("a \\times b")
+        tex5 = TexMobject("=(5+\\sqrt{-15})\\times(5-\\sqrt{-15})")
+        tex6 = TexMobject("=5^2-(\\sqrt{-15})^2")
+        tex7 = TexMobject("=25-(-15)")
+        tex8 = TexMobject("=40")
+
+        eqr = VGroup(tex5,tex6,tex7,tex8).arrange(DOWN,aligned_edge = LEFT)
+        tex4.next_to(tex5,LEFT)
+        eqrVg = VGroup(eqr,tex4)
+        VGroup(tex1,tex2,eqrVg).arrange(DOWN,buff=MED_LARGE_BUFF)
+        self.play(Write(tex1))
+        self.wait()
+        self.play(Write(tex2))
+        self.wait()
+        self.play(Write(tex4))
+        self.wait()
+        self.play(Write(tex5))
+        self.wait()
+        self.play(Write(tex6))
+        self.wait()
+        self.play(Write(tex7))
+        self.wait()
+        self.play(Write(tex8))
+        self.wait()
+
+
+class ep106(Scene):
+    def construct(self):
+        Cardano = self.imageObjAndText("Cardano","卡尔丹") 
+        self.play(FadeInFromLarge(Cardano))
+        self.wait()
+
+        tex = TexMobject("a+b=10\\ \\","a \\times b=40\\ \\","a=","?",",b=","?")
+        tex.set_color_by_tex("?",RED)
+        numVG=VGroup()
+        for i in range(5):
+            tex1 = self.numberCircle("%s"%(i+1))
+            texab = TexMobject("a=%s,\\ \\ "%(i+1),"b=%s,\\ \\ "%(9-i),"a \\times b = ","%s"%((i+1)*(9-i)))
+            numVG.add(VGroup(tex1,texab).arrange(RIGHT,buff=MED_LARGE_BUFF))
+        allVG = VGroup(tex,numVG.scale(0.68).arrange(DOWN,aligned_edge = LEFT))\
+            .arrange(DOWN,aligned_edge = LEFT,buff=MED_LARGE_BUFF)
+        allVG.next_to(Cardano,RIGHT,buff=MED_LARGE_BUFF)
+
+        arr = Arrow(numVG.get_corner(UP+RIGHT),numVG.get_corner(DOWN+RIGHT),buff=SMALL_BUFF).shift(0.5*RIGHT)\
+            .set_color(RED)
+        text1 = Text("""
+                    a+b 一定
+                    a, b 接近
+                    axb 越大
+                    """,
+                    font='阿里巴巴普惠体 B',
+                    size=0.5,
+                    lsh=0.6
+                    ).next_to(arr,1.5*RIGHT).set_color(YELLOW)
+        rect = SurroundingRectangle(numVG[-1][-1][-1])
+        text2 = Text("无解...",size=0.8,gradient=(YELLOW_D,RED)).next_to(rect,2*DOWN)
+        self.play(Write(tex[0:2]))
+        self.wait()
+        self.play(FadeInFromDown(tex[2:]))
+        self.wait()
+        self.play(LaggedStartMap(Write,[obj for obj in numVG],lag_ratio=2),run_time=8)
+        self.wait()
+        self.play(ShowCreation(arr))
+        self.play(Write(text1),run_time=2)
+        self.wait()
+        self.play(ShowCreation(rect))
+        self.wait()
+        self.add(text2)
+        self.play(Indicate(text2))
+        self.wait(2)
+
+    def imageObjAndText(self,imageName,text):
+        pic = ImageMobject(imageName).shift(4*LEFT).scale(2)
+        pic.rect = SurroundingRectangle(pic,color=WHITE,stroke_width=8,buff=0)
+        picText = Text(text, 
+                        font='阿里巴巴普惠体 B',
+                        size=0.5).next_to(pic,DOWN)
+        return Group(pic,pic.rect,picText)
+    def numberCircle(self,number):
+        tex = TexMobject(number)
+        texW = tex.get_width()
+        texH = tex.get_height()
+        clr = Circle(
+                    radius=max(texW,texH)-SMALL_BUFF,
+                    stroke_width=DEFAULT_STROKE_WIDTH/2,
+                    color=WHITE
+        )
+        clr.move_to(tex)
+        return VGroup(tex,clr).scale(0.8)
+
+
+class ep105(Scene):
+    def construct(self):
+        tex1 = TexMobject("2 \\times 2=4")
+        tex2 = TexMobject("(-2) \\times (-2)=4")
+        text1 = TextMobject("\\textbf{任何一个数的平方都是非负的}")
+        VG1 = VGroup(tex1,tex2,text1).arrange(DOWN)
+
+        square1 = Square().set_fill(RED,opacity = 0.5)
+        tex3 = TexMobject("\\sqrt{-4}=?")
+        tex4 = TexMobject("S=-4")
+        VG2 = VGroup(square1,tex3).arrange(RIGHT,buff=LARGE_BUFF)
+
+        VGroup(VG1,VG2).arrange(DOWN,buff=LARGE_BUFF)
+        tex4.move_to(square1)
+        brace1 =Brace(square1,DOWN)
+        brace1txt = brace1.get_text("a=?")
+
+        cross1 = Cross(VGroup(square1,brace1,brace1txt))
+        cross2 = Cross(tex3)
+        
+        self.play(Write(tex1))
+        self.wait()
+        self.play(Write(tex2))
+        self.wait(2)
+        self.play(Write(text1))
+        self.wait()
+        self.play(*map(ShowCreation,[square1,tex4,brace1,brace1txt]))
+        self.play(Write(tex3))
+        self.wait()
+        self.play(ShowCreation(VGroup(cross1,cross2)))
+        self.wait(2)
+      
+
+class ep104(Scene):
+    def construct(self):
+        square1 = Square().set_fill(RED,opacity = 0.5)
+        brace1 =Brace(square1,DOWN)
+        brace1txt = brace1.get_text("a")
+        saa = TexMobject("S=a^2")
+        ssq = TexMobject("\\sqrt{S}=a")
+
+        allVG = VGroup(square1,brace1,brace1txt,saa).arrange(DOWN)
+        ssq.next_to(allVG,DOWN,buff=MED_LARGE_BUFF)
+        self.play(ShowCreation(allVG),run_time=3)
+        self.wait()
+        self.play(Write(ssq),ShowCreation(SurroundingRectangle(ssq)))
+        self.wait()
+
+class ep103(Scene):
+    def construct(self):
+        nums = [2, 10, 11, 12]
+        formulaVG = VGroup()
+        for num in nums:
+            Fnum = TexMobject("%s"%num,"^2=","%s"%(num**2), "\\Rightarrow","\\sqrt{%s} = %s"%(num**2,num))
+            formulaVG.add(Fnum)
+        formulaVG.arrange(DOWN)
+
+        sq2 = TexMobject("\\sqrt{2}=1.414 \\dots").next_to(formulaVG,DOWN,buff=MED_LARGE_BUFF)\
+            .set_color(RED)
+
+        s2qtext = TextMobject("\\textbf{平方根}").next_to(formulaVG[0][0],UP+LEFT,buff=MED_LARGE_BUFF)\
+            .set_color(YELLOW)
+        sq2text = TextMobject("\\textbf{完全平方数}").next_to(formulaVG[0][2],UP,buff=LARGE_BUFF*0.7)\
+            .set_color(YELLOW)
+        s2qArr = Arrow(formulaVG[0][0].get_corner(UP+LEFT),s2qtext.get_corner(DOWN+RIGHT),buff=SMALL_BUFF)\
+            .set_color(YELLOW)
+        sq2Arr = Arrow(formulaVG[0][2].get_corner(UP),sq2text.get_corner(DOWN),buff=SMALL_BUFF)\
+            .set_color(YELLOW)
+        
+        formulaVG[0][0].set_color(YELLOW)
+        formulaVG[0][2].set_color(YELLOW)
+
+
+        self.play(Write(formulaVG[0][2]),ShowCreation(sq2Arr),FadeIn(sq2text))
+        self.wait()
+        self.play(Write(formulaVG[0][0:2]),ShowCreation(s2qArr),FadeIn(s2qtext))
+        self.wait()
+        self.play(FadeInFromPoint(formulaVG[0][3:],formulaVG[0][3:].get_corner(LEFT)))
+        self.wait()
+        self.play(FadeInFrom(formulaVG[1],LEFT))
+        self.wait()
+        self.play(FadeInFrom(formulaVG[2],LEFT))
+        self.wait()
+        self.play(FadeInFrom(formulaVG[3],LEFT))
+        self.wait()
+        self.play(Write(sq2))
+        self.wait()
+
+class ep102(Scene):
+    def construct(self):
+        NaturalNum = TexMobject("1, 2, 3, 4, \\dots")
+        NaturalNumTxt = TextMobject("\\textbf{自然数}")
+        VGNaturalNum = VGroup(NaturalNum,NaturalNumTxt).arrange(RIGHT,buff=MED_LARGE_BUFF)
+        addition = TexMobject(
+                                "3+5=8",
+                                "5+8=13",
+                                "\\dots"
+        ).arrange_submobjects(DOWN,aligned_edge = LEFT,buff=MED_SMALL_BUFF)
+        addition[-1].shift(DOWN*0.125)
+        subtraction =TexMobject("5-","8","=","?",
+                                tex_to_color_map={
+                                            "?" : RED
+            }
+        )
+        VGroup(VGNaturalNum, addition, subtraction).arrange(DOWN,aligned_edge = LEFT,buff=MED_LARGE_BUFF)
+        braceAdd = Brace(addition,RIGHT,buff=MED_LARGE_BUFF)
+        braceAddt = TextMobject("\\textbf{加法封闭}")
+        braceAdd.put_at_tip(braceAddt)
+        subtxt = TextMobject("\\textbf{减法不封闭}",color=RED).next_to(subtraction,RIGHT,buff=LARGE_BUFF)
+
+        self.play(Write(NaturalNum))
+        self.wait()
+        self.add(NaturalNumTxt)
+        self.play(Indicate(NaturalNumTxt))
+        self.wait()
+        self.play(LaggedStartMap(Write,addition),GrowFromCenter(braceAdd),FadeIn(braceAddt),run_time=3)
+        self.wait()
+
+        self.play(Write(subtraction))
+        self.wait()
+        self.add(subtxt)
+        self.play(Indicate(subtxt))
+        self.wait(2)
+
+        self.play(
+            *map(FadeOut,(NaturalNum,NaturalNumTxt,addition,braceAdd,braceAddt,subtxt)),
+            subtraction.move_to,NaturalNum
+        )
+        self.wait()
+
+        goat = SVGMobject("goat").scale(0.4)
+        goat_group = VGroup(*[
+                goat.copy().shift(-x*UP + y*RIGHT)
+                for x in range(2)
+                for y in range(4)
+            ])
+        
+        goat_group.next_to(subtraction,DOWN,buff=MED_LARGE_BUFF).align_to(subtraction,LEFT)
+        goat_gray = goat_group[5:].copy().set_color(DARK_GREY)
+        goat_red = goat_group[5:].set_color(RED)
+        subtractionEND = TexMobject("-3").next_to(subtraction[-2]).set_color(RED)
+        self.play(FadeInFromDown(goat_group[0:5]))
+        self.wait()
+        self.play(ShowCreation(SurroundingRectangle(subtraction[1])),FadeInFromDown(goat_gray))
+        self.wait()
+        self.play(FadeInFromDown(goat_red))
+        self.wait()
+        self.play(Transform(subtraction[-1],subtractionEND))
+        self.wait(5)
+                
+class ep101(Scene):
+    def construct(self):
+        imaginaryTxt = Text("虚数",font='阿里巴巴普惠体 B')
+        self.add(imaginaryTxt)
+        self.play(Indicate(imaginaryTxt))
+        self.wait()
+
+
 class ep095(Scene):
     def construct(self):
         pic1 = self.imageObjAndText("ChenJinRun","陈景润")
@@ -39,7 +454,7 @@ class ep095(Scene):
             }
         )
 
-        abVG = VGroup(textab,textabc).arrange(DOWN,aligned_edge = LEFT,buff=MED_SMALL_BUFF).next_to(text1,DOWN,buff=LARGE_BUFF)
+        abVG = VGroup(textab,textabc).arrange(DOWN,aligned_edge = LEFT,buff=MED_SMALL_BUFF)
         jiVG = VGroup(text3,abVG).arrange(RIGHT,aligned_edge = UP,buff=MED_SMALL_BUFF)
         textVG = VGroup(text2,jiVG).arrange(DOWN,buff=MED_LARGE_BUFF)
         text1.next_to(textVG,4*UP)
