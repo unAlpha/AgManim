@@ -583,7 +583,7 @@ class DashedLine(Line):
     def get_last_handle(self):
         return self.submobjects[-1].points[-2]
 
-
+#切线
 class TangentLine(Line):
     CONFIG = {
         "length": 1,

@@ -1,6 +1,6 @@
 from manimlib.imports import *
 
-class DataRead(GraphScene):
+class vectors(GraphScene):
     CONFIG ={
         "x_min" : -1,
         "x_max" : 10,
@@ -11,10 +11,52 @@ class DataRead(GraphScene):
     }
     def construct(self):
         self.setup_axes()
-        arr = Arrow(self.coords_to_point(0,0),self.coords_to_point(2,2),buff=0)
-        self.add(arr)
-        self.wait()
+        
+        self.x_axis.add_numbers(*[i for i in range(1,10,2)])
+        self.y_axis.add_numbers(*[i for i in range(-0,10,2)])
+        # 1 创建对象
+        vector1 = self.vector(1,1,5,5,True)
+        # 2 变化的量
+        vlu = ValueTracker(5)
+        # 3 add_updater
+        vector1.add_updater(lambda obj: obj.become(self.vector(1,1,5,vlu.get_value(),True)))
 
+        dashV = self.dashVector(1,1,8,1)
+
+        # 4 show
+        self.play(ShowCreation(vector1))
+        # 5 add
+        self.add(vector1)
+        # 6 change
+        self.play(vlu.increment_value,1)
+        # 7 change again
+        self.play(vlu.increment_value,-2)
+        self.play(ShowCreation(dashV))
+        self.wait()
+    # 0 定义对象
+    def vector(self,x1=0,y1=0,x2=1,y2=1,texNeed=False):
+        arr = Arrow(self.coords_to_point(x1,y1),self.coords_to_point(x2,y2),buff=0)
+        tex = TexMobject("(%.1f,%.1f)"%(x2,y2))
+        tex.next_to(arr.end,UP+RIGHT,buff=SMALL_BUFF)
+        if texNeed:
+            return VGroup(arr,tex)
+        else:
+            return arr
+
+    def dashVector(self,x1=0,y1=0,x2=1,y2=1,texNeed=False):
+        arr = DashedLine(
+            self.coords_to_point(x1,y1),self.coords_to_point(x2,y2),
+            buff=0,
+            dash_length=5*DEFAULT_DASH_LENGTH,
+            stroke_width=6
+            )
+        arr.add_tip()
+        tex = TexMobject("(%.1f,%.1f)"%(x2,y2))
+        tex.next_to(arr.end,UP+RIGHT,buff=SMALL_BUFF)
+        if texNeed:
+            return VGroup(arr,tex)
+        else:
+            return arr
 
 
 class ep1011(Scene):
