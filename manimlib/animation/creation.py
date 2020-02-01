@@ -6,6 +6,7 @@ from manimlib.utils.rate_functions import linear
 from manimlib.utils.rate_functions import double_smooth
 from manimlib.utils.rate_functions import smooth
 
+from manimlib.mobject.mobject import Group
 import numpy as np
 
 
@@ -133,3 +134,20 @@ class ShowIncreasingSubsets(Animation):
         n_submobs = len(self.all_submobs)
         index = int(self.int_func(alpha * n_submobs))
         self.mobject.submobjects = self.all_submobs[:index]
+
+
+class ShowSubmobjectsOneByOne(ShowIncreasingSubsets):
+    CONFIG = {
+        "int_func": np.ceil,
+    }
+
+    def __init__(self, group, **kwargs):
+        new_group = Group(*group)
+        super().__init__(new_group, **kwargs)
+
+    def update_submobject_list(self, index):
+        # N = len(self.all_submobs)
+        if index == 0:
+            self.mobject.submobjects = []
+        else:
+            self.mobject.submobjects = self.all_submobs[index - 1]

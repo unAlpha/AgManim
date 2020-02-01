@@ -396,7 +396,9 @@ class ComplexPlane(NumberPlane):
         x_numbers = self.get_x_axis().default_numbers_to_display()
         y_numbers = self.get_y_axis().default_numbers_to_display()
         y_numbers = [
-            complex(0, y) for y in y_numbers if y != 0
+            # Ag需要显示0 原文如下
+            # complex(0, y) for y in y_numbers if y != 0
+            complex(0, y) for y in y_numbers
         ]
         return [*x_numbers, *y_numbers]
 

@@ -409,6 +409,7 @@ class PythagoreanProof(Scene):
         self.play(Write(side_labels))
         self.wait()
         self.play(*list(map(DrawBorderThenFill, squares)))
+
         self.add_labels_to_squares(squares, side_labels)
         self.wait()
         self.play(
@@ -534,6 +535,7 @@ class PythagoreanProof(Scene):
         return a_square, b_square, c_square
 
     def get_added_triangles_to_c_square(self, triangle, c_square):
+        # 通过围绕c_square.get_center()这个点进行旋转得到其他三角形
         return VGroup(*[
             triangle.copy().rotate(i*np.pi/2, about_point = c_square.get_center())
             for i in range(1, 4)
@@ -543,6 +545,7 @@ class PythagoreanProof(Scene):
         t1 = triangle.copy()
         t1.rotate_in_place(np.pi)
         group = VGroup(triangle, t1).copy()
+        # 把三角形放到a^2的LEFT
         group.rotate(-np.pi/2)
         group.move_to(a_square.get_right(), LEFT)
         t2, t3 = group
@@ -836,7 +839,7 @@ class ReframeOnLattice(PiCreatureScene):
         top_line.next_to(rect.get_top(), DOWN)
         second_line = TexMobject(
             "2^2 + 2i + 2i + i^2"
-        )
+            )
         second_line.next_to(top_line, DOWN, MED_LARGE_BUFF)
         final_line = TexMobject("3 + 4i")
         final_line.next_to(second_line, DOWN, MED_LARGE_BUFF)
@@ -845,7 +848,7 @@ class ReframeOnLattice(PiCreatureScene):
             self.plane.coords_to_point(3, 4),
             color = MAROON_B,
             radius = self.dot_radius
-        )
+            )
 
         self.play(
             FadeIn(rect),
@@ -854,7 +857,7 @@ class ReframeOnLattice(PiCreatureScene):
                 top_line
             ),
             run_time = 2
-        )
+            )
         self.wait()
 
         #From top line to second line
@@ -867,7 +870,7 @@ class ReframeOnLattice(PiCreatureScene):
         for index_alignment in index_alignment_lists:
             self.play(*[
                 ReplacementTransform(
-                    top_line[i][j].copy(), second_line[k],
+                    top_line[i][j].copy(), second_line[0][k],
                 )
                 for i, j, k in index_alignment
             ])
@@ -881,7 +884,7 @@ class ReframeOnLattice(PiCreatureScene):
         for index_alignment in index_alignment_lists:
             self.play(*[
                 ReplacementTransform(
-                    second_line[i].copy(), final_line[j],
+                    second_line[0][i].copy(), final_line[0][j],
                     run_time = 1.5
                 )
                 for i, j in index_alignment
@@ -944,9 +947,10 @@ class ReframeOnLattice(PiCreatureScene):
         self.wait()
 
         #Multiply full plane under everything
-        everything = VGroup(*self.get_top_level_mobjects())
+        everything = Group(*self.get_top_level_mobjects())
         everything.remove(self.plane)
         self.plane.save_state()
+        
         ghost_plane = self.plane.copy().fade()
         method_args_list = [
             (self.plane.rotate, (line.get_angle(),)),
@@ -989,8 +993,6 @@ class ReframeOnLattice(PiCreatureScene):
             run_time = 2
         )
         self.wait(2)
-
-    ####
 
     def get_all_plane_dots(self):
         x_min, y_min = list(map(int, self.plane.point_to_coords(
@@ -1166,7 +1168,7 @@ class OneMoreExample(Scene):
         for index_alignment in index_alignment_lists[:2]:
             self.play(*[
                 ReplacementTransform(
-                    top_line[i][j].copy(), second_line[k],
+                    top_line[i][j].copy(), second_line[0][k],
                     run_time = 1.5
                 )
                 for i, j, k in index_alignment
@@ -1185,7 +1187,7 @@ class OneMoreExample(Scene):
         for index_alignment in index_alignment_lists[2:]:
             self.play(*[
                 ReplacementTransform(
-                    top_line[i][j].copy(), second_line[k],
+                    top_line[i][j].copy(), second_line[0][k],
                     run_time = 1.5
                 )
                 for i, j, k in index_alignment

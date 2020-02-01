@@ -526,10 +526,12 @@ class Line(TipableVMobject):
                 sm.set_opacity(opacity, family)
         return self
 
+
 class Underline(Line):
     def __init__(self,texto,buff=0.07,**kwargs):
         Line.__init__(self,texto.get_corner(DL),texto.get_corner(DR),**kwargs)
         self.shift(DOWN*buff)
+
 
 class DashedLine(Line):
     CONFIG = {
@@ -583,7 +585,7 @@ class DashedLine(Line):
     def get_last_handle(self):
         return self.submobjects[-1].points[-2]
 
-#切线
+# 切线
 class TangentLine(Line):
     CONFIG = {
         "length": 1,

@@ -1,5 +1,218 @@
 from manimlib.imports import *
 
+class ep1101(GraphScene):
+    CONFIG ={
+        "x_min" : -4,
+        "x_max" : 6,
+        "y_min" : -1,
+        "y_max" : 6,
+        "x_axis_label" : "实轴",
+        "y_axis_label" : "虚轴",
+        "graph_origin": 2.6 * DOWN + 2 * LEFT
+    }
+    def construct(self):
+        self.setup_axes()
+        # 初始坐标
+        x0=0
+        y0=0
+        vector1 = self.vector(x0,y0,4,2,True)
+        vector2 = self.vector(x0,y0,1,3,True)
+
+        # 动画1
+        elbow = self.polyline(ORIGIN,4*RIGHT,4*RIGHT+2*UP)
+        dot = Dot()
+        dot.move_to(elbow.get_start())
+        self.add(dot)
+        self.play(
+            MoveAlongPath(dot,elbow),
+            
+            run_time=2
+            )
+        self.play(Write(vector1[1]))
+        self.wait(2)
+        self.play(ShowCreation(vector1[0]))
+        self.wait(2)
+        self.play(ShowCreation(vector2))
+        self.wait(2)
+
+        text1 = Text("复平面",size=0.86)
+        text1.to_corner(UP+RIGHT)
+        self.play(FadeInFromLarge(text1))
+        self.wait()
+
+        dashVector1 = self.dashVector(4,2,5,5,True)
+        dashVector2 = self.dashVector(1,3,5,5,True)
+        vector3 = self.vector(0,0,5,5,True).set_color(BLUE)
+
+        self.remove(dot)
+        self.play(
+            ShowCreation(dashVector1[0]),
+            ShowCreation(dashVector2[0]),
+            vector1[1].shift,DOWN*0.36+RIGHT*0.16,
+            vector2[1].shift,UP*0.2+LEFT*0.86,
+            
+        )
+        self.wait()
+        self.play(ShowCreation(vector3),run_time=2)
+        self.wait(2)
+
+        self.remove(
+            dashVector1[0],
+            dashVector2[0],
+            vector3
+            )
+        self.wait()
+
+        # 动画2
+        vector4 = self.vector(1,3,4,2,0).set_color(PINK)
+        tex2 = TexMobject("3-i").set_color(PINK)
+        tex2.next_to(vector4.get_center(),UP,buff=MED_SMALL_BUFF)
+        tex2.rotate(vector4[0].get_angle())
+        self.play(ShowCreation(vector4))
+        self.play(Write(tex2))
+        self.wait(3)
+
+        self.remove(
+            tex2,
+            vector4,
+            vector1[0],
+            vector1[1],
+            vector2[0],
+            vector2[1]
+            )
+
+        # 动画3
+        vector5 = self.vector(0,0,3,0,0)
+        vector55 = self.vector(0,0,3,0,0).set_color(BLUE)
+        arc = Arc(radius=3)
+        arcCoords = VMobject()
+        arcCoords.set_points([self.coords_to_point(point[0],point[1]) for point in arc.points])
+        dot2 = Dot(radius=1e-3)
+        dot2.move_to(arcCoords.get_start())
+        vector5.add_updater(lambda obj: obj.become(self.vector(
+                    x0,y0,
+                    self.point_to_coords(dot2.get_center())[0],
+                    self.point_to_coords(dot2.get_center())[1],
+                    0
+                    )
+                )
+            )
+
+        tex3 = TexMobject("a=3").set_color(BLUE)\
+            .next_to(self.x_axis.get_tick(3),UP,buff=MED_SMALL_BUFF)
+        tex4 = TexMobject("b=3i")\
+            .next_to(self.y_axis.get_tick(3),RIGHT,buff=MED_SMALL_BUFF)
+        
+        self.play(ShowCreation(vector55))
+        self.play(Write(tex3))
+        self.wait()
+        self.add(vector5)
+        self.play(
+            MoveAlongPath(dot2,arcCoords),
+            run_time=2
+        )
+        self.play(Write(tex4))
+        self.wait(3)
+
+        self.remove(dot2,tex3,tex4,vector5,vector55)
+
+        # 动画4
+        x1 = 4
+        y1 = 2
+        x2 = -2
+        y2 = 4
+        r1 = math.sqrt(x1**2+y1**2)
+        r2 = math.sqrt(x2**2+y2**2)
+        star_angle = math.asin(y1/r1)
+        angle = PI-math.asin(y2/r2)-star_angle
+
+        vector6 = self.vector(0,0,x1,y1,0)
+        vector66 = self.vector(0,0,x1,y1,0).set_color(BLUE)
+        arc1 = Arc(star_angle,angle,radius=r1)
+        arcCoords1 = VMobject()
+        arcCoords1.set_points([self.coords_to_point(point[0],point[1]) for point in arc1.points])
+        dot3 = Dot(radius=1e-3)
+        dot3.move_to(arcCoords1.get_start())
+        vector6.add_updater(lambda obj: obj.become(self.vector(
+                    x0,y0,
+                    self.point_to_coords(dot3.get_center())[0],
+                    self.point_to_coords(dot3.get_center())[1],
+                    0
+                    )
+                )
+            )
+
+        tex5 = TexMobject("a=%s+%si"%(x1,y1)).set_color(BLUE)\
+            .next_to(self.coords_to_point(4,2),UP,buff=MED_SMALL_BUFF)
+        tex6 = TexMobject("b=%s+%si"%(x2,y2))\
+            .next_to(self.coords_to_point(-2,4),UP,buff=MED_SMALL_BUFF)
+        
+        self.play(ShowCreation(vector66))
+        self.play(Write(tex5))
+        self.wait()
+        self.add(vector6)
+        self.play(
+            MoveAlongPath(dot3,arcCoords1),
+            run_time=2
+        )
+        self.play(Write(tex6))
+        self.wait(3)
+ 
+    def polyline(self,*points):
+        polyline1 = VMobject()
+        pointslist = [self.coords_to_point(point[0],point[1]) for point in points]
+        polyline1.set_points_as_corners(pointslist)
+        return polyline1
+
+    def vector(self,x1=0,y1=0,x2=1,y2=1,texNeed=False):
+        arr = Arrow(self.coords_to_point(x1,y1),self.coords_to_point(x2,y2),buff=0)
+        if texNeed:
+            if round(abs(y2),1)==0.0:
+                tex = TexMobject("%.0f"%x2)
+            else:
+                tex = TexMobject("%.0f+%.0fi"%(x2,abs(y2)))
+            tex.next_to(arr.end,UP+RIGHT,buff=SMALL_BUFF)
+            return VGroup(arr,tex)
+        else:
+            return arr
+
+    def dashVector(self,x1=0,y1=0,x2=1,y2=1,texNeed=False):
+        arr = DashedLine(
+            self.coords_to_point(x1,y1),self.coords_to_point(x2,y2),
+            buff=0,
+            dash_length=5*DEFAULT_DASH_LENGTH,
+            stroke_width=6
+            )
+        if texNeed:
+            tex = TexMobject("(%.0f,%.0f)"%(x2,y2))
+            tex.next_to(arr.end,UP+RIGHT,buff=SMALL_BUFF)
+            return VGroup(arr,tex)
+        else:
+            return arr
+
+    def setup_axes(self):
+        GraphScene.setup_axes(self)
+
+        values_y = [(n,str(n)+"i") for n in range(self.y_min+1,self.y_max,1) if n!=0]
+        self.y_axis_label_mob.set_color(RED)
+        self.x_axis_label_mob.set_color(YELLOW)
+        self.x_axis.add_numbers(*[i for i in range(self.x_min+1,self.x_max,1)])
+        # self.x_axis.numbers[0].shift(0.2*LEFT)
+        self.y_axis_labels = VGroup()
+
+        for y_val, y_tex in values_y:
+            tex = TexMobject(y_tex) # Convert string to tex
+            tex.scale(0.7) 
+            # coords_to_point 获取指定值的点坐标
+            tex.next_to(self.coords_to_point(0 ,y_val), LEFT)
+            self.y_axis_labels.add(tex)  
+
+        self.play(
+            Write(self.y_axis_labels),
+            Write(self.x_axis.numbers)
+        )
+        self.wait()
+
 class vectors(GraphScene):
     CONFIG ={
         "x_min" : -1,
@@ -24,7 +237,7 @@ class vectors(GraphScene):
         dashV = self.dashVector(1,1,8,1)
 
         # 4 show
-        self.play(ShowCreation(vector1))
+        self.play(ShowSubmobjectsOneByOne(vector1))
         # 5 add
         self.add(vector1)
         # 6 change
@@ -57,7 +270,6 @@ class vectors(GraphScene):
             return VGroup(arr,tex)
         else:
             return arr
-
 
 class ep1011(Scene):
     def construct(self):
@@ -127,7 +339,6 @@ class ep1010(Scene):
         self.wait()
         self.play(ShowCreation(rect1),ShowCreation(rect2),Write(rect1t),Write(rect2t))
         self.wait()
-
 
 class ep109(GraphScene):
     CONFIG ={
@@ -233,7 +444,6 @@ class ep107(Scene):
         self.play(Write(tex8))
         self.wait()
 
-
 class ep106(Scene):
     def construct(self):
         Cardano = self.imageObjAndText("Cardano","卡尔丹") 
@@ -298,7 +508,6 @@ class ep106(Scene):
         clr.move_to(tex)
         return VGroup(tex,clr).scale(0.8)
 
-
 class ep105(Scene):
     def construct(self):
         tex1 = TexMobject("2 \\times 2=4")
@@ -331,7 +540,6 @@ class ep105(Scene):
         self.play(ShowCreation(VGroup(cross1,cross2)))
         self.wait(2)
       
-
 class ep104(Scene):
     def construct(self):
         square1 = Square().set_fill(RED,opacity = 0.5)
@@ -456,7 +664,6 @@ class ep101(Scene):
         self.play(Indicate(imaginaryTxt))
         self.wait()
 
-
 class ep095(Scene):
     def construct(self):
         pic1 = self.imageObjAndText("ChenJinRun","陈景润")
@@ -533,7 +740,6 @@ class ep095(Scene):
                         size=0.5).next_to(pic,DOWN)
         return Group(pic,pic.rect,picText)
 
-
 class ep094(Scene):
     def construct(self):
         text1 = TexMobject("“1+3”").to_edge(UP)
@@ -585,7 +791,6 @@ class ep094(Scene):
         self.wait()
         self.play(LaggedStartMap(FadeInFromDown,(textabc[-1],textabcd,arr,text3,brace1t1,brace1)),run_time=2)
         self.wait(2)
-
 
 class ep093(Scene):
     def construct(self):
@@ -650,7 +855,6 @@ class ep092(Scene):
         self.play(ShowCreation(SurroundingRectangle(text4)))
         self.wait(3)
 
-
 class ep091(Scene):
     def construct(self):
         text1 = Text("偶数=质数+质数",size=0.5,gradient=(YELLOW,RED))
@@ -693,7 +897,6 @@ class ep085(Scene):
                 )
             )
         self.wait()
-
 
 class ep084(Scene):
     def construct(self):
@@ -750,7 +953,6 @@ class ep084(Scene):
         self.play(Transform(text3,text4))
         self.wait(5)
 
-
 class ep083(Scene):
     def construct(self):
         text1 = Text("当整数 n<269 的时候，关于x,y,z的方程：", 
@@ -773,7 +975,6 @@ class ep083(Scene):
         self.wait()
         self.play(ShowCreation(text2.rect),run_time=2)
         self.wait(5)
-
 
 class ep082(Scene):
     def construct(self):   
@@ -824,7 +1025,6 @@ class ep082(Scene):
         self.wait(3)
         self.play(ShowCreation(arr1),Write(DiophantusMathText2))
         self.wait()
-
 
 class ep081(Scene):
     def construct(self):
@@ -878,7 +1078,6 @@ class ep081(Scene):
         poly3 = VGroup(line1,line2,line3,x,y,z)
         poly3.set_width(width)
         return poly3
-
 
 class ep071(Scene):
     def construct(self):
@@ -992,7 +1191,6 @@ class ep061(Scene):
         btext2 = brace2.get_text("\\textbf{有理数}").set_color(RED)
         self.play(GrowFromCenter(brace2),FadeIn(btext2))
         self.wait(5)
-
 
 class ep062(Scene):
     def construct(self):
@@ -1125,7 +1323,6 @@ class ep065(Scene):
         self.play(Write(text2t[-1].set_color_by_gradient(RED,ORANGE,YELLOW)))
         self.wait(10)
 
-
 class ep066(Scene):
     def construct(self):
         text1 = Text("线段上的点的个数")
@@ -1146,8 +1343,7 @@ class ep066(Scene):
         VgText2.align_to(VgText,RIGHT)
         self.play(Transform(VgText,VgText2))
         self.wait(5)
-
-    
+  
 class ep0671(GraphScene):
     CONFIG ={
         "x_min" : -5,
@@ -1227,7 +1423,6 @@ class ep0674(GraphScene):
         self.play(Write(text1))
         self.wait(10)
 
-
 class ep0675(GraphScene):
     def construct(self):
         tan_graph = VGroup()
@@ -1240,7 +1435,6 @@ class ep0675(GraphScene):
         text1 = Text("双曲线",size=0.5).next_to(tan_graph,2*DOWN)
         self.play(Write(text1))
         self.wait(10)
-
         
 class ep051(Scene):
     def construct(self):
@@ -1432,7 +1626,6 @@ class ep043(Scene):
         self.wait()
         self.play(Write(text3))
         self.wait(5)
-
 
 class ep044(Scene):
     def construct(self):

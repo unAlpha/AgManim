@@ -72,7 +72,8 @@ class Mobject(Container):
         self.remove(*mobjects)
         self.submobjects = list(mobjects) + self.submobjects
         return self
-
+    
+    # 只有在屏幕中的才能移除
     def remove(self, *mobjects):
         for mobject in mobjects:
             if mobject in self.submobjects:
