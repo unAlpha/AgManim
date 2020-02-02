@@ -424,8 +424,9 @@ class TexTest2(Scene):
 
 class testNumberPlane(Scene):
     def construct(self):
+        center_point = 2.6*DOWN + 2*LEFT
         plane = NumberPlane(
-            center_point = 2.6*DOWN + 2*LEFT,
+            center_point = center_point,
             x_min=-FRAME_X_RADIUS*2,
             x_max=FRAME_X_RADIUS*2,
             y_min=-FRAME_Y_RADIUS*2,
@@ -437,11 +438,17 @@ class testNumberPlane(Scene):
             background_line_style = {
                 "stroke_color": GRAY,
                 "stroke_width": 2,
-                "stroke_opacity": 1,
+                "stroke_opacity": 0.5,
                 }
             )
         plane.add_coordinates() # 显示坐标
+
+        cir = Circle(radius=1).move_to(center_point)
+        v1 = plane.get_vector([3,3])
+        v2 = plane.get_vector([1,2])
+        v3 = plane.get_complete_vector([1,2,3,5])
         self.play(ShowCreation(plane))
+        self.add(v1,v2,v3,cir)
         self.wait()
 
 class testComplexPlane(Scene):
@@ -463,5 +470,11 @@ class testComplexPlane(Scene):
                 }
             )
         plane.add_coordinates() # 显示坐标
+
+        v1 = plane.get_vector([3,3])
+        v2 = plane.get_vector([1,2])
+        v3 = plane.get_complete_vector([1,2,3,5])
+
         self.play(ShowCreation(plane))
+        self.add(v1,v2,v3)
         self.wait()

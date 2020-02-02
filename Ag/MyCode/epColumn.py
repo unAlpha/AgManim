@@ -24,8 +24,7 @@ class ep1101(GraphScene):
         dot.move_to(elbow.get_start())
         self.add(dot)
         self.play(
-            MoveAlongPath(dot,elbow),
-            
+            MoveAlongPath(dot,elbow),  
             run_time=2
             )
         self.play(Write(vector1[1]))
@@ -49,8 +48,7 @@ class ep1101(GraphScene):
             ShowCreation(dashVector1[0]),
             ShowCreation(dashVector2[0]),
             vector1[1].shift,DOWN*0.36+RIGHT*0.16,
-            vector2[1].shift,UP*0.2+LEFT*0.86,
-            
+            vector2[1].shift,UP*0.2+LEFT*0.86,     
         )
         self.wait()
         self.play(ShowCreation(vector3),run_time=2)
@@ -92,12 +90,7 @@ class ep1101(GraphScene):
         vector5.add_updater(lambda obj: obj.become(self.vector(
                     x0,y0,
                     self.point_to_coords(dot2.get_center())[0],
-                    self.point_to_coords(dot2.get_center())[1],
-                    0
-                    )
-                )
-            )
-
+                    self.point_to_coords(dot2.get_center())[1],0)))
         tex3 = TexMobject("a=3").set_color(BLUE)\
             .next_to(self.x_axis.get_tick(3),UP,buff=MED_SMALL_BUFF)
         tex4 = TexMobject("b=3i")\

@@ -367,6 +367,14 @@ class NumberPlane(Axes):
             self.coords_to_point(*coords),
             **kwargs
         )
+        
+    def get_complete_vector(self, coords, **kwargs):
+        kwargs["buff"] = 0
+        return Arrow(
+            self.coords_to_point(coords[0], coords[1]),
+            self.coords_to_point(*coords[2:]),
+            **kwargs
+        )
 
     def prepare_for_nonlinear_transform(self, num_inserted_curves=50):
         for mob in self.family_members_with_points():

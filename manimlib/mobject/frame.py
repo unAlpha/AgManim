@@ -33,7 +33,7 @@ class FullScreenFadeRectangle(FullScreenRectangle):
 
 class PictureInPictureFrame(Rectangle):
     CONFIG = {
-        "height": 3,
+        "height": 3.0,
         "aspect_ratio": 16.0 / 9.0
     }
 
@@ -41,7 +41,7 @@ class PictureInPictureFrame(Rectangle):
         digest_config(self, kwargs)
         Rectangle.__init__(
             self,
-            width=self.aspect_ratio * self.height,
-            height=self.height,
+            width = self.aspect_ratio * self.height,
+            # height = self.height,
             **kwargs
         )
