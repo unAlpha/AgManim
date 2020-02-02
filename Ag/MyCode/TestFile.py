@@ -1,6 +1,6 @@
 from manimlib.imports import *
 
-class Sum1(Scene):
+class Equation(Scene):
     def construct(self):
         equation1 = TexMobject("a", "^2", "+", "b", "^2", "=", "c", "^2")
         equation2 = TexMobject("aa", "^2", "+", "bb", "^2", "=", "cc", "^2")
@@ -12,7 +12,7 @@ class Sum1(Scene):
         # equation1.center()
         self.add(equation)
 
-class SumPOW(Scene):
+class FuncGraphSin(Scene):
     CONFIG={
         "amp": 2.3,
         "sine_graph_config":{
@@ -478,3 +478,10 @@ class testComplexPlane(Scene):
         self.play(ShowCreation(plane))
         self.add(v1,v2,v3)
         self.wait()
+
+
+# class vectorizedPoint_mob(Scene):
+#     def construct(self):
+#         vp = Grid(rows=2,columns=3)
+#         self.play(ShowCreation(vp))
+#         self.wait()
