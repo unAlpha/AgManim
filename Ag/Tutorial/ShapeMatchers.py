@@ -35,7 +35,7 @@ class FreehandRectangleScene(Scene):
                 fill_color=BLUE,
                 fill_opacity=1.0
                 )
-        self.play(FadeInFromLarge(vp),FadeInFromRandom(tex[0]))
+        self.play(FadeInFromLarge(vp),FadeInFromRandomA(tex[0]))
         self.wait()
 
 class ZigZagScene(Scene):
@@ -110,11 +110,6 @@ class FadeInFromRandomBS(Scene):
         self.play(FadeInFromRandomB(mob[0]))
         self.play(FadeInFromRandomA(mob[0]))
         self.wait()
-
-
-from manimlib.imports import *
-from my_projects.my_objects import *
-from my_projects.my_animations import *
 
 # Abstract scenes (no render this scenes)
 # The "setup" method is always executed before the construct method
@@ -355,7 +350,7 @@ class FadeInFromDirectionsExample(FormulaExample):
 class FadeInFromRandomExample(FormulaExample):
     def construct(self):
         self.play(
-            FadeInFromRandom(self.tex_example[0]),
+            FadeInFromRandomA(self.tex_example[0]),
             run_time=3
         )
         self.wait()

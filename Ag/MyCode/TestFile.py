@@ -480,6 +480,17 @@ class testComplexPlane(Scene):
         self.wait()
 
 
+class NewScene(Scene):
+    CONFIG={
+        "camera_config":{"background_color":DARK_GREY}
+    }
+    def construct(self):
+        mob1 = TextMobject("Only a life lived for others is a life worthwhile").to_edge(TOP)
+        mob2 = TextMobject("Subtle is the Lord， but malicious He is not")
+        self.play(FadeInFromRandomB(mob1[0]))
+        self.play(FadeInFromRandomA(mob2[0]))
+        self.wait()
+
 # class vectorizedPoint_mob(Scene):
 #     def construct(self):
 #         vp = Grid(rows=2,columns=3)
