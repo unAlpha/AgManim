@@ -1,4 +1,5 @@
 from manimlib.imports import *
+import fractions
 
 class Equation(Scene):
     def construct(self):
@@ -473,14 +474,14 @@ class testComplexPlane(Scene):
 
         v1 = plane.get_vector([3,3])
         v2 = plane.get_vector([1,2])
-        v3 = plane.get_complete_vector([1,2,3,5])
+        v3 = plane.get_complete_vector([1,2,3,3]).set_color(RED)
 
         self.play(ShowCreation(plane))
         self.add(v1,v2,v3)
         self.wait()
 
 
-class NewScene(Scene):
+class BackgroundColorScene(Scene):
     CONFIG={
         "camera_config":{"background_color":DARK_GREY}
     }
@@ -496,3 +497,97 @@ class NewScene(Scene):
 #         vp = Grid(rows=2,columns=3)
 #         self.play(ShowCreation(vp))
 #         self.wait()
+
+class MoveToTargetScene(Scene):
+    def construct(self):
+        dirc = 2*UP+RIGHT
+        dot = Dot(dirc)
+        line = Line(ORIGIN,dirc)
+        dot.generate_target()
+        dot.target.move_to(ORIGIN)
+        line.generate_target()
+        line.target.scale(0, about_point = ORIGIN)
+
+        tex = TexMobject("r=1",color=YELLOW).next_to(line,DOWN)
+        tex.add_background_rectangle().fade()
+
+        self.add(tex)
+        self.add(dot.copy().fade())
+        self.add(line.copy().set_stroke(GREY, 1))
+        self.play(*list(map(MoveToTarget, [dot, line])))
+        self.wait()
+
+
+class ComplexPlaneScene(Scene):
+    def construct(self):
+        self.background_plane = ComplexPlane(
+            center_point = ORIGIN,
+            x_min=-FRAME_X_RADIUS*2,
+            x_max=FRAME_X_RADIUS*2,
+            y_min=-FRAME_Y_RADIUS*2,
+            y_max=FRAME_Y_RADIUS*2,
+            axis_config = {
+                "stroke_color": WHITE,
+                "stroke_width": 5,
+                },
+            background_line_style = {
+                "stroke_color": GRAY,
+                "stroke_width": 2,
+                "stroke_opacity": 1,
+                }
+            )
+        self.background_plane.add_coordinates() # 显示坐标
+
+        clr = Circle()
+        neg_one_point = self.background_plane.number_to_point(-1)
+        self.neg_one_dot = Dot(neg_one_point, color = BLUE)
+
+        self.add(self.background_plane,clr)
+        self.show_all_rational_slopes()   
+    
+    def show_all_rational_slopes(self):
+
+        lines = VGroup()
+        labels = VGroup()
+        for u in range(2, 7):
+            for v in range(1, u):
+                if fractions.gcd(u, v) != 1:
+                    continue
+                z_squared = complex(u, v)**2
+                unit_z_squared = z_squared/abs(z_squared)
+                point = self.background_plane.number_to_point(unit_z_squared)
+                dot = Dot(point, color = YELLOW)
+                line = Line(
+                    self.background_plane.number_to_point(-1),
+                    point,
+                    color = self.neg_one_dot.get_color()
+                )
+                line.add(dot)
+
+                label = TexMobject(
+                    "\\text{Slope = }",
+                    str(v), "/", str(u)
+                )
+                label.add_background_rectangle()
+                label.next_to(
+                    self.background_plane.coords_to_point(1, 1.5),
+                    RIGHT
+                )
+
+                lines.add(line)
+                labels.add(label)
+        line = lines[0]
+        label = labels[0]
+
+        self.play(
+            ShowCreation(line),
+            FadeIn(label)
+        )
+        self.wait()
+        for new_line, new_label in list(zip(lines, labels))[1:]:
+            self.play(
+                Transform(line, new_line),
+                Transform(label, new_label)
+            )
+            self.wait()
+        self.play(*list(map(FadeOut, [line, label])))

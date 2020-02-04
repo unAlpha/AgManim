@@ -15,7 +15,9 @@ def complex_string_with_i(z):
         return str(int(z.imag)) + "i"
     elif z.imag == 0:
         return str(int(z.real))
-    return complex_string(z).replace("j", "i")
+    # 原版
+    # return complex_string(z).replace("j", "i")
+    return [item.replace("j", "i") for item in complex_string(z)]
 
 class IntroduceTriples(TeacherStudentsScene):
     def construct(self):
@@ -1129,18 +1131,18 @@ class OneMoreExample(Scene):
             "\\big(3 \\cdot 2 + 2 \\cdot 3 \\big)i"
         )
         for i in 1, 12, 18:
-            second_line[i].set_color(BLUE)
+            second_line[0][i].set_color(BLUE)
         for i in 5, 14, 16:
-            second_line[i].set_color(YELLOW)
+            second_line[0][i].set_color(YELLOW)
         second_line.scale(0.9)
         final_line = TexMobject("5 + 12i")
         for i in 0, 2, 3:
-            final_line[i].set_color(GREEN)
+            final_line[0][i].set_color(GREEN)
         lines = VGroup(top_line, second_line, final_line)
         lines.arrange(DOWN, buff = MED_LARGE_BUFF)
         lines.next_to(rect.get_top(), DOWN)
         minus = TexMobject("-").scale(0.9)
-        minus.move_to(second_line[3])
+        minus.move_to(second_line[0][3])
 
         self.play(
             FadeIn(rect),
@@ -1175,14 +1177,14 @@ class OneMoreExample(Scene):
             ])
             self.wait()
         self.play(
-            Transform(second_line[3], minus),
+            Transform(second_line[0][3], minus),
             FadeOut(VGroup(*[
-                second_line[i]
+                second_line[0][i]
                 for i in (4, 6, 7)
             ])),
-            second_line[5].shift, 0.35*RIGHT,
+            second_line[0][5].shift, 0.35*RIGHT,
         )
-        self.play(VGroup(*second_line[:4]).shift, 0.55*RIGHT)
+        self.play(VGroup(*second_line[0][:4]).shift, 0.55*RIGHT)
         self.wait()
         for index_alignment in index_alignment_lists[2:]:
             self.play(*[
@@ -1268,7 +1270,7 @@ class GeneralExample(OneMoreExample):
         dot = Dot(z_point, color = self.dot_color)
         line = Line(zero_point, z_point)
         line.set_color(dot.get_color())
-        label = TexMobject(complex_string_with_i(z))
+        label = TexMobject(*complex_string_with_i(z))
         label.add_background_rectangle()
         label.next_to(dot, RIGHT, SMALL_BUFF)
 
@@ -1276,7 +1278,7 @@ class GeneralExample(OneMoreExample):
         square_dot = Dot(square_point, color = self.square_color)
         square_line = Line(zero_point, square_point)
         square_line.set_color(square_dot.get_color())
-        square_label = TexMobject(complex_string_with_i(z**2))
+        square_label = TexMobject(*complex_string_with_i(z**2))
         square_label.add_background_rectangle()
         square_label.next_to(square_dot, UP+RIGHT, SMALL_BUFF)
         result_length_label = TexMobject(str(int(abs(z**2))))
@@ -1457,8 +1459,8 @@ class WriteGeneralFormula(GeneralExample):
         rect.to_corner(UP+LEFT, buff = 0)
         top_line = TexMobject("(u+vi)(u+vi)")
         for i in 1, 7:
-            top_line[i].set_color(U_COLOR)
-            top_line[i+2].set_color(V_COLOR)
+            top_line[0][i].set_color(U_COLOR)
+            top_line[0][i+2].set_color(V_COLOR)
         top_line.next_to(rect.get_top(), DOWN)
         second_line = TexMobject(
             "\\big(", "u^2 - v^2", "\\big)", "+",
@@ -1595,8 +1597,8 @@ class VisualizeZSquared(Scene):
         "dot_radius" : 0.05,
     }
     def construct(self):
-        self.force_skipping()
-
+        # 强制没有动画
+        # self.force_skipping()
         self.add_plane()
         self.write_z_to_z_squared()
         self.draw_arrows()
@@ -1696,8 +1698,8 @@ class VisualizeZSquared(Scene):
                     (square_point, self.square_color),
                 ]
             ]
-            z_label = TexMobject(complex_string_with_i(z))
-            square_label = TexMobject(complex_string_with_i(z**2))
+            z_label = TexMobject(*complex_string_with_i(z))
+            square_label = TexMobject(*complex_string_with_i(z**2))
             for label, point in (z_label, z_point), (square_label, square_point):
                 if abs(z) > 2:
                     vect = RIGHT
@@ -1768,7 +1770,7 @@ class VisualizeZSquared(Scene):
         color_grid = self.get_color_grid()
 
         self.play(
-            self.background_planes.set_stroke, None, 1,
+            self.background_plane.set_stroke, None, 1,
             LaggedStartMap(
                 FadeIn, color_grid, 
                 run_time = 2
@@ -1875,7 +1877,7 @@ class VisualizeZSquared(Scene):
             secondary_line_ratio = 0,
             stroke_width = 2,
         )
-        color_grids.set_color_by_gradient(
+        color_grid.set_color_by_gradient(
             *[GREEN, RED, MAROON_B, TEAL]*2
         )
         color_grid.remove(color_grid.axes[0])
@@ -1989,7 +1991,7 @@ class PointsWeMiss(VisualizeZSquared):
             dot.set_stroke(RED, 4)
             dot.set_fill(opacity = 0)
         labels = VGroup(*[
-            TexMobject(complex_string_with_i(z))
+            TexMobject(*complex_string_with_i(z))
             for z in z_list
         ])
         labels.set_color(RED)
@@ -2037,7 +2039,7 @@ class PointsWeMiss(VisualizeZSquared):
         dots[0].set_stroke(RED, 4)
         dots[0].set_fill(opacity = 0)
         labels = VGroup(*[
-            TexMobject(complex_string_with_i(z))
+            TexMobject(*complex_string_with_i(z))
             for z in z_list
         ])
         labels[0].set_color(RED)
@@ -2594,7 +2596,6 @@ class SupposeMissingPoint(PointsWeMiss):
         self.line = line
         self.dot = dot
 
-
     def project_onto_unit_circle(self):
         dot, line = self.dot, self.line
         template_line = Line(*[
@@ -2669,7 +2670,6 @@ class FinalProof(RationalPointsOnUnitCircle):
             DrawBorderThenFill(dot)
         )
         self.wait()
-
         self.example_dot = dot
         self.example_label = label
         self.unit_circle = circle
@@ -2766,10 +2766,10 @@ class FinalProof(RationalPointsOnUnitCircle):
             FadeIn(label)
         )
         self.wait()
-        for new_line, new_label in zip(lines, labels)[1:]:
+        for new_line, new_label in list(zip(lines, labels))[1:]:
             self.play(
                 Transform(line, new_line),
-                Transform(label, new_label),
+                Transform(label, new_label)
             )
             self.wait()
         self.play(*list(map(FadeOut, [line, label])))
@@ -2791,6 +2791,7 @@ class FinalProof(RationalPointsOnUnitCircle):
         )
         uv_arc.shift(self.plane_center)
         theta = TexMobject("\\theta")
+        #　next_to(目标，方向，buff，对齐方式)
         theta.next_to(uv_arc, RIGHT, SMALL_BUFF, DOWN)
         theta.scale_in_place(0.8)
 
@@ -2849,6 +2850,7 @@ class FinalProof(RationalPointsOnUnitCircle):
             ShowCreation(z_to_z_squared_arrow),
             FadeIn(z_to_z_squared)
         )
+        # 采用直接变换的形式 也是动画
         self.play(*[
             ReplacementTransform(
                 m1.copy(), m2,
@@ -2942,6 +2944,8 @@ class FinalProof(RationalPointsOnUnitCircle):
         h_line = Line(p0, p_mid, color = YELLOW)
         v_line = Line(p_mid, p1, color = YELLOW)
 
+        uv_label = TexMobject("u", "+", "v", "i")
+
         rhs = TexMobject("=", "{v", "\\over", "u}")
         rhs.next_to(self.same_slope_words, RIGHT)
         rect = SurroundingRectangle(VGroup(*rhs[1:]))
@@ -2951,18 +2955,19 @@ class FinalProof(RationalPointsOnUnitCircle):
 
         self.play(ShowCreation(h_line))
         self.play(ShowCreation(v_line))
-        self.wait()
-        self.play(*[
-            ReplacementTransform(
-                self.uv_label.get_part_by_tex(tex).copy(),
-                rhs.get_part_by_tex(tex),
-                run_time = 2
-            )
-            for tex in ("u", "v")
-        ] + [
-            Write(rhs.get_part_by_tex(tex))
-            for tex in ("=", "over")
-        ])
+        # 下面无法运行
+        # self.wait()
+        # self.play(*[
+        #     ReplacementTransform(
+        #         self.uv_label.get_part_by_tex(tex).copy(),
+        #         rhs.get_part_by_tex(tex),
+        #         run_time = 2
+        #     )
+        #     for tex in ("u", "v")
+        # ] + [
+        #     Write(rhs.get_part_by_tex(tex))
+        #     for tex in ("=", "over")
+        # ])
         self.wait(2)
         self.play(
             ShowCreation(rect),
@@ -2987,7 +2992,6 @@ class BitOfCircleGeometry(Scene):
         O = circle.get_center()
         O_dot = Dot(O, color = WHITE)
         self.add(circle, O_dot)
-
 
         groups = VGroup()
         for point, tex, color in (O, "2", MAROON_B), (p2, "", RED):
@@ -3079,7 +3083,7 @@ class PatreonThanksTriples(PatreonThanks):
 
 class Thumbnail(DrawRadialLines):
     def construct(self):
-        self.force_skipping()
+        #　self.force_skipping()
         self.add_plane()
         self.add_transformed_color_grid()
         self.color_grid.set_stroke(width = 5)
@@ -3105,7 +3109,8 @@ class Thumbnail(DrawRadialLines):
         ])))
         triples.arrange(DOWN, buff = MED_LARGE_BUFF)
         triples.next_to(rect.get_top(), DOWN)
-        self.add(rect, triples)
+        self.play(*list(map(ShowCreation,(rect, triples))))
+        self.wait()
 
 class Poster(DrawRadialLines):
     CONFIG = {
@@ -3128,20 +3133,25 @@ class Poster(DrawRadialLines):
                 dot.scale_in_place(0.5)
         self.remove(self.coordinate_labels)
 
-        # rect = Rectangle(
-        #     height = 4.3, width = 4.2,
-        #     stroke_width = 3,
-        #     stroke_color = WHITE,
-        #     fill_color = BLACK,
-        #     fill_opacity = 1,
-        # )
-        # rect.to_corner(UP+RIGHT, buff = 0.01)
-        # triples = VGroup(*map(TexMobject, [
-        #     "3^2 + 4^2 = 5^2",
-        #     "5^2 + 12^2 = 13^2",
-        #     "8^2 + 15^2 = 17^2",
-        #     "\\vdots"
-        # ]))
-        # triples.arrange(DOWN, buff = MED_LARGE_BUFF)
-        # triples.next_to(rect.get_top(), DOWN)
-        # self.add(rect, triples)
+        rect = Rectangle(
+            height = 4.3, width = 4.2,
+            stroke_width = 3,
+            stroke_color = WHITE,
+            fill_color = BLACK,
+            fill_opacity = 1,
+        )
+        rect.to_corner(UP+RIGHT, buff = 0.01)
+        triples = VGroup(*map(TexMobject, [
+            "3^2 + 4^2 = 5^2",
+            "5^2 + 12^2 = 13^2",
+            "8^2 + 15^2 = 17^2",
+            "\\vdots"
+        ]))
+        triples.arrange(DOWN, buff = MED_LARGE_BUFF)
+        triples.next_to(rect.get_top(), DOWN)
+
+        self.play(
+            ShowCreation(rect),
+            ShowCreation(triples)
+            )
+        self.wait()
