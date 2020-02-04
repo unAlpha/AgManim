@@ -1,5 +1,30 @@
 from manimlib.imports import *
 
+class useText2(Scene):
+    def construct(self):
+        text = Text("""
+                    HIV病毒的一般操作在BSL-2级实验室进行，
+            特殊操作建议在BSL-3级实验室进行。
+            """,
+            size=0.5,
+            lsh=1,
+            gradient={YELLOW,RED}
+            )
+        self.play(FadeInFromDirections(text))
+        self.wait()
+
+class useText1(Scene):
+    def construct(self):
+        text = Text("""
+                天花病毒储存在以上两个P4生物实验室中
+            """,
+            size=0.5,
+            lsh=1,
+            gradient={YELLOW,RED}
+            )
+        self.play(FadeInFromDirections(text),run_time=5)
+        self.wait()
+
 class ep1101(GraphScene):
     CONFIG ={
         "x_min" : -4,

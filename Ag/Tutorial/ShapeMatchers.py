@@ -127,6 +127,7 @@ class GenericExample(Scene):
         self.text_group = VGroup(text1,text2,text3).arrange_submobjects(DOWN,buff=1)
         self.text_group.scale(1.4)
         self.add(self.text_group)
+        self.wait()
 
 class GenericPaths(Scene):
     def setup(self):
@@ -136,6 +137,7 @@ class GenericPaths(Scene):
         path3.set_points_as_corners([LEFT*3,ORIGIN,UP,UP+RIGHT*3])
         self.path_group = VGroup(path1,path2,path3).arrange_submobjects(DL,buff=1)
         self.add(self.path_group)
+        self.wait()
 
 class FormulaExample(Scene):
     def setup(self):
@@ -177,12 +179,9 @@ class UnderlineIndicationExample(GenericExample):
 class DashedRectangleExample(GenericExample):
     def construct(self):
         t1,t2,t3 = self.text_group
-        # DashedRectangle: See my_objects.py line 6
         dr1 = DashedRectangle(line_config={"stroke_opacity":0.5})
-        # SurroundingDashedRectangle: See my_objects.py line 45
         dr2 = SurroundingDashedRectangle(t1)
         self.add(dr1,dr2)
-        # RemarkDashedRectangle: See my_animations.py line 97
         self.play(
             RemarkDashedRectangle(t2),
             RemarkDashedRectangle(t3,line_config={"stroke_width":3},color=PURPLE,margin=0.5)
@@ -192,14 +191,12 @@ class DashedRectangleExample(GenericExample):
 class FreeHandExample(GenericExample):
     def construct(self):
         t1,t2,t3 = self.text_group
-        # FreehandRectangle: my_objects.py - line 81
         t1_fh = FreehandRectangle(t1)
         t2_fh = FreehandRectangle(t2,margin=0.2,color=RED,stroke_width=2)
         t3_fh = FreehandRectangle(t3,margin=0.2,color=RED,fill_opacity=1,fill_color=PURPLE,partitions=20)
         self.bring_to_back(t3_fh)
         self.play(
-            *list(map(ShowCreation,[t1_fh,t2_fh])), #<- This is a way to play multiple animations:
-            # *list(map(Animation,mobs)), # mobs can be a list or a VGroup
+            *list(map(ShowCreation,[t1_fh,t2_fh])),
             DrawBorderThenFill(t3_fh),
             *list(map(Write,[t1,t2,t3])),
         )
@@ -208,7 +205,6 @@ class FreeHandExample(GenericExample):
 class FreeHandExample2(GenericPaths):
     def construct(self):
         p1,p2,p3 = self.path_group
-        # FreehandDraw: my_objects.py - line 56
         p1_fh = FreehandDraw(p1,close=True)
         p2_fh = FreehandDraw(p2,close=True,color=RED,partitions=30,dx_random=2)
         p3_fh = FreehandDraw(p3,partitions=20,dx_random=1)
@@ -280,8 +276,9 @@ class MeasureObject1(Scene):
 class MeasureObject2(Scene):
     def construct(self):
         triangle = RegularPolygon(n=3)
-        #Vertices
+        # 新增顶点空对象
         triangle.vertices_text = VMobject()
+        # 让顶点文字不断变化 添加add_updater
         triangle.vertices_text.add_updater(lambda mob: mob.become(self.get_triangle_vertices(triangle)))
         #Measure side
         triangle.measure1 = VMobject()
@@ -296,8 +293,11 @@ class MeasureObject2(Scene):
         self.play(triangle.scale,[0.7,2,1])
         self.wait(2)
 
+    # 给顶点添加文字
     def get_triangle_vertices(self,mob,buff=0.3):
+        # 获得所有顶点
         vertices = mob.get_vertices()
+        # 生成顶点文字，并放置好位置
         vertices_text = VGroup(*[
             Text(f"{v}",height=2,stroke_width=0,font="Times")\
             .move_to(mob.get_center()+(vert-mob.get_center())*(buff/get_norm(vert)+1))
@@ -350,7 +350,7 @@ class FadeInFromDirectionsExample(FormulaExample):
 class FadeInFromRandomExample(FormulaExample):
     def construct(self):
         self.play(
-            FadeInFromRandomA(self.tex_example[0]),
+            FadeInFromRandomB(self.tex_example[0]),
             run_time=3
         )
         self.wait()
