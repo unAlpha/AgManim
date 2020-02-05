@@ -254,6 +254,22 @@ class ThreeDAxes(Axes):
                 submob.get_unit_normal = lambda a: np.ones(3)
                 submob.set_sheen(0.2)
 
+    # Ag添加
+    def add_label_xyzStr(self):
+        texVGroup = [TexMobject(str_xyz) for str_xyz in ("x","y","z")]
+        
+        texVGroup[0].next_to(self.x_axis, DR, buff = SMALL_BUFF/100)
+        self.x_axis.add(texVGroup[0])
+
+        texVGroup[1].rotate(90 * DEGREES, about_point=ORIGIN)
+        texVGroup[1].next_to(self.y_axis, UR, buff = SMALL_BUFF/100)
+        self.y_axis.add(texVGroup[1])
+
+        texVGroup[2].rotate(-np.pi / 2, UP, about_point=ORIGIN)
+        texVGroup[2].rotate(angle_of_vector(self.z_normal), OUT,about_point=ORIGIN)
+        texVGroup[2].next_to(self.z_axis, OUT+LEFT, buff = SMALL_BUFF/100)
+        self.z_axis.add(texVGroup[2])
+
 
 class NumberPlane(Axes):
     CONFIG = {
