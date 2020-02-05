@@ -1,5 +1,52 @@
 from manimlib.imports import *
 
+class MyThreeDScene(ThreeDScene):
+    def construct(self):
+        axes = ThreeDAxes(
+                y_min = -3.6,
+                y_max = 3.6,
+                x_axis_config= {
+                    "include_numbers" : True,
+                    "exclude_zero_from_default_numbers":False,
+                    },
+                y_axis_config= {
+                    "include_numbers" : True,
+                    "label_direction" : DOWN
+                    },
+                z_axis_config= {
+                    "include_numbers" : True,
+                    }
+            )
+
+        self.add_label_xyzStr(axes)
+
+        circle=Circle()
+        sqr = Square(side_length=2.5)
+        sqr.rotate(PI/2,X_AXIS,about_point=ORIGIN).set_color(BLUE)
+        axes.x_axis.numbers.set_color(RED)
+        axes.z_axis.rotate(PI,about_point=ORIGIN)
+        self.play(
+                *list(map(ShowCreation,[axes.x_axis,axes.y_axis]))
+            )
+        self.play(ShowCreation(circle))
+        self.move_camera(phi=60*DEGREES,theta=-45*DEGREES,run_time=3)
+        self.play(FadeInFromLarge(axes.z_axis))
+        self.wait()
+        self.play(ShowCreation(sqr))
+        self.wait()
+
+    def add_label_xyzStr(self, the_axes):
+        texVGroup = [TextMobject(str_xyz) for str_xyz in ("x","y","z")]
+        texVGroup[0].next_to(the_axes.x_axis, DR, buff = SMALL_BUFF/100)
+        the_axes.x_axis.add(texVGroup[0])
+        texVGroup[1].rotate(90 * DEGREES, about_point=ORIGIN)
+        texVGroup[1].next_to(the_axes.y_axis, UR, buff = SMALL_BUFF/100)
+        the_axes.y_axis.add(texVGroup[1])
+        texVGroup[2].rotate(-np.pi / 2, UP, about_point=ORIGIN)
+        texVGroup[2].rotate(angle_of_vector(the_axes.z_normal), OUT,about_point=ORIGIN)
+        texVGroup[2].next_to(the_axes.z_axis, OUT+LEFT, buff = SMALL_BUFF/100)
+        the_axes.z_axis.add(texVGroup[2])
+        
 class useText2(Scene):
     def construct(self):
         text = Text("""

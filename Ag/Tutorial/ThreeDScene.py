@@ -1,11 +1,24 @@
 from manimlib.imports import *
 
+# 二维平面三维展示
 class My3DScene(ThreeDScene):
     CONFIG = {
     "plane_kwargs" : {
-        "color" : RED_B
-        },
-    "point_charge_loc" : 0.5*RIGHT-1.5*UP,
+            "center_point" : ORIGIN,
+            "x_min" : -FRAME_X_RADIUS*2,
+            "x_max" : FRAME_X_RADIUS*2,
+            "y_min" : -FRAME_Y_RADIUS*3,
+            "y_max" : FRAME_Y_RADIUS*3,
+            "axis_config" : {
+                "stroke_color": WHITE,
+                "stroke_width": 5,
+                },
+            "background_line_style" : {
+                "stroke_color": GRAY,
+                "stroke_width": 2,
+                "stroke_opacity": 0.5,
+                }
+        }
     }
     def construct(self):
         plane = NumberPlane(**self.plane_kwargs)
@@ -16,24 +29,36 @@ class My3DScene(ThreeDScene):
         text = TextMobject("Good night")
         text.set_color(GREEN)
 
-        self.set_camera_orientation(phi=0, theta = 0)
+        self.set_camera_orientation(phi=0, theta = -PI/2)
         self.wait()
         self.move_camera(phi=PI/4,run_time=1)  #currently broken in manim
-        self.move_camera(theta=PI/4,run_time=1)
+        self.move_camera(theta=-PI/2+PI/10,run_time=1)
         self.begin_ambient_camera_rotation(rate=0.1)
         self.play(ShowCreation(circle, run_time = 3))
         self.play(ApplyMethod(circle.shift, UP+4*OUT, run_time = 4))
         self.move_camera(theta = -PI/2, phi=PI/5, run_time=5)
         self.play(Transform(circle, text, run_time = 3))
-        self.wait(6)
+        self.wait(2)
 
-
-#There seems to be no change between Scene and ThreeDScene
-class CameraPosition1(ThreeDScene):
+#　三维图形
+class SurfacesAnimation1(ThreeDScene):
     def construct(self):
-        circulo=Circle()
-        self.play(ShowCreation(circulo))
-        self.wait()
+        axes = ThreeDAxes()
+        sphere = ParametricSurface(
+            lambda u, v: np.array([
+                1.2*np.cos(u)*np.cos(v),
+                1.2*np.cos(u)*np.sin(v),
+                1.2*np.sin(u)
+            ]),v_min=0,v_max=TAU,u_min=-PI/2,u_max=PI/2,checkerboard_colors=[RED_D, RED_E],
+            resolution=(15, 32)).scale(2)
+
+        self.set_camera_orientation(phi=75 * DEGREES)
+        self.begin_ambient_camera_rotation(rate=0.2)
+
+        self.add(axes)
+        self.play(Write(sphere))
+        self.wait(5)
+
 
 '''
 We have to add this line:
@@ -74,7 +99,7 @@ class CameraPosition3(ThreeDScene):
     def construct(self):
         axes = ThreeDAxes()
         circle=Circle()
-        self.set_camera_orientation(phi=80 * DEGREES,theta=45*DEGREES)
+        self.set_camera_orientation(phi=60 * DEGREES,theta=45*DEGREES)
         self.play(ShowCreation(circle),ShowCreation(axes))
         self.wait()
 
@@ -94,14 +119,29 @@ class CameraPosition5(ThreeDScene):
         self.play(ShowCreation(circle),ShowCreation(axes))
         self.wait()
 
-#------ Move camera
-
+# Move camera
 class MoveCamera1(ThreeDScene):
     def construct(self):
-        axes = ThreeDAxes()
+        axes = ThreeDAxes(
+                x_axis_config= {
+                    "include_numbers" : True,
+                    "exclude_zero_from_default_numbers":False,
+                    },
+                y_axis_config= {
+                    "include_numbers" : True,
+                    "label_direction" : UP
+                    },
+                z_axis_config= {
+                    "include_numbers" : True,
+                    }
+            )
         circle=Circle()
+        sqr = Square().rotate(PI/2,X_AXIS,about_point=ORIGIN).set_color(BLUE)
+        axes.x_axis.numbers.set_color(RED)
+        axes.z_axis.rotate(PI,about_point=ORIGIN)
+        self.add(sqr)
         self.play(ShowCreation(circle),ShowCreation(axes))
-        self.move_camera(phi=30*DEGREES,theta=-45*DEGREES,run_time=3)
+        self.move_camera(phi=60*DEGREES,theta=-45*DEGREES,run_time=3)
         self.wait()
 
 class MoveCamera2(ThreeDScene):
@@ -111,14 +151,14 @@ class MoveCamera2(ThreeDScene):
         self.set_camera_orientation(phi=80 * DEGREES)           
         self.play(ShowCreation(circle),ShowCreation(axes))
         self.begin_ambient_camera_rotation(rate=0.1)            #Start move camera
-        self.wait(5)
+        self.wait(2)
         self.stop_ambient_camera_rotation()                     #Stop move camera
         self.move_camera(phi=80*DEGREES,theta=-PI/2)            #Return the position of the camera
         self.wait()
 
 #----------- Funciones parametricas
 
-
+# 三维曲线
 class ParametricCurve1(ThreeDScene):
     def construct(self):
         curve1=ParametricFunction(

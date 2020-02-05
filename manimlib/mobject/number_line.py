@@ -138,9 +138,7 @@ class NumberLine(Line):
             return self.numbers_to_show
         numbers = np.arange(int(self.leftmost_tick), int(self.x_max))
         if self.exclude_zero_from_default_numbers:
-            # Ag需要显示0 原文如下
-            # numbers = numbers[numbers != 0]
-            numbers = numbers[numbers]
+            numbers = numbers[numbers != 0]
         return numbers
 
     def get_number_mobject(self, number,

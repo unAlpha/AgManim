@@ -591,3 +591,4 @@ class ComplexPlaneScene(Scene):
             )
             self.wait()
         self.play(*list(map(FadeOut, [line, label])))
+    
