@@ -30,7 +30,7 @@ class MyThreeDScene(ThreeDScene):
             )
         self.play(ShowCreation(circle))
         self.move_camera(phi=60*DEGREES,theta=-45*DEGREES,run_time=3)
-        self.play(FadeInFromLarge(axes.z_axis))
+        self.play(ShowCreation(axes.z_axis))
         self.wait()
         self.play(ShowCreation(sqr))
         self.wait()
@@ -58,6 +58,32 @@ class useText1(Scene):
             gradient={YELLOW,RED}
             )
         self.play(FadeInFromDirections(text),run_time=5)
+        self.wait()
+
+class ep11033(Scene):
+    def construct(self):
+        text = TexMobject(
+            "s_1",
+            "s_1'",
+            "s_2",
+            "s_2'",
+            color = BLACK
+            )
+        self.play(ShowCreation(text[3]))
+        self.wait()
+
+class ep1102(Scene):
+    def construct(self):
+        text = Text("""
+                复数的几何含义
+            """,
+            size=1,
+            lsh=1,
+            gradient={YELLOW,RED}
+            )
+        text.rect = SurroundingRectangle(text,buff = MED_SMALL_BUFF)
+        self.play(FadeInFromDirections(text), run_time=3.6)
+        self.play(ShowCreation(text.rect))
         self.wait()
 
 class ep1101(GraphScene):

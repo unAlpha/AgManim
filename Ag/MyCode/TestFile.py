@@ -203,9 +203,9 @@ class ValueTrackerVector(GraphScene):
 
     def vector(self,x1=0,y1=0,x2=1,y2=1,texNeed=False):
         arr = Arrow(self.coords_to_point(x1,y1),self.coords_to_point(x2,y2),buff=0)
-        tex = TexMobject("(%.1f,%.1f)"%(x2,y2))
-        tex.next_to(arr.end,UP+RIGHT,buff=SMALL_BUFF)
         if texNeed:
+            tex = TexMobject("(%.1f,%.1f)"%(x2,y2))
+            tex.next_to(arr.end,UP+RIGHT,buff=SMALL_BUFF)
             return VGroup(arr,tex)
         else:
             return arr
@@ -278,9 +278,9 @@ class ElbowVector(GraphScene):
 
     def vector(self,x1=0,y1=0,x2=1,y2=1,texNeed=False):
         arr = Arrow(self.coords_to_point(x1,y1),self.coords_to_point(x2,y2),buff=0)
-        tex = TexMobject("(%.1f,%.1f)"%(x2,abs(y2)))
-        tex.next_to(arr.end,UP+RIGHT,buff=SMALL_BUFF)
         if texNeed:
+            tex = TexMobject("(%.1f,%.1f)"%(x2,abs(y2)))
+            tex.next_to(arr.end,UP+RIGHT,buff=SMALL_BUFF)
             return VGroup(arr,tex)
         else:
             return arr
@@ -353,9 +353,9 @@ class ArcCoords(GraphScene):
 
     def vector(self,x1=0,y1=0,x2=1,y2=1,texNeed=False):
         arr = Arrow(self.coords_to_point(x1,y1),self.coords_to_point(x2,y2),buff=0)
-        tex = TexMobject("(%.1f,%.1f)"%(x2,y2))
-        tex.next_to(arr.end,UP+RIGHT,buff=SMALL_BUFF)
         if texNeed:
+            tex = TexMobject("(%.1f,%.1f)"%(x2,y2))
+            tex.next_to(arr.end,UP+RIGHT,buff=SMALL_BUFF)
             return VGroup(arr,tex)
         else:
             return arr
@@ -447,7 +447,7 @@ class testNumberPlane(Scene):
         cir = Circle(radius=1).move_to(center_point)
         v1 = plane.get_vector([3,3])
         v2 = plane.get_vector([1,2])
-        v3 = plane.get_complete_vector([1,2,3,5])
+        v3 = plane.get_complete_vector([1,2,3,3])
         self.play(ShowCreation(plane))
         self.add(v1,v2,v3,cir)
         self.wait()
@@ -479,7 +479,6 @@ class testComplexPlane(Scene):
         self.play(ShowCreation(plane))
         self.add(v1,v2,v3)
         self.wait()
-
 
 class BackgroundColorScene(Scene):
     CONFIG={
