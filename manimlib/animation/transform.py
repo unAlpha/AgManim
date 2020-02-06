@@ -29,7 +29,7 @@ class Transform(Animation):
         self.target_mobject = target_mobject
         self.init_path_func()
 
-    #动作路径（初始化时就使用）
+    # 动作路径（初始化时就使用）
     def init_path_func(self):
         if self.path_func is not None:
             return

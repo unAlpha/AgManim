@@ -590,4 +590,160 @@ class ComplexPlaneScene(Scene):
             )
             self.wait()
         self.play(*list(map(FadeOut, [line, label])))
+
+
+class Cycloid(ParametricFunction):
+    CONFIG = {
+        "point_a": 3*LEFT+2*UP,
+        "radius": 2,
+        "end_theta": np.pi,
+        "density": 5*DEFAULT_POINT_DENSITY_1D,
+        "color": YELLOW
+    }
+
+    def __init__(self, **kwargs):
+        digest_config(self, kwargs)
+        ParametricFunction.__init__(self, self.pos_func, **kwargs)
+
+    def pos_func(self, t):
+        T = t*self.end_theta
+        return self.point_a + self.radius * np.array([
+            T - np.sin(T),
+            np.cos(T) - 1,
+            0
+        ])
+
+class RollAlongVector(Animation):
+    CONFIG = {
+        "rotation_vector": OUT,
+    }
+
+    def __init__(self, mobject, vector, **kwargs):
+        # self 获得对象的半径
+        radius = mobject.get_width()/2
+        # self 求得向量的长度
+        radians = get_norm(vector)/radius
+        last_alpha = 0
+        digest_config(self, kwargs, locals())
+        Animation.__init__(self, mobject, **kwargs)
     
+    # animating 时会调用
+    def interpolate_mobject(self, alpha):
+        d_alpha = alpha - self.last_alpha
+        self.last_alpha = alpha
+        self.mobject.rotate_in_place(
+            d_alpha*self.radians,
+            self.rotation_vector
+        )
+        self.mobject.shift(d_alpha*self.vector)
+
+class RollAlongVectorTest1(Scene):
+    def construct(self):
+        circle = Circle(radius=1)
+        circle.add(Line(ORIGIN,RIGHT))
+        circle.move_to(UP)
+        vector = Line(ORIGIN,2*LEFT)
+        self.play(
+            RollAlongVector(
+                circle,
+                vector.points[-1]-vector.points[0]
+            ),
+            ShowCreation(vector)
+        )
+
+class RollAlongVectorTest2(Scene):
+    def construct(self):
+        circle = Square()
+        circle.add(Line(ORIGIN,RIGHT))
+        # circle.move_to(UP)
+        vector = Line(ORIGIN,2*LEFT)
+        self.play(
+            RollAlongVector(
+                circle,
+                vector.points[-1]-vector.points[0]
+            ),
+            ShowCreation(vector)
+        )
+
+
+class CycloidScene(Scene):
+    CONFIG = {
+        "point_a": 6*LEFT+3*UP,
+        "radius": 2,
+        "end_theta": 2*np.pi
+    }
+
+    def construct(self):
+        # 1、生成摆线
+        self.generate_cycloid()
+        # 2、生成圆和半径
+        self.generate_circle()
+        # 3、生成上顶线
+        self.generate_ceiling()
+
+    # 4、演示圆和顶线生成动画
+    def grow_parts(self):
+        self.play(*[
+            ShowCreation(mob)
+            for mob in (self.circle, self.ceiling)
+        ])
+
+    def generate_cycloid(self):
+        self.cycloid = Cycloid(
+            point_a=self.point_a,
+            radius=self.radius,
+            end_theta=self.end_theta
+        )
+
+    def generate_circle(self, **kwargs):
+        self.circle = Circle(radius=self.radius, **kwargs)
+        self.circle.shift(self.point_a - self.circle.get_top())
+        radial_line = Line(
+            self.circle.get_center(), self.point_a
+        )
+        self.circle.add(radial_line)
+
+    def generate_ceiling(self):
+        self.ceiling = Line(FRAME_X_RADIUS*LEFT, FRAME_X_RADIUS*RIGHT)
+        self.ceiling.shift(self.cycloid.get_top()[1]*UP)
+    # 5、动画
+    def draw_cycloid(self, run_time=3, *anims, **kwargs):
+        # 相当于给kwargs添加run_time
+        kwargs["run_time"] = run_time
+        self.play(
+            RollAlongVector(
+                self.circle,
+                self.cycloid.points[-1]-self.cycloid.points[0],
+                **kwargs
+            ),
+            ShowCreation(self.cycloid, **kwargs),
+            *anims
+        )
+
+    def roll_back(self, run_time=3, *anims, **kwargs):
+        kwargs["run_time"] = run_time
+        self.play(
+            RollAlongVector(
+                self.circle,
+                self.cycloid.points[0]-self.cycloid.points[- 1],
+                rotation_vector=IN,
+                **kwargs
+            ),
+            ShowCreation(
+                self.cycloid,
+                # 倒放
+                rate_func=lambda t: smooth(1-t),
+                **kwargs
+            ),
+            *anims
+        )
+        self.generate_cycloid()
+
+
+class DrawCycloid(CycloidScene):
+    def construct(self):
+        CycloidScene.construct(self)
+        self.grow_parts()
+        self.draw_cycloid()
+        self.wait()
+        self.roll_back()

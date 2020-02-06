@@ -1,5 +1,103 @@
 from manimlib.imports import *
 
+class ep0673(GraphScene):
+    def construct(self):
+        curve1=ParametricFunction(lambda x : np.array([2*np.cos(x),1*np.sin(x),0]),\
+            color=BLUE,t_min=-TAU,t_max=TAU)
+        self.play(ShowCreation(curve1),run_time=1)
+        text1 = Text("椭圆",size=0.5).next_to(curve1,2*DOWN)
+        self.play(Write(text1))
+        self.wait(10)
+
+class MultipleDeriv(Scene):
+    def construct(self):
+        title = TexMobject(r"\text{What does } \frac{d^nf}{dx^n} \text{ mean?}",
+                           tex_to_color_map={r"\frac{d^nf}{dx^n}": YELLOW}
+                           )
+        title.scale(2)
+
+        title2 = TexMobject(r"\text{What does } \frac{d^nf}{dx^n} \text{ mean?}",
+                            tex_to_color_map={r"\frac{d^nf}{dx^n}": YELLOW}
+                            )
+        title2.shift(3 * UP)
+
+        eq = TexMobject(
+            r"\frac{d^nf}{dx^n}=", r"\left (\frac{d}{dx} ... \frac{d}{dx}\right )", r"f")
+        eq.scale(1.5)
+
+        b = Brace(eq[1])
+        t = b.get_text("n times").scale(1.5)
+
+        eq1 = VGroup(eq, b, t)
+
+        f1 = ParametricFunction(
+            lambda t: np.array([t, t**2, 0]),
+            t_min=0,
+            t_max=math.sqrt(2),
+            color=RED,
+            stroke_width=1.25*DEFAULT_STROKE_WIDTH
+        )
+        a1 = Axes(
+            x_min=0,
+            x_max=2,
+            y_min=0,
+            y_max=2,
+            number_line_config={
+                "include_tip": False,
+            }
+        )
+
+        func1 = VGroup(a1, f1)
+        func1.scale(1.5)
+        func1.shift(4.5 * LEFT + 1 * DOWN)
+
+        f2 = ParametricFunction(
+            lambda t: np.array([t, 2*t, 0]),
+            t_min=0,
+            t_max=1,
+            color=BLUE,
+            stroke_width=1.25*DEFAULT_STROKE_WIDTH
+        )
+        a2 = Axes(
+            x_min=0,
+            x_max=2,
+            y_min=0,
+            y_max=2,
+            number_line_config={
+                "include_tip": False,
+            }
+        )
+
+        func2 = VGroup(a2, f2)
+        func2.scale(1.5)
+        func2.shift(3 * RIGHT + 1 * DOWN)
+
+        a = Arrow(1 * LEFT, 1 * RIGHT, color=GREEN)
+        a.scale(1.5)
+
+        t = TexMobject(r"\frac{d}{dx}")
+        t.shift(1 * UP)
+
+        arr = VGroup(a, t)
+
+        self.play(Write(title))
+        self.wait()
+
+        self.play(Transform(title, title2))
+        self.wait()
+
+        self.play(Write(eq1))
+        self.wait()
+
+        self.play(Uncreate(eq1))
+        self.play(Write(func1))
+        self.wait()
+
+        self.play(Write(arr))
+        self.play(TransformFromCopy(func1, func2))
+        self.wait()
+
+
 class ExampleApproximation(GraphScene):
     CONFIG = {
         "function" : lambda x : np.cos(x), 
