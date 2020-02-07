@@ -1,6 +1,20 @@
 from manimlib.imports import *
 import fractions
 
+class testTransform(Scene):
+    def construct(self):
+        dot = Dot()
+        self.add(dot)
+        self.play(
+            dot.shift,UP,
+            Transform(self.myLine(ORIGIN),self.myLine(UP))
+        )
+        self.wait()
+
+    def myLine(self,direction):
+        ployObj = VMobject()
+        return ployObj.set_points_as_corners([DOWN,LEFT,direction])
+
 class MyThreeDScene(ThreeDScene):
     def construct(self):
         axes = ThreeDAxes(
@@ -38,7 +52,6 @@ class MyThreeDScene(ThreeDScene):
         
         self.play(Write(cube))
         self.wait()
-
 
 class Equation(Scene):
     def construct(self):
@@ -658,11 +671,12 @@ class RollAlongVector(Animation):
     }
 
     def __init__(self, mobject, vector, **kwargs):
-        # self 获得对象的半径
+        # 获得对象的半径
         radius = mobject.get_width()/2
-        # self 求得向量的长度
+        # 求得向量的长度
         radians = get_norm(vector)/radius
         last_alpha = 0
+        # 把本地参数给self
         digest_config(self, kwargs, locals())
         Animation.__init__(self, mobject, **kwargs)
     
