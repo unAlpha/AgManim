@@ -1,6 +1,45 @@
 from manimlib.imports import *
 import fractions
 
+class MyThreeDScene(ThreeDScene):
+    def construct(self):
+        axes = ThreeDAxes(
+                y_min = -3.6,
+                y_max = 3.6,
+                x_axis_config= {
+                    "include_numbers" : True,
+                    "exclude_zero_from_default_numbers":False,
+                    },
+                y_axis_config= {
+                    "include_numbers" : True,
+                    "label_direction" : DOWN
+                    },
+                z_axis_config= {
+                    "include_numbers" : True,
+                    }
+            )
+
+        cube=Cube()
+
+        axes.add_label_xyzStr()
+        sqr = Square(side_length=2.5)
+        sqr.rotate(PI/2,X_AXIS,about_point=ORIGIN).set_color(BLUE)
+        axes.x_axis.numbers.set_color(RED)
+        axes.z_axis.rotate(PI,about_point=ORIGIN)        
+        
+        self.play(
+                *list(map(ShowCreation,[axes.x_axis,axes.y_axis]))
+            )
+        
+        self.move_camera(phi=60*DEGREES,theta=-45*DEGREES,run_time=3)
+        self.play(ShowCreation(axes.z_axis))
+        self.wait()
+        self.play(ShowCreation(sqr))
+        
+        self.play(Write(cube))
+        self.wait()
+
+
 class Equation(Scene):
     def construct(self):
         equation1 = TexMobject("a", "^2", "+", "b", "^2", "=", "c", "^2")
