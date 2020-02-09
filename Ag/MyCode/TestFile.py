@@ -568,6 +568,38 @@ class MoveToTargetScene(Scene):
         self.play(*list(map(MoveToTarget, [dot, line])))
         self.wait()
 
+class ShpaeTest(Scene):
+    def construct(self):
+        path1 = self.get_path()
+        self.play(ShowCreation(path1))
+        self.wait()
+
+        line = Line(ORIGIN,RIGHT)
+        lineGroup = VGroup(
+            line,
+            line.copy(),
+            line.copy(),
+            line.copy(),
+            line.copy(),
+            line.copy(),
+            line.copy(),
+            line.copy()
+            ).arrange_in_grid(3,2)
+        self.add(lineGroup)
+        self.wait()
+
+    def get_shape(self):
+        shape = SVGMobject("camera")
+        return shape
+
+    def get_path(self):
+        shape = self.get_shape()
+        path = shape.family_members_with_points()[0]
+        # path.set_height(5)
+        path.set_fill(opacity=0)
+        path.set_stroke(WHITE, 1)
+        return path
+
 
 class ComplexPlaneScene(Scene):
     def construct(self):

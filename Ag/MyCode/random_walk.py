@@ -26,6 +26,19 @@ class RandomWalk():
             self.position = np.vstack((self.position,next_position))
             self.step_count+=1
 
+class TransformFromEnding(Transform):
+    def __init__(self, mobject, vector, **kwargs):
+        digest_config(self, kwargs, locals())
+        Animation.__init__(self, mobject, **kwargs)
+    def interpolate_mobject(self, alpha):
+        d_alpha = alpha - self.last_alpha
+        self.last_alpha = alpha
+        self.mobject.rotate_in_place(
+            d_alpha*self.radians,
+            self.rotation_vector
+        )
+        self.mobject.shift(d_alpha*self.vector)
+
 class DrawWalk(Scene):
     def construct(self):
         plane = NumberPlane(
@@ -40,7 +53,7 @@ class DrawWalk(Scene):
                 }
             )
         self.add(plane)
-        people = self.RandomWalkMan(people=1, num_points=30, u=60)
+        people = self.RandomWalkMan(people=2, num_points=30, u=60)
 
         thePeopleLine = self.draw_walk_line(people[0],1)
         
@@ -50,7 +63,6 @@ class DrawWalk(Scene):
                 Transform(
                     thePeopleLine,
                     self.draw_walk_line(people[0],i+1),
-                    path_arc_axis = IN
                     ),
                 run_time=1)
         self.wait()

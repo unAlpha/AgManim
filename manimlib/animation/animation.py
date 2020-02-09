@@ -62,16 +62,18 @@ class Animation(object):
         if self.is_remover():
             scene.remove(self.mobject)
 
+    # 创建一个复制对象，跟踪mobject的开始位置
     def create_starting_mobject(self):
         # Keep track of where the mobject starts
         return self.mobject.copy()
 
+    # 返回对象和其副本
     def get_all_mobjects(self):
         """
         Ordering must match the ording of arguments to interpolate_submobject
         """
         return self.mobject, self.starting_mobject
-
+    # 获得所有对象的点
     def get_all_families_zipped(self):
         return zip(*[
             mob.family_members_with_points()
@@ -105,6 +107,7 @@ class Animation(object):
         digest_config(self, kwargs)
         return self
 
+    # 插值方法，动画的均值
     # Methods for interpolation, the mean of an Animation
     def interpolate(self, alpha):
         alpha = np.clip(alpha, 0, 1)
@@ -117,13 +120,14 @@ class Animation(object):
         """
         self.interpolate(alpha)
     
-    # 插值对象
+    # 插值对象 动画使用的方法
     def interpolate_mobject(self, alpha):
         families = list(self.get_all_families_zipped())
         for i, mobs in enumerate(families):
             sub_alpha = self.get_sub_alpha(alpha, i, len(families))
             self.interpolate_submobject(*mobs, sub_alpha)
-
+    
+    # 一般放下子类定义
     def interpolate_submobject(self, submobject, starting_sumobject, alpha):
         # Typically ipmlemented by subclass
         pass

@@ -936,6 +936,7 @@ class Mobject(Container):
         all_mobjects = [self] + list(it.chain(*sub_families))
         return remove_list_redundancies(all_mobjects)
 
+    # 获得所有对象的点
     def family_members_with_points(self):
         return [m for m in self.get_family() if m.get_num_points() > 0]
 
