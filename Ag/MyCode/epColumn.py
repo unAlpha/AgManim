@@ -1,5 +1,105 @@
 from manimlib.imports import *
 
+class ImageMobj(Scene):
+    def construct(self):
+        mtketang003 = self.imageObjAndText(
+                        "mtketang003",
+                        "课程网址：www.mtketang.com.cn",
+                        "课程客服二维码"        
+            )
+        self.play(
+            FadeInFromLarge(mtketang003[:2]),
+            AnimationGroup(
+                        Animation(Mobject(),run_time=0.1),
+                        FadeInFromDirections(mtketang003[2]),
+                        FadeInFromDirections(mtketang003[3]),
+                        lag_ratio=0.25
+                )
+            )
+        self.wait(15)
+        self.play(FadeOutAndShiftDown(mtketang003))
+
+    def imageObjAndText(self,imageName,text1,text2):
+        pic = ImageMobject(imageName).scale(2)
+        picText1 = Text(text1,
+                        font='阿里巴巴普惠体 B',
+                        size=0.25,
+                        color="#308032"
+            ).next_to(pic,DOWN,buff=SMALL_BUFF*1.5)
+        picText2 = Text(text2, 
+                        font='阿里巴巴普惠体 B',
+                        size=0.5,
+                        color=BLACK
+            ).next_to(pic,DOWN,buff=MED_LARGE_BUFF*1.1)
+        picAndText = Group(pic,picText1,picText2).center()
+        pic.rect = RoundedRectangle(
+                        corner_radius=0.1,
+                        color=LIGHT_GREY,
+                        fill_color = LIGHT_GREY,
+                        fill_opacity = 1,
+                        height=picAndText.get_height()*1.1,
+                        width=picAndText.get_width()*1.1
+            )
+        return Group(pic.rect,pic,picText1,picText2)
+
+class EndingVideo(ImageMobj):
+    def construct(self):
+        txt1 = Text("还没看够？",
+                    font='阿里巴巴普惠体 B',
+                    size=1,
+                    gradient=(RED_D, YELLOW)
+            )
+        txt2 = Text("关注二维码查看更多顶级课程",
+                    font='阿里巴巴普惠体 B',
+                    size=0.5,
+                    gradient=(RED_D, YELLOW)
+            )
+
+        txt3 = Text("我们的课程网址：www.mtketang.com.cn",
+                    font='阿里巴巴普惠体 B',
+                    size=0.25,
+                    color=WHITE
+            ).to_edge(DOWN)
+
+        mtketang003 = self.imageObjAndText(
+                    "mtketang003",
+                    "课程网址：www.mtketang.com.cn",
+                    "课程客服二维码"        
+            )
+        teacherli = self.imageObjAndText(
+                    "teacherli",
+                    "搜索“李永乐老师”",
+                    "李永乐老师公众号"        
+            )
+
+        pic = Group(mtketang003,teacherli).scale(0.68).arrange(RIGHT,buff = LARGE_BUFF).move_to(4*UP+mtketang003.get_y()/2)
+
+        self.play(FadeInFromLarge(txt1))
+        self.wait(0.5)
+        self.play(
+                txt1.shift,DOWN*1.5,
+                txt1.scale,0.68,
+                FadeInFromDirections(txt2),
+                txt2.shift,DOWN*2.3,
+                pic.shift,DOWN*2.9
+            )
+        self.wait(1.5)
+        self.play(
+            FadeIn(txt3)
+            )
+        self.wait(10)
+
+class xiguaLi(Scene):
+    CONFIG={
+        "camera_config":{"background_color":"#fefdfa"}
+    }
+    def construct(self):
+        self.wait(0.25)
+        xiguaLi = ImageMobject("xiguaLi")
+        xiguaLi.set_height(8)
+        self.play(FadeInFromLarge(xiguaLi))
+        self.wait(2)
+
 class MyThreeDScene(ThreeDScene):
     def construct(self):
         axes = ThreeDAxes(
@@ -34,7 +134,7 @@ class MyThreeDScene(ThreeDScene):
         self.wait()
         self.play(ShowCreation(sqr))
         self.wait()
-        
+
 class useText2(Scene):
     def construct(self):
         text = Text("""

@@ -40,28 +40,38 @@ class DrawWalk(Scene):
                 }
             )
         self.add(plane)
-        people = self.RandomWalkMan(people=200, num_points=50, u=0.1)
-        polyline = VMobject().set_color(RED)
-        polyline = self.draw_walk_line(people[0],polyline,0)
-        for i in range(people[0].num_points):
+        people = self.RandomWalkMan(people=1, num_points=30, u=60)
+
+        thePeopleLine = self.draw_walk_line(people[0],1)
+        
+        for i in range(1,people[0].num_points):
             self.play(
                 *[ApplyMethod(oneA.dot.move_to,oneA.position[i]) for oneA in people],
-                Transform(polyline,self.draw_walk_line(people[0],polyline,i)),
-                run_time = 0.1)
+                Transform(
+                    thePeopleLine,
+                    self.draw_walk_line(people[0],i+1),
+                    path_arc_axis = IN
+                    ),
+                run_time=1)
         self.wait()
 
-    def RandomWalkMan(self, people=2, num_points=10, u=0.1):
+    def RandomWalkMan(self, people=2, num_points=10, u=10):
         all_people = VGroup()
         while people:
             oneX = RandomWalk(num_points)
-            oneX.fill_walk(u)
+            oneX.fill_walk(u/100)
             oneX.dot = Dot(radius= DEFAULT_SMALL_DOT_RADIUS).shift(oneX.position[0])
             all_people.add(oneX)
             people -=1
         return all_people
 
-    def draw_walk_line(self, people, ployObj, i):
-        return ployObj.set_points_smoothly(people.position[:i])
+    def draw_walk_line(self, people, i):
+        polyline = VMobject().set_color(RED)
+        if i <= 1:
+            polyline = Dot(radius=1e-6).shift(people.position[0])
+        else:
+            polyline.set_points_as_corners(people.position[:i])
+        return polyline
 
         
 
