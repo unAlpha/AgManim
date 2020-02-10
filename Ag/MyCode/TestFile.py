@@ -564,7 +564,7 @@ class MoveToTargetScene(Scene):
 
 class ShpaeTest(Scene):
     def construct(self):
-        path1 = self.get_path()
+        path1 = self.get_path().shift(3*LEFT)
         self.play(ShowCreation(path1))
         self.wait()
 
@@ -578,7 +578,7 @@ class ShpaeTest(Scene):
             line.copy(),
             line.copy(),
             line.copy()
-            ).arrange_in_grid(3,2)
+            ).arrange_in_grid(3,2).shift(3*RIGHT)
         self.add(lineGroup)
         self.wait()
 
@@ -589,6 +589,7 @@ class ShpaeTest(Scene):
     def get_path(self):
         shape = self.get_shape()
         # 获得SVG对象的点
+        # 在Mobject类中定义
         path = shape.family_members_with_points()[0]
         # path.set_height(5)
         path.set_fill(opacity=0)

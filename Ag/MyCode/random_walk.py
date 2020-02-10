@@ -55,8 +55,10 @@ class DrawWalk(Scene):
                 run_time=1)
         self.wait()
 
-    def straight_pathAg(self, start, end, alpha): 
-        return  (1 - alpha) * start + alpha * end
+    def straight_pathAg(self, start, end, alpha):
+        start = end
+        end = end
+        return (1 - alpha) * start + alpha * end
 
     def RandomWalkMan(self, people=2, num_points=10, u=10):
         all_people = VGroup()

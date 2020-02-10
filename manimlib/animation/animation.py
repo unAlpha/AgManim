@@ -73,7 +73,7 @@ class Animation(object):
         Ordering must match the ording of arguments to interpolate_submobject
         """
         return self.mobject, self.starting_mobject
-    # 获得所有对象的点（进行zip打包）
+    # 获得所有self的家庭成员，进行zip打包
     def get_all_families_zipped(self):
         return zip(*[
             mob.family_members_with_points()
