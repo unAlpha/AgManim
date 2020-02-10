@@ -98,6 +98,7 @@ class Transform(Animation):
         ])
 
     def interpolate_submobject(self, submob, start, target_copy, alpha):
+        # interpolate函数在mobject中
         submob.interpolate(
             start, target_copy,
             alpha, self.path_func

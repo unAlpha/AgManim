@@ -451,39 +451,4 @@ class ComplexPlane(NumberPlane):
     def add_coordinates(self, *numbers):
         self.add(self.get_coordinate_labels(*numbers))
         return self
-
-
-# class Grid(Mobject):
-#     CONFIG = {
-#         "color": GRAY,
-#         "height": 2,
-#         "width" : 3,
-#         "rows" : 2,
-#         "columns": 3
-#     }
-#     def __init__(self, **kwargs):
-#         digest_config(self, kwargs)
-#         self.init_background_lines()
-    
-#     def init_background_lines(self):
-#         self.background_lines = self.get_lines_parallel_to_axis()   
-
-#     def get_lines_parallel_to_axis(self):
-#         line = Line(self.width*RIGHT,self.height*LEFT)
-#         frq_rows = self.height / self.rows
-#         frq_columns = self.width / self.columns
-#         rows = np.arange(-(self.rows+1)/2, (self.rows+1)/2, 1)
-#         columns = np.arange(-(self.columns+1)/2, (self.columns+1)/2, 1)
-
-#         self.points=ORIGIN
-#         for i in rows:
-#             new_line = line.copy()
-#             new_line.move_to(i*frq_rows*UP)
-#             self.points = np.append(self.points,new_line.points)
-#         for j in columns:
-#             new_line = line.copy()
-#             new_line.move_to(j*frq_columns*RIGHT)
-#             self.points = np.append(self.points,new_line.points)
-
-        
-        
+       

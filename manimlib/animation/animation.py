@@ -73,7 +73,7 @@ class Animation(object):
         Ordering must match the ording of arguments to interpolate_submobject
         """
         return self.mobject, self.starting_mobject
-    # 获得所有对象的点
+    # 获得所有对象的点（进行zip打包）
     def get_all_families_zipped(self):
         return zip(*[
             mob.family_members_with_points()
@@ -107,10 +107,11 @@ class Animation(object):
         digest_config(self, kwargs)
         return self
 
-    # 插值方法，动画的均值
     # Methods for interpolation, the mean of an Animation
     def interpolate(self, alpha):
+        # 把alpha限制在0到1之间
         alpha = np.clip(alpha, 0, 1)
+        # rate_func 速率曲线
         self.interpolate_mobject(self.rate_func(alpha))
 
     def update(self, alpha):
@@ -120,7 +121,6 @@ class Animation(object):
         """
         self.interpolate(alpha)
     
-    # 插值对象 动画使用的方法
     def interpolate_mobject(self, alpha):
         families = list(self.get_all_families_zipped())
         for i, mobs in enumerate(families):

@@ -543,12 +543,6 @@ class BackgroundColorScene(Scene):
         self.play(FadeInFromRandomA(mob2[0]))
         self.wait()
 
-# class vectorizedPoint_mob(Scene):
-#     def construct(self):
-#         vp = Grid(rows=2,columns=3)
-#         self.play(ShowCreation(vp))
-#         self.wait()
-
 class MoveToTargetScene(Scene):
     def construct(self):
         dirc = 2*UP+RIGHT
@@ -594,6 +588,7 @@ class ShpaeTest(Scene):
 
     def get_path(self):
         shape = self.get_shape()
+        # 获得SVG对象的点
         path = shape.family_members_with_points()[0]
         # path.set_height(5)
         path.set_fill(opacity=0)
