@@ -42,22 +42,27 @@ class DrawWalk(Scene):
         self.add(plane)
         people = self.RandomWalkMan(people=2, num_points=30, u=60)
 
-        thePeopleLine = self.draw_walk_line(people[0],1)
+        thePeopleLine = self.draw_walk_line(people[1],1)
         
-        for i in range(1,people[0].num_points):
+        for i in range(1,people[1].num_points):
             self.play(
-                *[ApplyMethod(oneA.dot.move_to,oneA.position[i]) for oneA in people],
+                *[ApplyMethod(oneA.dot.move_to,oneA.position[i-1]) for oneA in people],
                 Transform(
                     thePeopleLine,
-                    self.draw_walk_line(people[0],i),
-                    path_func = self.straight_pathAg
+                    self.draw_walk_line(people[1],i),
+                    path_func = self.straight_path_Ag
                     ),
                 run_time=1)
         self.wait()
 
-    def straight_pathAg(self, start, end, alpha):
-        start = end
-        end = end
+    def straight_path_Ag(self, start, end, alpha):
+        if len(start)>4:
+            start = end[:-4]
+            start_end = start[-1]
+            i = 4
+            while i:
+                start = np.vstack((start,start_end))
+                i-=1
         return (1 - alpha) * start + alpha * end
 
     def RandomWalkMan(self, people=2, num_points=10, u=10):
@@ -73,7 +78,9 @@ class DrawWalk(Scene):
     def draw_walk_line(self, people, i):
         polyline = VMobject().set_color(RED)
         if i <= 1:
-            polyline = Dot(radius=1e-6).shift(people.position[0])
+            polyline = Line(ORIGIN,LEFT*1e-5)\
+                .shift(people.position[0])\
+                .set_color(RED)
         else:
             polyline.set_points_as_corners(people.position[:i])
         return polyline

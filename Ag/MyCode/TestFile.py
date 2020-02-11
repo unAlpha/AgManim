@@ -588,7 +588,7 @@ class ShpaeTest(Scene):
 
     def get_path(self):
         shape = self.get_shape()
-        # 获得SVG对象的点
+        # 获得SVG对象
         # 在Mobject类中定义
         path = shape.family_members_with_points()[0]
         # path.set_height(5)
