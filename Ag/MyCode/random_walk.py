@@ -40,7 +40,7 @@ class DrawWalk(Scene):
                 }
             )
         self.add(plane)
-        people = self.RandomWalkMan(people=2, num_points=30, u=60)
+        people = self.RandomWalkMan(people=10, num_points=50, u=50)
 
         thePeopleLine = self.draw_walk_line(people[1],1)
         
@@ -52,7 +52,7 @@ class DrawWalk(Scene):
                     self.draw_walk_line(people[1],i),
                     path_func = self.straight_path_Ag
                     ),
-                run_time=1)
+                run_time=0.2)
         self.wait()
 
     def straight_path_Ag(self, start, end, alpha):

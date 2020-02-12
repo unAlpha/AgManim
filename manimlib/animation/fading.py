@@ -2,6 +2,7 @@ from manimlib.animation.animation import Animation
 from manimlib.animation.animation import DEFAULT_ANIMATION_LAG_RATIO
 from manimlib.animation.transform import Transform
 from manimlib.constants import DOWN
+from manimlib.constants import PI
 from manimlib.mobject.types.vectorized_mobject import VMobject
 from manimlib.utils.bezier import interpolate
 from manimlib.utils.rate_functions import there_and_back
@@ -59,7 +60,26 @@ class FadeInFrom(Transform):
         super().begin()
         self.starting_mobject.shift(self.direction)
         self.starting_mobject.fade(1)
+        
+# Ag add 2020-02-12
+class FadeInFromAngle(Transform):
+    CONFIG = {
+        "angle" : PI/2,
+        "about_point" : DOWN,
+        "lag_ratio": DEFAULT_ANIMATION_LAG_RATIO,
+    }
+    def __init__(self, mobject, angle=None, **kwargs):
+        if angle is not None:
+            self.angle = angle
+        super().__init__(mobject, **kwargs)
 
+    def create_target(self):
+        return self.mobject.copy()
+
+    def begin(self):
+        super().begin()
+        self.starting_mobject.rotate(self.angle, about_point = self.about_point)
+        self.starting_mobject.fade(1)
 
 class FadeInFromDown(FadeInFrom):
     """
