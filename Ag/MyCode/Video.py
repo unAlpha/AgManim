@@ -14,18 +14,18 @@ class imageAnim(Scene):
         num_mobs = len(mobs)
         for i in range(num_mobs):
             if i==0:
-                self.play(FadeInFromAngle(mobs[i],angle = -angle, about_point = Origin))
+                self.play(
+                        FadeInFromAngle(mobs[i],angle = angle,about_point = Origin)
+                    )
             self.wait()
             if i < num_mobs-1:
                 self.play(
-                        mobs[i].rotate,angle,{"about_point":Origin,"axis":OUT},
-                        mobs[i].fade,1,
-                        FadeInFromAngle(mobs[i+1],angle = -angle, about_point = Origin)
+                        FadeOutFromAngle(mobs[i],angle = angle,about_point = Origin),
+                        FadeInFromAngle(mobs[i+1],angle = angle, about_point = Origin)
                     )
             if i == num_mobs-1:
                 self.play(
-                        mobs[i].rotate,angle,{"about_point":Origin,"axis":OUT},
-                        mobs[i].fade,1,
+                        FadeOutFromAngle(mobs[i],angle = angle,about_point = Origin)
                     )
 
     def imageObjAndText(self,imageName,text):

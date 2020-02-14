@@ -6,6 +6,7 @@ from manimlib.constants import PI
 from manimlib.mobject.types.vectorized_mobject import VMobject
 from manimlib.utils.bezier import interpolate
 from manimlib.utils.rate_functions import there_and_back
+from manimlib.constants import OUT
 
 
 DEFAULT_FADE_LAG_RATIO = 0
@@ -64,22 +65,57 @@ class FadeInFrom(Transform):
 # Ag add 2020-02-12
 class FadeInFromAngle(Transform):
     CONFIG = {
-        "angle" : PI/2,
-        "about_point" : DOWN,
-        "lag_ratio": DEFAULT_ANIMATION_LAG_RATIO,
+        "about_point": None,
+        "about_edge": None,
     }
-    def __init__(self, mobject, angle=None, **kwargs):
-        if angle is not None:
-            self.angle = angle
+    def __init__(self, mobject, angle=PI, axis=OUT, **kwargs):
+        if "path_arc" not in kwargs:
+            kwargs["path_arc"] = angle
+        if "path_arc_axis" not in kwargs:
+            kwargs["path_arc_axis"] = axis
+        self.angle = angle
+        self.axis = axis
         super().__init__(mobject, **kwargs)
 
     def create_target(self):
-        return self.mobject.copy()
+        return self.mobject
 
-    def begin(self):
-        super().begin()
-        self.starting_mobject.rotate(self.angle, about_point = self.about_point)
-        self.starting_mobject.fade(1)
+    def create_starting_mobject(self):
+        start = super().create_starting_mobject()
+        start.fade(1)
+        start.rotate(
+            -self.angle,
+            axis=self.axis,
+            about_point=self.about_point,
+            about_edge=self.about_edge,
+        )
+        return start
+
+# Ag add 2020-02-14       
+class FadeOutFromAngle(Transform):
+    CONFIG = {
+        "about_point": None,
+        "about_edge": None,
+    }
+    def __init__(self, mobject, angle=PI, axis=OUT, **kwargs):
+        if "path_arc" not in kwargs:
+            kwargs["path_arc"] = angle
+        if "path_arc_axis" not in kwargs:
+            kwargs["path_arc_axis"] = axis
+        self.angle = angle
+        self.axis = axis
+        super().__init__(mobject, **kwargs)
+
+    def create_target(self):
+        target = self.mobject.copy()
+        target.rotate(
+            self.angle,
+            axis=self.axis,
+            about_point=self.about_point,
+            about_edge=self.about_edge,
+        )
+        target.fade(1)
+        return target
 
 class FadeInFromDown(FadeInFrom):
     """
