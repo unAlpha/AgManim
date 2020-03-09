@@ -1,5 +1,47 @@
 from manimlib.imports import *
 
+class SharkEscape(Scene):
+    def construct(self):
+        self.rad = 2.0
+        island = Circle(radius=self.rad-0.2)
+        islandSide = Circle(radius=self.rad).set_opacity(0)
+        shark = Dot(radius=0.2)
+        aMan = Dot(radius=0.15)
+        shark.move_to(islandSide.point_from_proportion(0))
+        shark.add_updater(lambda obj: obj.become(self.shark_move(aMan,shark)))
+        self.add(island,shark)
+        polyline = VMobject()
+        position = [LEFT,UP,DOWN,UP,RIGHT,LEFT,DOWN,RIGHT,UP]
+        polyline.set_points_as_corners(position)
+        self.play( 
+                MoveAlongPath(aMan,polyline),
+                run_time=len(position),
+                rate_func=linear)
+        vet = shark.get_center()-aMan.get_center()
+        angle = angle_of_vector(vet)
+        self.play(
+            shark.rotate,angle,{"about_point":ORIGIN},
+            rate_func=linear)
+
+    def shark_move(self,aMan,shark):
+        aManCenter = aMan.get_center()
+        sharkCenter0 = shark.get_center()
+        aManAngle = angle_of_vector(aManCenter)
+        sharkAngle = angle_of_vector(sharkCenter0)
+        if abs(aManAngle-sharkAngle)<0.1:
+            return shark
+        alpha = 4/self.camera.frame_rate/self.rad
+        distance0 = get_norm(aManCenter-sharkCenter0)
+        shark1=shark.copy().rotate(alpha,about_point=ORIGIN)
+        sharkCenter1 = shark1.get_center()
+        distance1 = get_norm(aManCenter-sharkCenter1)
+        if distance0 > distance1:
+            return shark.rotate(alpha,about_point=ORIGIN)
+        elif distance0 < distance1:
+            return shark.rotate(-alpha,about_point=ORIGIN)
+        else:
+            return shark
+
 class ImageMobj(Scene):
     def construct(self):
         mtketang003 = self.imageObjAndText(
