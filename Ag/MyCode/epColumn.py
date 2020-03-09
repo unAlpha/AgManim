@@ -3,16 +3,28 @@ from manimlib.imports import *
 class SharkEscape(Scene):
     def construct(self):
         self.rad = 2.0
-        island = Circle(radius=self.rad-0.2)
-        islandSide = Circle(radius=self.rad).set_opacity(0)
-        shark = Dot(radius=0.2)
-        aMan = Dot(radius=0.15)
-        shark.move_to(islandSide.point_from_proportion(0))
+        island = Circle(radius=self.rad,color=YELLOW)
+        islandSide = Circle(radius=self.rad+0.25).set_opacity(0)
+        shark = Dot(radius=0.25,color=RED)
+        # shark = ImageMobject("SharkEscape/shark").set_height(0.5)
+        aMan = ImageMobject("SharkEscape/aman").set_height(0.5)
+        
+        shark.shift(islandSide.point_from_proportion(0))
         shark.add_updater(lambda obj: obj.become(self.shark_move(aMan,shark)))
-        self.add(island,shark)
+
+        sharkText = Text("鳄鱼").move_to(shark).scale(0.2)
+        sharkText.add_updater(lambda obj: obj.move_to(shark))
+        self.play(ShowCreation(island))
+        self.wait()
+        self.add(shark)
+        self.add(sharkText)
+        self.play(Indicate(sharkText,scale_factor=2.5,color=BLACK))
+        self.wait()
+
         polyline = VMobject()
-        position = [LEFT,UP,DOWN,UP,RIGHT,LEFT,DOWN,RIGHT,UP]
+        position = [ORIGIN,LEFT*self.rad*0.8,UP,DOWN,UP,RIGHT,LEFT,UP,RIGHT,DOWN,LEFT]
         polyline.set_points_as_corners(position)
+        self.play(FadeInFromLarge(aMan))
         self.play( 
                 MoveAlongPath(aMan,polyline),
                 run_time=len(position),
@@ -22,15 +34,16 @@ class SharkEscape(Scene):
         self.play(
             shark.rotate,angle,{"about_point":ORIGIN},
             rate_func=linear)
+        self.wait()
 
     def shark_move(self,aMan,shark):
         aManCenter = aMan.get_center()
         sharkCenter0 = shark.get_center()
         aManAngle = angle_of_vector(aManCenter)
         sharkAngle = angle_of_vector(sharkCenter0)
-        if abs(aManAngle-sharkAngle)<0.1:
-            return shark
-        alpha = 4/self.camera.frame_rate/self.rad
+        alpha = 4/self.camera.frame_rate/1.2
+        if abs(aManAngle-sharkAngle)<alpha:
+            return shark.rotate(aManAngle-sharkAngle,about_point=ORIGIN)
         distance0 = get_norm(aManCenter-sharkCenter0)
         shark1=shark.copy().rotate(alpha,about_point=ORIGIN)
         sharkCenter1 = shark1.get_center()
@@ -39,8 +52,50 @@ class SharkEscape(Scene):
             return shark.rotate(alpha,about_point=ORIGIN)
         elif distance0 < distance1:
             return shark.rotate(-alpha,about_point=ORIGIN)
-        else:
-            return shark
+
+class ImageShow(Scene):
+    def construct(self):
+        allParts = self.imageObjAndText(
+                        "SharkEscape/EggsAndBuilding",
+                        "The Two Egg Problem",
+                        "“双蛋问题”"        
+            )
+        self.play(
+            FadeInFromLarge(allParts[:2]),
+            AnimationGroup(
+                        Animation(Mobject(),run_time=0.1),
+                        FadeInFromDirections(allParts[2]),
+                        FadeInFromDirections(allParts[3]),
+                        lag_ratio=0.1
+                )
+            )
+        self.wait(15)
+        self.play(FadeOutAndShiftDown(allParts))
+
+    def imageObjAndText(self,imageName,text1,text2):
+        pic = ImageMobject(imageName).scale(2)
+        picText1 = Text(text1,
+                        font='阿里巴巴普惠体 B',
+                        color="#308032"
+            )\
+            .set_height(0.2)\
+            .next_to(pic,DOWN,buff=SMALL_BUFF)
+        picText2 = Text(text2, 
+                        font='阿里巴巴普惠体 B',
+                        color=BLACK
+            )\
+            .set_height(0.25)\
+            .next_to(picText1,DOWN,buff=SMALL_BUFF)
+        picAndText = Group(pic,picText1,picText2).center()
+        pic.rect = RoundedRectangle(
+                        corner_radius=0.1,
+                        color="#EEEEEE",
+                        fill_color = "#EEEEEE",
+                        fill_opacity = 1,
+                        height=picAndText.get_height()*1.034,
+                        width=picAndText.get_width()*1.05
+            )
+        return Group(pic.rect,pic,picText1,picText2)
 
 class ImageMobj(Scene):
     def construct(self):
