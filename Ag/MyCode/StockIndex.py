@@ -108,7 +108,6 @@ class StockIndex61(Scene):
                 FadeOutAndShiftDown(line)
             )
 
-
 class StockIndex62(Scene):
     def construct(self):
         allParts = imageObjAndText(

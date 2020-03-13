@@ -18,8 +18,8 @@ class SharkEscape(Scene):
         self.rad = 2.0
         island = Circle(radius=self.rad,color=YELLOW)
         islandSide = Circle(radius=self.rad+0.25).set_opacity(0)
-        shark = Dot(radius=0.25,color=RED)
-        # shark = ImageMobject("SharkEscape/shark").set_height(0.5)
+        # shark = Dot(radius=0.25,color=RED)
+        shark = ImageMobject("SharkEscape/shark").set_height(0.5)
         aMan = ImageMobject("SharkEscape/aman").set_height(0.5)
         
         shark.shift(islandSide.point_from_proportion(0))
@@ -35,13 +35,17 @@ class SharkEscape(Scene):
         self.wait()
 
         polyline = VMobject()
-        position = [ORIGIN,LEFT*self.rad*0.8,UP,DOWN,UP,RIGHT,LEFT,UP,RIGHT,DOWN,LEFT]
+        position = [ORIGIN,LEFT,2*LEFT]
         polyline.set_points_as_corners(position)
         self.play(FadeInFromLarge(aMan))
         self.play( 
                 MoveAlongPath(aMan,polyline),
-                run_time=len(position),
+                run_time=len(position)-1,
                 rate_func=linear)
+        sharkCenter = shark.get_center()
+        sharkAngle = angle_of_vector(sharkCenter)
+        print(sharkAngle)
+        self.wait()
         vet = shark.get_center()-aMan.get_center()
         angle = angle_of_vector(vet)
         self.play(
@@ -54,8 +58,9 @@ class SharkEscape(Scene):
         sharkCenter0 = shark.get_center()
         aManAngle = angle_of_vector(aManCenter)
         sharkAngle = angle_of_vector(sharkCenter0)
-        alpha = 4/self.camera.frame_rate/1.2
-        if abs(aManAngle-sharkAngle)<alpha:
+        # 和MoveAlongPath的运行时间有关
+        alpha = 4/self.camera.frame_rate/2
+        if abs(aManAngle-sharkAngle)<alpha or abs(TAU-(aManAngle-sharkAngle))<alpha:
             return shark.rotate(aManAngle-sharkAngle,about_point=ORIGIN)
         distance0 = get_norm(aManCenter-sharkCenter0)
         shark1=shark.copy().rotate(alpha,about_point=ORIGIN)
