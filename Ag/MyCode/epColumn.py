@@ -1,5 +1,18 @@
 from manimlib.imports import *
 
+class TextShow(Scene):
+    def construct(self):
+        txt1 = Text("鳄鱼的速度是人的4倍",color=RED)
+        txt2 = Text("Crocodile is 4 times faster than humans",color=YELLOW)\
+                .next_to(txt1,DOWN,buff=SMALL_BUFF)\
+                .set_width(txt1.get_width())\
+                .align_to(txt1,LEFT)
+        self.play(
+                FadeInFromDirections(txt1),
+                FadeInFromDirections(txt2)
+            )
+        self.wait(5)
+
 class SharkEscape(Scene):
     def construct(self):
         self.rad = 2.0
