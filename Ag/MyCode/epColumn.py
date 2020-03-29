@@ -1,5 +1,20 @@
 from manimlib.imports import *
 
+class ep212(Scene):
+    def construct(self):
+        rect = RoundedRectangle(height=2, width=1.2, stroke_width=4, corner_radius=0.2 , color = RED)
+        self.play(ShowCreation(rect))
+        self.wait(12)
+
+class ep211(Scene):
+    def construct(self):
+        arr = Arrow(start=ORIGIN, end=UP, color = RED).scale(3.6)
+        textF = TextMobject("F")
+        textF.add_updater(lambda d: d.next_to(arr, UR, buff = SMALL_BUFF))
+        textF.next_to(arr, UR, buff = SMALL_BUFF)
+        self.play(ShowCreation(arr),Write(textF))
+        self.wait(12)
+
 class TextShow(Scene):
     def construct(self):
         txt1 = Text("鳄鱼的速度是人的4倍",color=RED)
