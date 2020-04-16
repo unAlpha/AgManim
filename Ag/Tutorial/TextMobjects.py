@@ -1,4 +1,5 @@
 from manimlib.imports import *
+from Ag.Tutorial.GridAndPath import ScreenGrid
 
 class RotateAndHighlight(Scene):
 #Rotation of text and highlighting with surrounding geometries
