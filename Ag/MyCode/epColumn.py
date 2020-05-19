@@ -1,5 +1,88 @@
 from manimlib.imports import *
 
+class ImageMobj3(Scene):
+    def construct(self):
+        Taniyama = ImageMobject("Bzhan0006/book").shift(3.3*LEFT).scale(2)
+        Taniyama.rect = SurroundingRectangle(Taniyama,color=GRAY,stroke_width=8,buff=0)
+        TaniyamaGroup = Group(Taniyama, Taniyama.rect)
+        TaniyamaText = Text("视频课程", 
+                        font='阿里巴巴普惠体 B',
+                        size=0.5).next_to(Taniyama,DOWN)
+        Wiles = ImageMobject("Bzhan0006/pdf").shift(3.3*RIGHT).scale(2)
+        Wiles.rect = SurroundingRectangle(Wiles,color=GRAY,stroke_width=8,buff=0)
+        WilesGroup = Group(Wiles, Wiles.rect)
+        WilesText = Text("免费电子书", 
+                        font='阿里巴巴普惠体 B',
+                        size=0.5).next_to(Wiles,DOWN)
+
+        text1 = Text("订阅课程", 
+                        font='阿里巴巴普惠体 B',
+                        size=0.5,
+                        color="#daab53")
+        text1.rect = SurroundingRectangle(text1)
+
+        text2 = Text("Top 1000", 
+                        font='阿里巴巴普惠体 B',
+                        size=0.5,
+                        color=RED).next_to(text1,DOWN)
+
+        VGroup(text1,text2).arrange_submobjects(DOWN,buff=0.8)
+        arr1 = Arrow(Taniyama.rect.get_right(),Wiles.rect.get_left())
+         
+        text1.rect = SurroundingRectangle(text1)
+        self.play(FadeInFromLarge(TaniyamaGroup))
+        self.play(Write(TaniyamaText))
+        self.play(Write(text1))
+        self.play(ShowCreation(text1.rect),Write(text2))
+        self.wait()
+
+        self.play(FadeInFromLarge(WilesGroup),ShowCreation(arr1),Write(WilesText))
+
+        self.wait(5)
+
+class ImageMobj2(Scene):
+    def construct(self):
+        mtketang003 = self.imageObjAndText(
+                        "Bzhan0006/mtketang0006",
+                        "扫码快速联系 mtketang0006",
+                        "课程客服二维码"        
+            )
+        self.play(
+            FadeInFromLarge(mtketang003[:2]),
+            AnimationGroup(
+                        Animation(Mobject(),run_time=0.1),
+                        FadeInFromDirections(mtketang003[2]),
+                        FadeInFromDirections(mtketang003[3]),
+                        lag_ratio=0.25
+                )
+            )
+        self.wait(15)
+        self.play(FadeOutAndShiftDown(mtketang003))
+
+    def imageObjAndText(self,imageName,text1,text2):
+        pic = ImageMobject(imageName).scale(2)
+        picText1 = Text(text1,
+                        font='阿里巴巴普惠体 B',
+                        size=0.25,
+                        color="#308032"
+            ).next_to(pic,DOWN,buff=SMALL_BUFF*1.5)
+        picText2 = Text(text2, 
+                        font='阿里巴巴普惠体 B',
+                        size=0.5,
+                        color=BLACK
+            ).next_to(pic,DOWN,buff=MED_LARGE_BUFF*1.1)
+        picAndText = Group(pic,picText1,picText2).center()
+        pic.rect = RoundedRectangle(
+                        corner_radius=0.1,
+                        color=LIGHT_GREY,
+                        fill_color = LIGHT_GREY,
+                        fill_opacity = 1,
+                        height=picAndText.get_height()*1.1,
+                        width=picAndText.get_width()*1.1
+            )
+        return Group(pic.rect,pic,picText1,picText2)
+
+
 class ep212(Scene):
     def construct(self):
         rect = RoundedRectangle(height=2, width=1.2, stroke_width=4, corner_radius=0.2 , color = RED)
@@ -1209,13 +1292,13 @@ class ep085(Scene):
 
 class ep084(Scene):
     def construct(self):
-        Taniyama = ImageMobject("Taniyama").shift(4*LEFT).scale(2)
+        Taniyama = ImageMobject("pic/Taniyama").shift(4*LEFT).scale(2)
         Taniyama.rect = SurroundingRectangle(Taniyama,color=WHITE,stroke_width=8,buff=0)
         TaniyamaGroup = Group(Taniyama, Taniyama.rect)
         TaniyamaText = Text("谷山丰", 
                         font='阿里巴巴普惠体 B',
                         size=0.5).next_to(Taniyama,DOWN)
-        Wiles = ImageMobject("Wiles").shift(4*RIGHT).scale(2)
+        Wiles = ImageMobject("pic/Wiles").shift(4*RIGHT).scale(2)
         Wiles.rect = SurroundingRectangle(Wiles,color=WHITE,stroke_width=8,buff=0)
         WilesGroup = Group(Wiles, Wiles.rect)
         WilesText = Text("怀尔斯", 
