@@ -28,7 +28,7 @@ class Text(SVGMobject):
         'font': '阿里巴巴普惠体 B',
         'gradient': None,
         'lsh': -1,
-        'size': 1,
+        'size': 0.618,
         'slant': NORMAL,
         'weight': NORMAL,
         't2c': {},
