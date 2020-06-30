@@ -77,7 +77,7 @@ def palyALL1(self,allParts):
     self.play(FadeOutAndShiftDown(allParts))
 
 
-class PrinceRupertsDrop01(Scene):
+class Tech01(Scene):
     def construct(self):
         allParts = imageObjAnd1Text(
                         "teach/飞机投弹A",
@@ -85,7 +85,7 @@ class PrinceRupertsDrop01(Scene):
             )
         palyALL1(self,allParts)
 
-class PrinceRupertsDrop02(Scene):
+class Tech02(Scene):
     def construct(self):
         allParts = imageObjAnd1Text(
                         "teach/飞机投弹B",
@@ -94,7 +94,7 @@ class PrinceRupertsDrop02(Scene):
         palyALL1(self,allParts)
 
 
-class PrinceRupertsDrop03(Scene):
+class Tech03(Scene):
     def construct(self):
         allParts = imageObjAnd2Text(
                         "teach/伽利略·伽利莱",
@@ -103,7 +103,7 @@ class PrinceRupertsDrop03(Scene):
             )
         palyALL2(self,allParts)
 
-class PrinceRupertsDrop04(Scene):
+class Tech04(Scene):
     def construct(self):
         allParts = imageObjAnd2Text(
                         "teach/克劳狄乌斯·托勒密",
@@ -112,7 +112,7 @@ class PrinceRupertsDrop04(Scene):
             )
         palyALL2(self,allParts)
 
-class PrinceRupertsDrop05(Scene):
+class Tech05(Scene):
     def construct(self):
         allParts = imageObjAnd2Text(
                         "teach/尼古拉·哥白尼",
@@ -121,7 +121,7 @@ class PrinceRupertsDrop05(Scene):
             )
         palyALL2(self,allParts)
 
-class PrinceRupertsDrop06(Scene):
+class Tech06(Scene):
     def construct(self):
         allParts = imageObjAnd2Text(
                         "teach/约翰内斯·开普勒",
@@ -130,7 +130,7 @@ class PrinceRupertsDrop06(Scene):
             )
         palyALL2(self,allParts)
 
-class PrinceRupertsDrop07(Scene):
+class Tech07(Scene):
     def construct(self):
         allParts = imageObjAnd2Text(
                         "teach/球坐标系",
@@ -139,7 +139,7 @@ class PrinceRupertsDrop07(Scene):
             )
         palyALL2(self,allParts)
 
-class PrinceRupertsDrop08(Scene):
+class Tech08(Scene):
     def construct(self):
         allParts = imageObjAnd2Text(
                         "teach/柱坐标系",
@@ -166,7 +166,6 @@ class DeferentandEpicycle(Scene):
 
         def update_planet(mob,dt):
             rate=dt*0.1
-            # 0.8为一圈的百分比
             if self.t_offset>2:
                 rate = 0
             mob.move_to(orbitMin.point_from_proportion(((self.t_offset + rate))%1))
