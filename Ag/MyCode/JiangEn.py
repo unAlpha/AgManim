@@ -10,7 +10,6 @@ class helixMatrix():
     def Num2XY(self,Nums):
         NumInCycle = 0
         Num = (Nums-self.BeginValu+self.Step)/self.Step
-        # print(Num)
         if Num > self.MaxNums:
             raise Exception("矩阵过小，请放大ChartSize ……")
         else:
@@ -35,7 +34,8 @@ class helixMatrix():
         if Num >= (2*NumInCycle-1)**2 + NsqareNum*3-2  and Num < (2*NumInCycle-1)**2+NsqareNum*4-3:
             x = - Num + (2*NumInCycle-1)**2 + NsqareNum*3 + NumInCycle - 3
             y = - NumInCycle
-        # print((x,y))
+        if x<0 or y<0:
+            raise Exception("超出下(0,0)范围")
         return (x,y)
     # 把坐标转成数字    
     def XY2Num(self,x,y):
@@ -58,6 +58,8 @@ class helixMatrix():
 
     # 90度转角数
     def Num90(self,Num,positiveORnegative):
+        if self.Step<0:
+            positiveORnegative=-positiveORnegative
         if positiveORnegative != 1 and positiveORnegative != -1:
             raise Exception("请带参数，正转1，反转-1 ……")
         (x,y) = self.Num2XY(Num)
@@ -79,6 +81,8 @@ class helixMatrix():
                 return self.XY2Num(y-1,x+1)
     # 180度转角数
     def Num180(self,Num,positiveORnegative):
+        if self.Step<0:
+            positiveORnegative=-positiveORnegative
         if positiveORnegative != 1 and positiveORnegative != -1:
             raise Exception("请带参数，正转1，反转-1 ……")
         (x,y) = self.Num2XY(Num)
@@ -105,6 +109,44 @@ class helixMatrix():
             if y<0 and abs(y)>abs(x):
                 return self.XY2Num(x,-y+1)
 
+    def JiaoXian(self,Num,positiveORnegative):
+        # 仅配合风车位使用
+        if self.Step<0:
+            positiveORnegative=-positiveORnegative
+        if positiveORnegative != 1 and positiveORnegative != -1:
+            raise Exception("请带参数，正转1，反转-1 ……")
+        (x,y) = self.Num2XY(Num)
+        if positiveORnegative == -1:
+            if x>0 and y>0:
+                if x==y:
+                    return self.XY2Num(-x+1,-y+1)
+                return self.XY2Num(-y,-x)
+            if x<0 and y>0:
+                return self.XY2Num(y-1,x+1)
+            if x<0 and y<0:
+                if abs(y)>abs(x):
+                    return self.XY2Num(-y-1,-x-1)
+                else:
+                    return self.XY2Num(-y,-x)
+            if x>0 and y<0:
+                return self.XY2Num(y,x)
+            
+        if positiveORnegative == 1:
+            if x>0 and y>0:
+                if abs(y)>abs(x):
+                    return self.XY2Num(-y-1,-x-1)
+                else:
+                    return self.XY2Num(-y,-x)
+            if x<0 and y>0:
+                return self.XY2Num(y,x)
+            if x<0 and y<0:
+                if abs(y)>abs(x):
+                    return self.XY2Num(-y+1,-x+1)            
+                else:  
+                    return self.XY2Num(-y,-x)
+            if x>0 and y<0:
+                return self.XY2Num(y-1,x+1)
+
     # 风车位推图
     def Windmill(self,Num,positiveORnegative,n):
         if positiveORnegative != 1 and positiveORnegative != -1:
@@ -120,14 +162,21 @@ class helixMatrix():
                 else:
                     WindmillTaget.append(self.Num180(Num,positiveORnegative)) 
             return WindmillTaget
-        
+        else:
+            for i in range(n):
+                if i!=0:
+                    WindmillTaget.append(self.JiaoXian(WindmillTaget[i-1],positiveORnegative))
+                else:
+                    WindmillTaget.append(self.JiaoXian(Num,positiveORnegative)) 
+            return WindmillTaget
+
     # 四角推图
     def FourCorners(self,Num,positiveORnegative,N):
         pass
 
 if __name__ == '__main__':
-    BeginValu = 1
-    Step = 1
-    ChartSize = 7
+    BeginValu = 922
+    Step = -1
+    ChartSize = 15
     JinagEnMatrix = helixMatrix(BeginValu,Step,ChartSize)
-    print(JinagEnMatrix.Windmill(126,-1,8))
+    print(JinagEnMatrix.Windmill(807,1,3))
