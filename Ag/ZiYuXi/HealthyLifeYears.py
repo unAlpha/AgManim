@@ -14,7 +14,7 @@ class HealthyLifeYears(Scene):
             )
 
         tcrlGroup = VGroup(txt79,crl).shift(1*UP)
-        text = VGroup(text1,text2)\
+        VGroup(text1,text2)\
             .arrange(DOWN,aligned_edge = RIGHT,buff=MED_SMALL_BUFF)\
             .next_to(tcrlGroup,2*DOWN)
 

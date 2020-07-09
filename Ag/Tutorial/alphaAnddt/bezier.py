@@ -115,7 +115,7 @@ class QuadraticBezier(Scene):
         self.wait()
         
 
-class CubicBezier(QuadraticBezier):
+class CubicBezier2(QuadraticBezier):
     CONFIG = {
         "bezier_points": [(6,-2),(2,1),(-3,2),(-6,-2)]
     }
