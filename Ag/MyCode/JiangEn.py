@@ -203,7 +203,7 @@ class helixMatrix():
         num32 = self.Num90(num21,positiveORnegative)
         num33 = self.Num90(num22,positiveORnegative)       
         num1 = [num11]
-        num2 = [num21,num22]
+        num2 = self.FilterNumbers([num21,num22],positiveORnegative,dnum) 
         num3 = self.FilterNumbers([num31,num32,num33],positiveORnegative,dnum) 
         num = [num1,num2,num3]
         if N>3:
@@ -216,13 +216,28 @@ class helixMatrix():
                 num.append(self.FilterNumbers(newlist,positiveORnegative,dnum))
         return num[:N]
 
+    # 同位阶
+    def Apposition(self,Num,positiveORnegative):
+        n1 = self.Num180(Num,positiveORnegative)
+        n2 = self.Num90(n1,-positiveORnegative)
+        n3 = self.Num90(n2,-positiveORnegative)
+        
+        m1 = self.Num90(Num,positiveORnegative)
+        m2 = self.Num90(m1,positiveORnegative)
+        m3 = self.Num180(m2,-positiveORnegative)
+
+        if n3 == m3:
+            return n3
+        else:
+            return "无同位阶"
+
+
     # 四角推图
     def FourCorners(self,Num,positiveORnegative,N):
         pass
 
 if __name__ == '__main__':
-    BeginValu = 1
-    Step = 1
-    ChartSize = 17
-    JinagEnMatrix = helixMatrix(BeginValu,Step,ChartSize)
-    print(JinagEnMatrix.Constellate(817,-1,5,2))
+
+    JinagEnMatrix = helixMatrix(1,1,22)
+    print("--------------------------------------")
+    print(JinagEnMatrix.Constellate(1773,1,5))
