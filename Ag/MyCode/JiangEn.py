@@ -56,7 +56,6 @@ class helixMatrix():
         
         return Num*self.Step-self.Step+self.BeginValu
 
-
     # 90度转角数
     def Num90(self,Num,positiveORnegative):
         if self.Step<0:
@@ -194,6 +193,8 @@ class helixMatrix():
 
     # Constellate推图
     def Constellate(self,Num,positiveORnegative,N,dnum=2):
+        if N<0:
+            raise Exception("请输入大于1的段数")
         if self.BeginValu!=1:
             raise Exception("请使用基数1")
         num11 = self.Num90(Num,positiveORnegative)
@@ -231,13 +232,22 @@ class helixMatrix():
         else:
             return "无同位阶"
 
-
     # 四角推图
     def FourCorners(self,Num,positiveORnegative,N):
-        pass
+        if N<0:
+            raise Exception("请输入大于1的段数")
+        num11 = self.Num90(Num,positiveORnegative)
+        num12 = self.Num180(num11,-positiveORnegative)
+        num = [[num11,num12]]
+        if N>1:
+            for i in range(1,N):
+                num90 = self.Num90(num[i-1][0],positiveORnegative)
+                num180 = self.Num180(num90,-positiveORnegative)
+                num.append([num90,num180])
+        return num[:N]
 
 if __name__ == '__main__':
 
     JinagEnMatrix = helixMatrix(1,1,22)
     print("--------------------------------------")
-    print(JinagEnMatrix.Constellate(1773,1,5))
+    print(JinagEnMatrix.FourCorners(922,-1,5))
