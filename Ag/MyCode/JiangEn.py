@@ -1,7 +1,7 @@
 import numpy
  
 class helixMatrix():
-    def __init__(self,BeginValu,Step,ChartSize):
+    def __init__(self,BeginValu=1,Step=1,ChartSize=11):
         self.BeginValu=BeginValu
         self.ChartSize = ChartSize
         self.Step = Step
@@ -89,7 +89,7 @@ class helixMatrix():
         (x,y) = self.Num2XY(Num)
 
         if abs(x) == abs(y):
-            raise Exception("值位于角线上，无90角转值 ……")
+            raise Exception("值位于角线上，无180角转值 ……")
 
         if positiveORnegative == -1:
             if x>=0 and abs(x)>abs(y):
@@ -118,7 +118,7 @@ class helixMatrix():
         if positiveORnegative != 1 and positiveORnegative != -1:
             raise Exception("请带参数，正转1，反转-1 ……")
         (x,y) = self.Num2XY(Num)
-        print((x,y))
+        # print((x,y))
         if positiveORnegative == -1:
             if x>=0 and y>=0:
                 if x==y:
@@ -247,8 +247,39 @@ class helixMatrix():
                 num.append([num90,num180])
         return num[:N]
 
+    # 夹角推图
+    def Angle(self,num1,num2,step,chartSize,n=6,dnum=2):
+        # n为对比的个数
+        self.ChartSize = chartSize
+        if num1>num2:
+            self.BeginValu = num1
+            self.Step = -abs(step)
+            num1Windmill = self.Windmill(num2,1,n)
+            self.BeginValu = num2
+            self.Step = abs(step)
+            num2Windmill = self.Windmill(num1,-1,n)
+        else:
+            return "两数相等无夹角"
+        # 筛选的数与方向无关
+        print(num1Windmill)
+        print(num2Windmill)
+        numSort = sorted(self.FilterNumbers(num1Windmill,1,dnum)\
+            +self.FilterNumbers(num2Windmill,1,dnum))
+        delnumSort = []
+        for i in range(len(numSort)):
+            if i>0:
+                if abs(numSort[i-1]-numSort[i]) > dnum:
+                    delnumSort.append(numSort[i])
+        if numSort[1] in delnumSort:
+            delnumSort.append(numSort[0])
+        for delnum in delnumSort:
+            numSort.remove(delnum)
+        # print(delnumSort)
+        return numSort
+
 if __name__ == '__main__':
 
-    JinagEnMatrix = helixMatrix(7998,-1,10)
-    print("--------------------------------------")
-    print(JinagEnMatrix.Windmill(7935,1,7))
+    # JinagEnMatrix = helixMatrix(7935,1,10)
+    # print("--------------------------------------")
+    # print(JinagEnMatrix.Windmill(7998,-1,7))
+    print(helixMatrix().Angle(8032,7965,1,12,6))
