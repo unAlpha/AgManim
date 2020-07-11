@@ -126,7 +126,7 @@ class helixMatrix():
             if x<0 and y>0:
                 return self.XY2Num(y-1,x+1)
             if x<0 and y<0:
-                if abs(y)>abs(x):
+                if abs(x)>abs(y):
                     return self.XY2Num(-y-1,-x-1)
                 else:
                     return self.XY2Num(-y,-x)
@@ -248,6 +248,6 @@ class helixMatrix():
 
 if __name__ == '__main__':
 
-    JinagEnMatrix = helixMatrix(1,1,22)
+    JinagEnMatrix = helixMatrix(1,1,10)
     print("--------------------------------------")
-    print(JinagEnMatrix.FourCorners(922,-1,5))
+    print(JinagEnMatrix.Windmill(26,1,5))
