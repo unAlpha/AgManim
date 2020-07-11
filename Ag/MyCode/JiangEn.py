@@ -118,35 +118,36 @@ class helixMatrix():
         if positiveORnegative != 1 and positiveORnegative != -1:
             raise Exception("请带参数，正转1，反转-1 ……")
         (x,y) = self.Num2XY(Num)
+        print((x,y))
         if positiveORnegative == -1:
-            if x>0 and y>0:
+            if x>=0 and y>=0:
                 if x==y:
                     return self.XY2Num(-x+1,-y+1)
                 return self.XY2Num(-y,-x)
-            if x<0 and y>0:
+            if x<=0 and y>=0:
                 return self.XY2Num(y-1,x+1)
-            if x<0 and y<0:
+            if x<=0 and y<=0:
                 if abs(x)>abs(y):
                     return self.XY2Num(-y-1,-x-1)
                 else:
                     return self.XY2Num(-y,-x)
-            if x>0 and y<0:
+            if x>=0 and y<=0:
                 return self.XY2Num(y,x)
             
         if positiveORnegative == 1:
-            if x>0 and y>0:
+            if x>=0 and y>=0:
                 if abs(y)>abs(x):
                     return self.XY2Num(-y-1,-x-1)
                 else:
                     return self.XY2Num(-y,-x)
-            if x<0 and y>0:
+            if x<=0 and y>=0:
                 return self.XY2Num(y,x)
-            if x<0 and y<0:
+            if x<=0 and y<=0:
                 if abs(y)>abs(x):
                     return self.XY2Num(-y+1,-x+1)            
                 else:  
                     return self.XY2Num(-y,-x)
-            if x>0 and y<0:
+            if x>=0 and y<=0:
                 return self.XY2Num(y-1,x+1)
 
     # 过滤相连的目标数
@@ -248,6 +249,6 @@ class helixMatrix():
 
 if __name__ == '__main__':
 
-    JinagEnMatrix = helixMatrix(1,1,10)
+    JinagEnMatrix = helixMatrix(7998,-1,10)
     print("--------------------------------------")
-    print(JinagEnMatrix.Windmill(26,1,5))
+    print(JinagEnMatrix.Windmill(7935,1,7))
