@@ -335,8 +335,21 @@ class Plot6(Scene):
         Tx2 = Text("90后",size=0.36).next_to(text2,DOWN,buff=0.3,aligned_edge=RIGHT)
 
         Txt = Text("成员以80、90后社会中坚为主",font="宋体",size=0.42).next_to(polyline2.get_left(),DOWN,buff=1.2).shift(0.5*LEFT)
-        Txtsrr=Underline(Txt,color=RED,stroke_width=1)
-        group= VGroup(circle1,arc1,arc2,txt1,txt2,polyline1,text1,polyline2,text2,Tx1,Tx2,Txt,Txtsrr).move_to(ORIGIN)
+        Txtsrr = Underline(Txt,color=RED,stroke_width=1)
+        VGroup(circle1,arc1,arc2,txt1,txt2,polyline1,text1,polyline2,text2,Tx1,Tx2,Txt,Txtsrr).move_to(ORIGIN)
 
-        self.add(group)
+        group1 = VGroup(arc1,txt1,polyline1,Tx1)
+        group2 = VGroup(arc2,txt2,polyline2,Tx2)
+
+        self.add(circle1)
+        self.play(Write(group1),run_time=2)
         self.wait()
+        self.play(Indicate(text1,color=RED))
+        self.wait()
+        self.play(Write(group2),run_time=2)
+        self.wait()
+        self.play(Indicate(text2,color=RED))
+        self.wait()
+        self.play(Write(Txt),ShowCreation(Txtsrr))
+        self.wait(5)
+

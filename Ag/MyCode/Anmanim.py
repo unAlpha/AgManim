@@ -9,9 +9,9 @@ class DeferentandEpicycle(Scene):
         earth = ImageMobject("teach/earth").scale(0.832)
         cross = Cross(orbit).scale(0.03).set_color(GRAY)
         earth.move_to(DOWN*0.5)
-        text1=Text("均轮",color=GREEN)
+        text1=Text("均轮", color=GREEN)
         text1.to_corner(UR).shift(1.5*LEFT)
-        text2=Text("本轮",color=RED)
+        text2=Text("本轮", color=RED)
         text2.next_to(text1,DOWN)
         orbitMin.move_to(orbit.point_from_proportion(0))
         planet.move_to(orbitMin.point_from_proportion(0))
@@ -104,6 +104,7 @@ class Coin2A(Scene):
         coin2.save_state()
         def update_rotate_move(mob,alpha):
             coin2.restore()
+            # alpha是把这个物体从0-1进行拆分
             coin2.move_to(path.point_from_proportion(-alpha/2+0.75))
             coin2.rotate(-TAU*alpha)
         self.play(ShowCreation(coin1),Write(coin2))
@@ -133,6 +134,7 @@ class RotateWithPath(Scene):
         self.add(square1,coin2,path)
         self.play(
                 # Red square
+                # 目标复用，只会有一个效果
                 MoveAlongPath(square1,path),
                 Rotate(square1,2*PI/3,about_point=square1.get_center()),
                 # Blue square
