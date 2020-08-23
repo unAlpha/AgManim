@@ -1,5 +1,90 @@
 from manimlib.imports import *
 
+def ObjAnd2Text(Obj,text1,text2):
+    if isinstance(Obj,VMobject):
+        pic = Rectangle(
+            height = Obj.get_height() + 0.618,
+            width = Obj.get_width() + 1.2,
+            stroke_color = BLACK,
+            fill_color = BLACK,
+            fill_opacity = 1,
+            )
+    else:
+        pic = ImageMobject(Obj).scale(2)
+    picText1 = Text(text1,
+                    color="#308032"
+        )\
+        .set_height(0.23)\
+        .next_to(pic,DOWN,buff=SMALL_BUFF)
+    picText2 = Text(text2, 
+                    color=BLACK
+        )\
+        .set_height(0.28)\
+        .next_to(picText1,DOWN,buff=SMALL_BUFF)
+    picAndText = Group(pic,picText1,picText2).center()
+    pic.rect = RoundedRectangle(
+                    corner_radius=0.1,
+                    color="#DDDDDD",
+                    fill_color = "#DDDDDD",
+                    fill_opacity = 1,
+                    height=picAndText.get_height()+0.2,
+                    width=picAndText.get_width()+0.2
+        )
+    return Group(pic.rect,pic,picText1,picText2)
+
+def ObjAnd1Text(Obj,text2):
+    if isinstance(Obj,VMobject):
+        pic = Rectangle(
+            height = Obj.get_height() + 0.618,
+            width = Obj.get_width() + 1.2,
+            stroke_color = BLACK,
+            fill_color = BLACK,
+            fill_opacity = 1,
+            )
+    else:
+        pic = ImageMobject(Obj).scale(2)
+    picText2 = Text(text2, 
+                    # font='Microsoft YaHei',
+                    color=BLACK
+        )\
+        .set_height(0.28)\
+        .next_to(pic,DOWN,buff=SMALL_BUFF*1.1)
+    picAndText = Group(pic,picText2).center()
+    pic.rect = RoundedRectangle(
+                    corner_radius=0.1,
+                    color="#DDDDDD",
+                    fill_color = "#DDDDDD",
+                    fill_opacity = 1,
+                    height=picAndText.get_height()+0.2,
+                    width=picAndText.get_width()+0.2
+        )
+    return Group(pic.rect,pic,picText2)
+
+def palyALL2(self,allParts):
+    self.play(
+        FadeInFromLarge(allParts[:2]),
+        AnimationGroup(
+                    Animation(Mobject(),run_time=0.1),
+                    FadeInFromDirections(allParts[2]),
+                    FadeInFromDirections(allParts[3]),
+                    lag_ratio=0.1
+            )
+        )
+    self.wait(15)
+    self.play(FadeOutAndShiftDown(allParts))
+
+def palyALL1(self,allParts):
+    self.play(
+        FadeInFromLarge(allParts[:2]),
+        AnimationGroup(
+                    Animation(Mobject(),run_time=0.1),
+                    FadeInFromDirections(allParts[2]),
+                    lag_ratio=0.1
+            )
+        )
+    self.wait(15)
+    self.play(FadeOutAndShiftDown(allParts))
+
 class Plot1(GraphScene):
     CONFIG = {
         "y_max" : 1,
@@ -144,16 +229,36 @@ class Plot3(GraphFromData):
         "y_axis_label": "\\heiti{参与分摊人数(万人)}",
     }
     def construct(self):
-        self.setup_axes()
+        axes = self.setup_axes(reback=True)
         # Get coords
         coords = get_coords_from_csv(r"Ag\MyCode\InsuranceData1")
         points = self.get_points_from_coords(coords)
         # Set graph
         graph = DiscreteGraphFromSetPoints(points,color=ORANGE)
         graph.set_stroke(width=10)
+
+        allVG = VGroup(axes,graph).scale(0.618).shift(LEFT*0.8+UP*0.2)
+
+        allParts = ObjAnd1Text(
+                        allVG,
+                        "“相互宝”参与人数与时间的关系"         
+            )
+
+        self.play(
+            FadeInFromLarge(allParts[:2]),
+            FadeInFromLarge(axes),
+            AnimationGroup(
+                        Animation(Mobject(),run_time=0.1),
+                        FadeInFromDirections(allParts[2]),
+                        lag_ratio=5
+                )
+            )        
         self.play(ShowCreation(graph,run_time=4))
-        self.wait(3)
-    def setup_axes(self):
+        self.wait(15)
+        self.play(FadeOutAndShiftDown(allParts),FadeOutAndShiftDown(allVG))
+
+
+    def setup_axes(self,reback=False):
         GraphScene.setup_axes(self)
         values_decimal_x=[*[i for i in range(6,46,2)]]
         list_x = [
@@ -189,8 +294,10 @@ class Plot3(GraphFromData):
             tex.next_to(self.coords_to_point(x_val, 0), 1.8*DOWN)
             tex.rotate(PI/4)
             self.x_axis_labels.add(tex)
-        self.add(self.x_axis_labels)
-
+        self.x_axis.add(self.x_axis_labels)
+        if reback:
+            return VGroup(self.x_axis, self.y_axis)
+        
 class Plot4(GraphFromData):
     CONFIG = {
         "y_max" : 5,
@@ -206,16 +313,35 @@ class Plot4(GraphFromData):
         "y_axis_label": "\\heiti{分摊金(元)}",
     }
     def construct(self):
-        self.setup_axes()
+        axes = self.setup_axes(reback=True)
         # Get coords
         coords = get_coords_from_csv(r"Ag\MyCode\InsuranceData2")
         points = self.get_points_from_coords(coords)
         # Set graph
         graph = DiscreteGraphFromSetPoints(points,color=RED)
         graph.set_stroke(width=10)
+
+        allVG = VGroup(axes,graph).scale(0.618).shift(LEFT*0.8+UP*0.2)
+
+        allParts = ObjAnd1Text(
+                        allVG,
+                        "“相互宝”人均分摊金额变化规律"         
+            )
+
+        self.play(
+            FadeInFromLarge(allParts[:2]),
+            FadeInFromLarge(axes),
+            AnimationGroup(
+                        Animation(Mobject(),run_time=0.1),
+                        FadeInFromDirections(allParts[2]),
+                        lag_ratio=5
+                )
+            )        
         self.play(ShowCreation(graph,run_time=4))
-        self.wait(3)
-    def setup_axes(self):
+        self.wait(15)
+        self.play(FadeOutAndShiftDown(allParts),FadeOutAndShiftDown(allVG))
+
+    def setup_axes(self,reback=False):
         GraphScene.setup_axes(self)
         values_decimal_x=[*[i for i in range(6,46,2)]]
         list_x = [
@@ -251,11 +377,13 @@ class Plot4(GraphFromData):
             tex.next_to(self.coords_to_point(x_val, 0), 1.8*DOWN)
             tex.rotate(PI/4)
             self.x_axis_labels.add(tex)
-        self.add(self.x_axis_labels)
+        self.x_axis.add(self.x_axis_labels)
+        if reback:
+            return VGroup(self.x_axis, self.y_axis)
 
 class Plot5(GraphFromData):
     CONFIG = {
-        "y_max" : 1600,
+        "y_max" : 1800,
         "y_min" : 0,
         "x_max" : 70,
         "x_min" : 0,
@@ -263,13 +391,13 @@ class Plot5(GraphFromData):
         "x_tick_frequency" : 10, 
         "axes_color" : BLUE, 
         "x_labeled_nums": range(0,70,10),
-        "y_labeled_nums": range(0,1600,200),
+        "y_labeled_nums": range(0,1800,200),
         "x_num_decimal_places": 0,
         "x_axis_label": "\\heiti{年龄(岁)}",
         "y_axis_label": "\\heiti{纯保费(元)}",
     }
     def construct(self):
-        self.setup_axes()
+        axes = self.setup_axes(reback=True)
         # Get coords
         coords = get_coords_from_csv(r"Ag\MyCode\InsuranceData3")
         points = self.get_points_from_coords(coords)
@@ -277,18 +405,38 @@ class Plot5(GraphFromData):
         graph1 = DiscreteGraphFromSetPoints(points[:40],color=RED)
         graph2 = DiscreteGraphFromSetPoints(points[40:],color=RED)
         graph3 = DiscreteGraphFromSetPoints(points[39:41],color=RED)
-        graph3_dash = DashedVMobject(graph3,num_dashes=8)
+        graph3_dash = DashedVMobject(graph3,num_dashes=6)
         graph1.set_stroke(width=10)
         graph2.set_stroke(width=10)
         graph3_dash.set_stroke(width=10)
+
+        allVG = VGroup(axes,graph1,graph2,graph3,graph3_dash).scale(0.618).shift(LEFT*0.8)
+
+        allParts = ObjAnd1Text(
+                        allVG,
+                        "纯保费与年龄的关系图"         
+            )
+        
+        self.play(
+            FadeInFromLarge(allParts[:2]),
+            FadeInFromLarge(axes),
+            AnimationGroup(
+                        Animation(Mobject(),run_time=0.1),
+                        FadeInFromDirections(allParts[2]),
+                        lag_ratio=5
+                )
+            )
+        
         self.play(ShowCreation(graph1,run_time=4))
         self.play(ShowCreation(graph3_dash,run_time=1))
         self.play(ShowCreation(graph2,run_time=4))
-        self.wait(3)
 
+        self.wait(15)
+        self.play(FadeOutAndShiftDown(allParts),FadeOutAndShiftDown(allVG))
+ 
 class Plot6(Scene):
     def construct(self):
-        r=2
+        r=1.618
         circle1 = Circle(
                         radius=r,
                         stroke_color=GRAY,
@@ -320,13 +468,13 @@ class Plot6(Scene):
         txt2.move_to(arc2)
 
         polyline1 = VMobject()
-        position1 = [ORIGIN,0.236*UR,0.236*UR+2*RIGHT]
+        position1 = [ORIGIN,0.236*UR,0.236*UR+2.2*RIGHT]
         polyline1.set_points_as_corners(position1)
         polyline1.set_color(RED).next_to(arc1,UR,buff=-0.6)
         text1.next_to(polyline1,UP,buff=0.2,aligned_edge=RIGHT)
 
         polyline2 = VMobject()
-        position2 = [ORIGIN,0.236*DR,0.236*DR+2*RIGHT]
+        position2 = [ORIGIN,0.236*DR,0.236*DR+2.2*RIGHT]
         polyline2.set_points_as_corners(position2)
         polyline2.set_color(RED).next_to(arc2,DR,buff=-0.6)
         text2.next_to(polyline2,UP,buff=-0.04,aligned_edge=RIGHT)
@@ -336,12 +484,26 @@ class Plot6(Scene):
 
         Txt = Text("成员以80、90后社会中坚为主",font="宋体",size=0.42).next_to(polyline2.get_left(),DOWN,buff=1.2).shift(0.5*LEFT)
         Txtsrr = Underline(Txt,color=RED,stroke_width=1)
-        VGroup(circle1,arc1,arc2,txt1,txt2,polyline1,text1,polyline2,text2,Tx1,Tx2,Txt,Txtsrr).move_to(ORIGIN)
+        allVG = VGroup(circle1,arc1,arc2,txt1,txt2,polyline1,text1,polyline2,text2,Tx1,Tx2,Txt,Txtsrr).move_to(ORIGIN).scale(0.8)
 
         group1 = VGroup(arc1,txt1,polyline1,Tx1)
         group2 = VGroup(arc2,txt2,polyline2,Tx2)
 
-        self.add(circle1)
+        allParts = ObjAnd1Text(
+                        allVG,
+                        "“相互宝”成员年龄构成"         
+            )
+        
+        self.play(
+            FadeInFromLarge(allParts[:2]),
+            FadeInFromLarge(circle1),
+            AnimationGroup(
+                        Animation(Mobject(),run_time=0.1),
+                        FadeInFromDirections(allParts[2]),
+                        lag_ratio=5
+                )
+            )
+        
         self.play(Write(group1),run_time=2)
         self.wait()
         self.play(Indicate(text1,color=RED))
@@ -351,5 +513,78 @@ class Plot6(Scene):
         self.play(Indicate(text2,color=RED))
         self.wait()
         self.play(Write(Txt),ShowCreation(Txtsrr))
-        self.wait(5)
 
+        self.wait(15)
+        self.play(FadeOutAndShiftDown(allParts),FadeOutAndShiftDown(allVG))
+
+def get_coords_from_csvdata(file_name):
+    import csv
+    coords = []
+    with open(f'{file_name}.csv', 'r', encoding='UTF-8') as csvFile:
+        reader = csv.reader(csvFile)
+        for row in reader:
+            coords.append(row)
+    csvFile.close()
+    return coords
+
+class Plot7(Scene):
+    def construct(self):
+        data = get_coords_from_csvdata(r"Ag\MyCode\InsuranceData4")
+        dataArray=np.array(data)
+        row = dataArray.shape[0]
+        column = dataArray.shape[1]
+        x,y,dx,dy=-4,3,2,0.5
+        dataTxt = []
+        dataTxtBackground =[]
+        for i in range(row):
+            for j in range(column):
+                target_ij = Text(dataArray[i][j])
+                if i==0:
+                    target_ij.scale(0.5)
+                    target_ij.set_color(RED)
+                else:
+                    target_ij.scale(0.35)
+                target_ij.shift(np.array([x+j*dx,y-i*dy,0]))
+                dataTxt.append(target_ij)
+            if (i+1)%2:
+                target_i = Rectangle(
+                    width=column*dx,
+                    height=dy,
+                    color=GRAY,
+                    fill_color=GRAY,
+                    fill_opacity=0.236,
+                    stroke_opacity=0
+                    ).move_to(target_ij).shift(np.array([-int(column/2)*dx,0,0]))
+                dataTxtBackground.append(target_i)
+        allGroup = VGroup(dataTxtBackground[0].copy(),*dataTxtBackground,*dataTxt)
+        allGroupHead = VGroup(allGroup[0],dataTxtBackground[0],*dataTxt[:5])
+
+        self.play(
+            FadeInFromDirections(allGroup[0]),
+            FadeInFromDirections(dataTxtBackground[0]),
+            FadeInFromDirections(dataTxt[:5])
+            )
+        self.play(
+                LaggedStartMap(FadeIn,[obj for obj in dataTxt[5:]],lag_ratio=0.2),
+                LaggedStartMap(FadeIn,[obj for obj in dataTxtBackground[1:]],lag_ratio=0.1),
+                run_time=3
+            )
+
+        VGroupHeadForeground=VGroup(
+                Rectangle(
+                    width=14,
+                    height=4,
+                    color=BLACK,
+                    fill_color=BLACK,
+                    fill_opacity=1,
+                    ).align_to(allGroupHead,DOWN),
+                *allGroupHead
+                )
+
+        self.play(
+            allGroup.remove(*allGroupHead).shift,(row-12)*dy*UP,
+            VGroupHeadForeground.shift,ORIGIN,
+            rate_func=linear,
+            run_time=30)
+
+        self.wait(5)

@@ -66,7 +66,7 @@ class GraphScene(Scene):
         self.right_T_label = VGroup()
         self.right_v_line = VGroup()
 
-    def setup_axes(self, animate=False):
+    def setup_axes(self, animate=False, reback=False):
         # TODO, once eoc is done, refactor this to be less redundant.
         x_num_range = float(self.x_max - self.x_min)
         self.space_unit_to_x = self.x_axis_width / x_num_range
@@ -135,14 +135,20 @@ class GraphScene(Scene):
             y_label.shift_onto_screen()
             y_axis.add(y_label)
             self.y_axis_label_mob = y_label
-
-        if animate:
-            self.play(Write(VGroup(x_axis, y_axis)))
-        else:
-            self.add(x_axis, y_axis)
+        
         # 给对象绑定x_axis和y_axis属性
+        # Ag 修改了reback和这里的顺序
         self.x_axis, self.y_axis = self.axes = VGroup(x_axis, y_axis)
         self.default_graph_colors = it.cycle(self.default_graph_colors)
+
+        if reback:
+            return VGroup(x_axis, y_axis)
+        else:
+            if animate:
+                self.play(Write(VGroup(x_axis, y_axis)))
+            else:
+                self.add(x_axis, y_axis)
+
 
     # 坐标到点
     def coords_to_point(self, x, y):
