@@ -297,7 +297,79 @@ class Plot3(GraphFromData):
         self.x_axis.add(self.x_axis_labels)
         if reback:
             return VGroup(self.x_axis, self.y_axis)
-        
+
+class Plot31(GraphFromData):
+    CONFIG = {
+        "y_max" : 14000,
+        "y_min" : 0,
+        "x_max" : 50,
+        "x_min" : 1,
+        "y_tick_frequency" : 1000, 
+        "x_tick_frequency" : 2, 
+        "axes_color" : BLUE, 
+        "y_labeled_nums": range(0,14000,2000),
+        "x_num_decimal_places": 0,
+        "x_axis_label": "\\heiti{时间(年/月)}",
+        "y_axis_label": "\\heiti{参与分摊人数(万人)}",
+    }
+    def construct(self):
+        axes = self.setup_axes(reback=True)
+        # Get coords
+        coords = get_coords_from_csv(r"Ag\MyCode\InsuranceData1")
+        points = self.get_points_from_coords(coords)
+        # Set graph
+        graph = DiscreteGraphFromSetPoints(points,color=ORANGE)
+        graph.set_stroke(width=10)
+
+        allVG = VGroup(axes,graph).scale(0.8).shift(LEFT*0.8+UP*0.618)
+        text = Text("“相互宝”参与人数与时间的关系",size=0.5).next_to(allVG,DOWN)
+
+        self.play(
+            FadeInFromLarge(text),
+            FadeInFromLarge(axes))        
+        self.play(ShowCreation(graph,run_time=4))
+        self.wait(15)
+
+    def setup_axes(self,reback=False):
+        GraphScene.setup_axes(self)
+        values_decimal_x=[*[i for i in range(6,46,2)]]
+        list_x = [
+            "2019/01",
+            "2019/02",
+            "2019/03",
+            "2019/04",
+            "2019/05",
+            "2019/06",
+            "2019/07",
+            "2019/08",
+            "2019/09",
+            "2019/10",
+            "2019/11",
+            "2019/12",
+            "2020/01",
+            "2020/02",
+            "2020/03",
+            "2020/04",
+            "2020/05",
+            "2020/06",
+            "2020/07",
+            "2020/08",
+            ]
+        values_x = [
+            (i,j)
+            for i,j in zip(values_decimal_x,list_x)
+        ]
+        self.x_axis_labels = VGroup()
+        for x_val, x_tex in values_x:
+            tex = TextMobject(x_tex)
+            tex.scale(0.5)
+            tex.next_to(self.coords_to_point(x_val, 0), 1.8*DOWN)
+            tex.rotate(PI/4)
+            self.x_axis_labels.add(tex)
+        self.x_axis.add(self.x_axis_labels)
+        if reback:
+            return VGroup(self.x_axis, self.y_axis)
+
 class Plot4(GraphFromData):
     CONFIG = {
         "y_max" : 5,
@@ -533,9 +605,9 @@ class Plot7(Scene):
         dataArray=np.array(data)
         row = dataArray.shape[0]
         column = dataArray.shape[1]
-        x,y,dx,dy=-4,3,2,0.5
+        x, y, dx, dy = -column+1, 3, 2, 0.5
         dataTxt = []
-        dataTxtBackground =[]
+        dataTxtBackground = []
         for i in range(row):
             for j in range(column):
                 target_ij = Text(dataArray[i][j])
@@ -556,16 +628,26 @@ class Plot7(Scene):
                     stroke_opacity=0
                     ).move_to(target_ij).shift(np.array([-int(column/2)*dx,0,0]))
                 dataTxtBackground.append(target_i)
-        allGroup = VGroup(dataTxtBackground[0].copy(),*dataTxtBackground,*dataTxt)
-        allGroupHead = VGroup(allGroup[0],dataTxtBackground[0],*dataTxt[:5])
+ 
+        allGroupHead = VGroup(
+            dataTxtBackground[0],
+            dataTxtBackground[0].copy(),
+            *dataTxt[:column]
+            )
+        
+        allGroup = VGroup(
+            dataTxtBackground[0].copy(),
+            *dataTxtBackground,
+            *dataTxt,
+            )
 
         self.play(
             FadeInFromDirections(allGroup[0]),
             FadeInFromDirections(dataTxtBackground[0]),
-            FadeInFromDirections(dataTxt[:5])
+            FadeInFromDirections(dataTxt[:column])
             )
         self.play(
-                LaggedStartMap(FadeIn,[obj for obj in dataTxt[5:]],lag_ratio=0.2),
+                LaggedStartMap(FadeIn,[obj for obj in dataTxt[column:]],lag_ratio=0.2),
                 LaggedStartMap(FadeIn,[obj for obj in dataTxtBackground[1:]],lag_ratio=0.1),
                 run_time=3
             )
@@ -585,6 +667,49 @@ class Plot7(Scene):
             allGroup.remove(*allGroupHead).shift,(row-12)*dy*UP,
             VGroupHeadForeground.shift,ORIGIN,
             rate_func=linear,
-            run_time=30)
+            run_time=30
+            )
 
-        self.wait(5)
+        self.wait(5)    
+
+class Insurance1(Scene):
+    def construct(self):
+        allParts = ObjAnd1Text(
+                        "Insurance/1、腓尼基希波商帆船",
+                        "腓尼基“希波”商帆船"         
+            )
+        palyALL1(self,allParts)
+
+class Insurance2(Scene):
+    def construct(self):
+        allParts = ObjAnd2Text(
+                        "Insurance/2、伦敦大火",
+                        "Great Fire of London",
+                        "伦敦博物馆藏图：1666年伦敦大火"         
+            )
+        palyALL2(self,allParts)
+
+class Insurance3(Scene):
+    def construct(self):
+        allParts = ObjAnd2Text(
+                        "Insurance/3、尼古拉斯巴蓬",
+                        "Nicholas Barbon",
+                        "尼古拉斯·巴蓬"         
+            )
+        palyALL2(self,allParts)
+
+class Insurance4(Scene):
+    def construct(self):
+        allParts = ObjAnd1Text(
+                        "Insurance/4、某火灾保险公司的消防标志",
+                        "某火灾保险公司的消防标志"         
+            )
+        palyALL1(self,allParts)
+
+class Insurance5(Scene):
+    def construct(self):
+        allParts = ObjAnd1Text(
+                        "Insurance/5、主要国家保险市场份额变化",
+                        "主要国家保险市场份额变化"         
+            )
+        palyALL1(self,allParts)
