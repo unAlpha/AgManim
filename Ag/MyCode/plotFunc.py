@@ -321,8 +321,8 @@ class Plot31(GraphFromData):
         graph = DiscreteGraphFromSetPoints(points,color=ORANGE)
         graph.set_stroke(width=10)
 
-        allVG = VGroup(axes,graph).scale(0.8).shift(LEFT*0.8+UP*0.618)
-        text = Text("“相互宝”参与人数与时间的关系",size=0.5).next_to(allVG,DOWN)
+        allVG = VGroup(axes,graph).scale(0.7).shift(LEFT*0.8+UP*0.618)
+        text = Text("“相互宝”参与人数与时间的关系",size=0.4,color=ORANGE).next_to(allVG,DOWN)
 
         self.play(
             FadeInFromLarge(text),
@@ -382,7 +382,7 @@ class Plot4(GraphFromData):
         "y_labeled_nums": range(0,6,1),
         "x_num_decimal_places": 0,
         "x_axis_label": "\\heiti{时间(年/月)}",
-        "y_axis_label": "\\heiti{分摊金(元)}",
+        "y_axis_label": "\\heiti{分摊金(元/期)}",
     }
     def construct(self):
         axes = self.setup_axes(reback=True)
@@ -600,6 +600,9 @@ def get_coords_from_csvdata(file_name):
     return coords
 
 class Plot7(Scene):
+    # CONFIG = {
+    #     "camera_config": {"background_color": GRAY},   
+    # }
     def construct(self):
         data = get_coords_from_csvdata(r"Ag\MyCode\InsuranceData4")
         dataArray=np.array(data)
@@ -654,20 +657,20 @@ class Plot7(Scene):
 
         VGroupHeadForeground=VGroup(
                 Rectangle(
-                    width=14,
-                    height=4,
+                    width=column*dx,
+                    height=dy,
                     color=BLACK,
                     fill_color=BLACK,
                     fill_opacity=1,
                     ).align_to(allGroupHead,DOWN),
                 *allGroupHead
                 )
-
+        
         self.play(
             allGroup.remove(*allGroupHead).shift,(row-12)*dy*UP,
             VGroupHeadForeground.shift,ORIGIN,
             rate_func=linear,
-            run_time=30
+            run_time=5
             )
 
         self.wait(5)    
@@ -711,5 +714,13 @@ class Insurance5(Scene):
         allParts = ObjAnd1Text(
                         "Insurance/5、主要国家保险市场份额变化",
                         "主要国家保险市场份额变化"         
+            )
+        palyALL1(self,allParts)
+
+class Tmp1(Scene):
+    def construct(self):
+        allParts = ObjAnd1Text(
+                        "pic/都江堰",
+                        "都江堰地图显示"         
             )
         palyALL1(self,allParts)

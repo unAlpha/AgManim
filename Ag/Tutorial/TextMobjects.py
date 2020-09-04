@@ -319,7 +319,7 @@ class ChangeSize(Scene):
         text = TexMobject("\\sum_{i=0}^n i=\\frac{n(n+1)}{2}")
         self.add(text)
         self.wait()
-        #直接放大
+        # 直接放大
         text.scale_in_place(2)
         self.wait(2)
 

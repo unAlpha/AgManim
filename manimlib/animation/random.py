@@ -161,7 +161,6 @@ class UnGrowFromRandom(GrowFromRandom):
     }
 
 # Ag add
-
 class PassRectangleAbstract(UpdateFromAlphaFunc):
     CONFIG = {
         "run_time": 1.3,
