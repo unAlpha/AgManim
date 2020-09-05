@@ -82,7 +82,6 @@ class ImageMobj2(Scene):
             )
         return Group(pic.rect,pic,picText1,picText2)
 
-
 class ep212(Scene):
     def construct(self):
         rect = RoundedRectangle(height=2, width=1.2, stroke_width=4, corner_radius=0.2 , color = RED)

@@ -182,8 +182,8 @@ class Gastr9(Scene):
 class Gastr10(Scene):
     def construct(self):
         allParts = ObjAnd1Text(
-                        "Gastrointestinal/10电子胃镜仪器",
-                        "电子胃镜仪器",
+                        "Gastrointestinal/10电子胃镜仪及其使用",
+                        "电子胃镜仪及其使用",
             )
         palyALL1(self,allParts)
 
@@ -191,7 +191,7 @@ class Gastr11(Scene):
     def construct(self):
         allParts = ObjAnd1Text(
                         "Gastrointestinal/11胶囊内镜图",
-                        "内镜胶囊",
+                        "胶囊内镜",
             )
         palyALL1(self,allParts)
 
@@ -199,7 +199,7 @@ class Gastr12(Scene):
     def construct(self):
         allParts = ObjAnd1Text(
                         "Gastrointestinal/12日本胃癌开展率持续提升（每10万人）",
-                        "日本胃癌开展率持续提升（每10万人）",
+                        "日本胃镜开展率持续提升（每10万人）",
             )
         palyALL1(self,allParts)
 
@@ -271,3 +271,19 @@ class Gastr16(Scene):
         self.play(FadeOutAndShiftDown(allParts),FadeOutAndShiftDown(allVG))
 
 
+class Gastr18(Scene):
+    def construct(self):
+        allParts = ObjAnd1Text(
+                        "Gastrointestinal/18医生给自己做胃镜图",
+                        "医生给自己做肠镜图",
+            )
+        palyALL1(self,allParts)
+
+
+class Gastr20(Scene):
+    def construct(self):
+        allParts = ObjAnd1Text(
+                        "Gastrointestinal/20电子胃镜仪导管末端功能",
+                        "电子胃镜仪导管末端功能",
+            )
+        palyALL1(self,allParts)
