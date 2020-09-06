@@ -214,6 +214,44 @@ class DiscreteGraphFromSetPoints(VMobject):
         super().__init__(**kwargs)
         self.set_points_as_corners(set_of_points)
 
+class BarChartRectangle(VGroup):
+    def __init__(self,values,width, graph_origin_down=2.6, **kwargs):
+        VGroup.__init__(self, **kwargs)
+        for value in values:
+            print(value)
+            bar = Rectangle(
+                height=abs(value[1]+graph_origin_down),
+                width=width,
+                fill_opacity=0.5,
+            )
+            bar.next_to(np.array(value),DOWN,buff=0)
+            self.add(bar)
+
+class PlotBarChart(GraphFromData):
+    CONFIG = {
+        "x_max" : 8,
+        "x_min" : 0,
+        "y_max" : 30,
+        "y_min" : 0,
+        "x_tick_frequency" : 2, 
+        "y_tick_frequency" : 5, 
+        "axes_color" : BLUE, 
+        "x_axis_label": "x",
+        "y_axis_label": "y",
+    }
+    def construct(self):
+        self.setup_axes()
+        x = [1, 2, 3, 4,  5,  6, 7]
+        y = [2, 4, 6, 8, 10, 20, 25]
+
+        coords = [[px,py] for px,py in zip(x,y)]
+        points = self.get_points_from_coords(coords)
+
+        graph = BarChartRectangle(points,0.5)
+
+        self.play(FadeIn(graph))
+        self.wait()
+
 class Plot3(GraphFromData):
     CONFIG = {
         "y_max" : 14000,
