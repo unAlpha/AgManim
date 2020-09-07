@@ -306,9 +306,9 @@ class IntroduceBinomial(Scene):
     def construct(self):
         self.add_title()
         self.add_bar_chart()
-        # self.add_p_slider()
-        # self.write_independence_assumption()
-        # self.play_with_p_value(0.2, 0.5)
+        self.add_p_slider()
+        self.write_independence_assumption()
+        self.play_with_p_value(0.2, 0.5)
         # self.cross_out_assumption()
         # self.play_with_p_value(0.8, 0.4)
         # self.shift_weight_to_tails()

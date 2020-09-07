@@ -215,25 +215,34 @@ class DiscreteGraphFromSetPoints(VMobject):
         self.set_points_as_corners(set_of_points)
 
 class BarChartRectangle(VGroup):
-    def __init__(self,values,width, graph_origin_down=2.6, **kwargs):
+    def __init__(self,values,width, graph_origin_down = 2.6, **kwargs):
+        # graph_origin_down是坐标系的原点值
         VGroup.__init__(self, **kwargs)
         for value in values:
-            print(value)
+            # print(value)
             bar = Rectangle(
-                height=abs(value[1]+graph_origin_down),
-                width=width,
-                fill_opacity=0.5,
+                height = abs(value[1]+graph_origin_down),
+                width = width,
+                stroke_opacity = 0.2,
+                fill_opacity = 0.5,
             )
             bar.next_to(np.array(value),DOWN,buff=0)
             self.add(bar)
+            
+    def change_bar_values(self, values, max_value = 5):
+        for bar, value in zip(self, values):
+            bar_bottom = bar.get_bottom()
+            # 这个“max_value = 5比较特别”
+            bar.stretch_to_fit_height(value/max_value)
+            bar.move_to(bar_bottom, DOWN)
 
-class PlotBarChart(GraphFromData):
+class PlotBarChart1(GraphFromData):
     CONFIG = {
         "x_max" : 8,
         "x_min" : 0,
         "y_max" : 30,
         "y_min" : 0,
-        "x_tick_frequency" : 2, 
+        "x_tick_frequency" : 1, 
         "y_tick_frequency" : 5, 
         "axes_color" : BLUE, 
         "x_axis_label": "x",
@@ -247,9 +256,48 @@ class PlotBarChart(GraphFromData):
         coords = [[px,py] for px,py in zip(x,y)]
         points = self.get_points_from_coords(coords)
 
-        graph = BarChartRectangle(points,0.5)
+        bars = BarChartRectangle(points,0.5)
+        bars.set_color_by_gradient(BLUE, YELLOW)
+        self.play(LaggedStart(
+            *[FadeIn(xy) for xy in it.chain(*bars)], 
+            run_time = 2
+        ))
+        self.wait()
 
-        self.play(FadeIn(graph))
+class PlotBarChart2(GraphFromData):
+    CONFIG = {
+        "x_max" : 8,
+        "x_min" : 0,
+        "y_max" : 30,
+        "y_min" : 0,
+        "x_tick_frequency" : 1, 
+        "y_tick_frequency" : 5, 
+        "y_labeled_nums": range(0,30,5),
+        "axes_color" : BLUE, 
+        "x_axis_label": "x",
+        "y_axis_label": "y",
+    }
+    def construct(self):
+        self.setup_axes()
+        x0 = [1, 2, 3, 4,  5,  6, 7 ]
+        y0 = [1e-3] * 7
+        y1 = [2, 4, 6, 8, 10, 20, 25]
+
+        coords = [[px,py] for px,py in zip(x0,y0)]
+        points = self.get_points_from_coords(coords)
+
+        bars = BarChartRectangle(points,0.5)
+        bars.set_color_by_gradient(BLUE, YELLOW)
+
+        self.add(bars)
+
+        self.play(
+                ApplyMethod(
+                    bars.change_bar_values,
+                    [dy for dy in y1]),
+                lag_ratio = 0.5,
+                run_time = 2
+            )
         self.wait()
 
 class Plot3(GraphFromData):
