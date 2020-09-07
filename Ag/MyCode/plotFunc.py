@@ -215,6 +215,10 @@ class DiscreteGraphFromSetPoints(VMobject):
         self.set_points_as_corners(set_of_points)
 
 class BarChartRectangle(VGroup):
+    CONFIG = {
+        "stroke_opacity":0.8,
+        "fill_opacity":0.5
+    }
     def __init__(self,values,width, graph_origin_down = 2.6, **kwargs):
         # graph_origin_down是坐标系的原点值
         VGroup.__init__(self, **kwargs)
@@ -223,8 +227,8 @@ class BarChartRectangle(VGroup):
             bar = Rectangle(
                 height = abs(value[1]+graph_origin_down),
                 width = width,
-                stroke_opacity = 0.2,
-                fill_opacity = 0.5,
+                stroke_opacity = self.stroke_opacity,
+                fill_opacity = self.fill_opacity,
             )
             bar.next_to(np.array(value),DOWN,buff=0)
             self.add(bar)
@@ -256,10 +260,12 @@ class PlotBarChart1(GraphFromData):
         coords = [[px,py] for px,py in zip(x,y)]
         points = self.get_points_from_coords(coords)
 
-        bars = BarChartRectangle(points,0.5)
+        bars = BarChartRectangle(points,0.618)
         bars.set_color_by_gradient(BLUE, YELLOW)
-        self.play(LaggedStart(
-            *[FadeIn(xy) for xy in it.chain(*bars)], 
+        self.play(
+            LaggedStart(
+                *[FadeIn(xy) for xy in it.chain(*bars)], 
+            lag_ratio = 0.1618,
             run_time = 2
         ))
         self.wait()
@@ -286,19 +292,19 @@ class PlotBarChart2(GraphFromData):
         coords = [[px,py] for px,py in zip(x0,y0)]
         points = self.get_points_from_coords(coords)
 
-        bars = BarChartRectangle(points,0.5)
-        bars.set_color_by_gradient(BLUE, YELLOW)
+        bars = BarChartRectangle(points,0.618)
+        bars.set_color_by_gradient(YELLOW, RED)
 
-        self.add(bars)
+        self.add(bars.set_opacity(0))
 
         self.play(
-                ApplyMethod(
-                    bars.change_bar_values,
-                    [dy for dy in y1]),
+                bars.set_style,{"stroke_opacity":1,"fill_opacity":0.5},
+                bars.change_bar_values,
+                [dy for dy in y1],
                 lag_ratio = 0.5,
                 run_time = 2
             )
-        self.wait()
+        self.wait(2)
 
 class Plot3(GraphFromData):
     CONFIG = {
