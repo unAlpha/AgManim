@@ -240,8 +240,13 @@ class BarChartRectangle(VGroup):
             bar_top = bar.get_top()
             bar_height = value+self.graph_origin_down
             if bar_height>0:
-                bar.stretch_to_fit_height(bar_height)
-                bar.move_to(bar_bottom, DOWN)
+                # 1e-3是柱图有边框导致的偏移
+                if bar_bottom[1]<-self.graph_origin_down-1e-3:
+                    bar.stretch_to_fit_height(-bar_height)
+                    bar.move_to(bar_top, DOWN)    
+                else: 
+                    bar.stretch_to_fit_height(bar_height)
+                    bar.move_to(bar_bottom, DOWN)
             else:
                 # 1e-3是柱图有边框导致的偏移
                 if bar_top[1]<-self.graph_origin_down+1e-3:
@@ -300,7 +305,7 @@ class PlotBarChart2(GraphFromData):
         x0 = [1, 2, 3, 4,  5,  6, 7 ]
         y0 = [1e-3] * len(x0)
         y1 = [-1, 2, 5, 10, 10, 20, 25]
-        y2 = [dy-4 for dy in y1]
+        y2 = [dy+4 for dy in y1]
 
         coords0 = [[px,py] for px,py in zip(x0,y0)]
         points0 = self.get_points_from_coords(coords0)
