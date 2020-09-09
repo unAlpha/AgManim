@@ -217,15 +217,16 @@ class DiscreteGraphFromSetPoints(VMobject):
 class BarChartRectangle(VGroup):
     CONFIG = {
         "stroke_opacity":0.8,
-        "fill_opacity":0.5
+        "fill_opacity":0.5,
+        "graph_origin_down":2.6,
     }
-    def __init__(self,values,width, graph_origin_down = 2.6, **kwargs):
+    def __init__(self,values, width, **kwargs):
         # graph_origin_down是坐标系的原点值
         VGroup.__init__(self, **kwargs)
         for value in values:
             # print(value)
             bar = Rectangle(
-                height = abs(value[1]+graph_origin_down),
+                height = abs(value[1]+self.graph_origin_down),
                 width = width,
                 stroke_opacity = self.stroke_opacity,
                 fill_opacity = self.fill_opacity,
@@ -233,12 +234,23 @@ class BarChartRectangle(VGroup):
             bar.next_to(np.array(value),DOWN,buff=0)
             self.add(bar)
             
-    def change_bar_values(self, values, max_value = 5):
+    def change_bar_values(self, values):
         for bar, value in zip(self, values):
             bar_bottom = bar.get_bottom()
-            # 这个“max_value = 5比较特别”
-            bar.stretch_to_fit_height(value/max_value)
-            bar.move_to(bar_bottom, DOWN)
+            bar_top = bar.get_top()
+            bar_height = value+self.graph_origin_down
+            if bar_height>0:
+                bar.stretch_to_fit_height(bar_height)
+                bar.move_to(bar_bottom, DOWN)
+            else:
+                # 1e-3是柱图有边框导致的偏移
+                if bar_top[1]<-self.graph_origin_down+1e-3:
+                    bar.stretch_to_fit_height(-bar_height)
+                    bar.move_to(bar_top, UP)
+                else:
+                    bar.stretch_to_fit_height(bar_height)
+                    bar.move_to(bar_bottom, UP)
+
 
 class PlotBarChart1(GraphFromData):
     CONFIG = {
@@ -275,10 +287,10 @@ class PlotBarChart2(GraphFromData):
         "x_max" : 8,
         "x_min" : 0,
         "y_max" : 30,
-        "y_min" : 0,
+        "y_min" : -5,
         "x_tick_frequency" : 1, 
-        "y_tick_frequency" : 5, 
-        "y_labeled_nums": range(0,30,5),
+        "y_tick_frequency" : 10, 
+        "y_labeled_nums": range(-5,31,5),
         "axes_color" : BLUE, 
         "x_axis_label": "x",
         "y_axis_label": "y",
@@ -286,21 +298,33 @@ class PlotBarChart2(GraphFromData):
     def construct(self):
         self.setup_axes()
         x0 = [1, 2, 3, 4,  5,  6, 7 ]
-        y0 = [1e-3] * 7
-        y1 = [2, 4, 6, 8, 10, 20, 25]
+        y0 = [1e-3] * len(x0)
+        y1 = [-1, 2, 5, 10, 10, 20, 25]
+        y2 = [dy-4 for dy in y1]
 
-        coords = [[px,py] for px,py in zip(x0,y0)]
-        points = self.get_points_from_coords(coords)
+        coords0 = [[px,py] for px,py in zip(x0,y0)]
+        points0 = self.get_points_from_coords(coords0)
 
-        bars = BarChartRectangle(points,0.618)
+        coords1 = [[px,py] for px,py in zip(x0,y1)]
+        points1 = self.get_points_from_coords(coords1)
+
+        coords2 = [[px,py] for px,py in zip(x0,y2)]
+        points2 = self.get_points_from_coords(coords2)
+
+        bars = BarChartRectangle(points0,0.618)
         bars.set_color_by_gradient(YELLOW, RED)
 
         self.add(bars.set_opacity(0))
-
         self.play(
                 bars.set_style,{"stroke_opacity":1,"fill_opacity":0.5},
                 bars.change_bar_values,
-                [dy for dy in y1],
+                [dp[1] for dp in points1],
+                lag_ratio = 0.5,
+                run_time = 2
+            )
+        self.play(
+                bars.change_bar_values,
+                [dp[1] for dp in points2],
                 lag_ratio = 0.5,
                 run_time = 2
             )

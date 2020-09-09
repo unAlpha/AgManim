@@ -461,6 +461,7 @@ class Mobject(Container):
         # Now redundant with stretch
         return self.stretch(factor, dim)
 
+    # 重新缩放以适合
     def rescale_to_fit(self, length, dim, stretch=False, **kwargs):
         old_length = self.length_over_dim(dim)
         if old_length == 0:
