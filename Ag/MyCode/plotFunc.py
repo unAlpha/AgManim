@@ -85,6 +85,273 @@ def palyALL1(self,allParts):
     self.wait(15)
     self.play(FadeOutAndShiftDown(allParts))
 
+def get_coords_from_csv(file_name):
+    import csv
+    coords = []
+    with open(f'{file_name}.csv', 'r') as csvFile:
+        reader = csv.reader(csvFile)
+        for row in reader:
+            x,y = row
+            coord = [float(x),float(y)]
+            coords.append(coord)
+    csvFile.close()
+    return coords
+
+def get_coords_from_csvdata(file_name):
+    import csv
+    coords = []
+    with open(f'{file_name}.csv', 'r', encoding='UTF-8') as csvFile:
+        reader = csv.reader(csvFile)
+        for row in reader:
+            coords.append(row)
+    csvFile.close()
+    return coords
+
+class GraphFromData(GraphScene):
+    # Covert the data coords to the graph points
+    def get_points_from_coords(self,coords):
+        return [
+            # Convert COORDS -> POINTS
+            self.coords_to_point(px,py)
+            # See manimlib/scene/graph_scene.py
+            for px,py in coords
+        ]
+
+    # Return the dots of a set of points
+    def get_dots_from_coords(self,coords,radius=0.1):
+        points = self.get_points_from_coords(coords)
+        dots = VGroup(*[
+            Dot(radius=radius).move_to([px,py,pz])
+            for px,py,pz in points
+            ]
+        )
+        return dots
+
+class SmoothGraphFromSetPoints(VMobject):
+    def __init__(self,set_of_points,**kwargs):
+        super().__init__(**kwargs)
+        self.set_points_smoothly(set_of_points)
+
+class DiscreteGraphFromSetPoints(VMobject):
+    def __init__(self,set_of_points,**kwargs):
+        super().__init__(**kwargs)
+        self.set_points_as_corners(set_of_points)
+
+class BarChartRectangle(VGroup):
+    CONFIG = {
+        "stroke_opacity":0.8,
+        "fill_opacity":0.5,
+        # graph_origin_down是坐标系的原点值
+        "graph_origin_down":2.6,
+    }
+    def __init__(self,values, width, **kwargs):
+        VGroup.__init__(self, **kwargs)
+        for value in values:
+            # print(value)
+            bar = Rectangle(
+                height = abs(value[1]+self.graph_origin_down),
+                width = width,
+                stroke_opacity = self.stroke_opacity,
+                fill_opacity = self.fill_opacity,
+            )
+            bar.next_to(np.array(value),DOWN,buff=0)
+            self.add(bar)
+            
+    def change_bar_values(self, values):
+        for bar, value in zip(self, values):
+            bar_bottom = bar.get_bottom()
+            bar_top = bar.get_top()
+            bar_height = value+self.graph_origin_down
+            if bar_height>0:
+                # 1e-3是柱图有边框导致的偏移
+                if bar_bottom[1]<-self.graph_origin_down-1e-3:
+                    bar.stretch_to_fit_height(-bar_height)
+                    bar.move_to(bar_top, DOWN)    
+                else: 
+                    bar.stretch_to_fit_height(bar_height)
+                    bar.move_to(bar_bottom, DOWN)
+            else:
+                # 1e-3是柱图有边框导致的偏移
+                if bar_top[1]<-self.graph_origin_down+1e-3:
+                    bar.stretch_to_fit_height(-bar_height)
+                    bar.move_to(bar_top, UP)
+                else:
+                    bar.stretch_to_fit_height(bar_height)
+                    bar.move_to(bar_bottom, UP)
+
+class PieChart(VMobject):
+    CONFIG = {
+        "start_per" : 0,
+        "r" : 2,
+        "gap" : TAU*2/1000,
+        "stroke" : 100,
+        "legend_style" : "Dot",
+        "legend_loc" : 3.6*RIGHT + 0*UP,
+        "legend_scale" : 0.618
+    }
+
+    def create_arc(self, percentage, arc_color):
+        arc = Arc(
+            radius = self.r,
+            start_angle = self.start_per/100*TAU,
+            angle = percentage/100*TAU-self.gap,
+            color = arc_color,
+            stroke_width = self.stroke,
+        )
+        self.start_per += percentage
+        return arc
+
+    def craet_arcs(self, *args):
+        arc_group = VGroup()
+        for per, color, name in args:
+            arc_group.add(self.create_arc(per, color))
+        self.arcs = arc_group
+        return self.arcs
+
+    def create_legend(self, per, arc_color, name):
+        per_text = Text(
+            str(per)+"%", 
+            font ='SimSun',
+            size = 0.6,
+        )
+
+        name_text = Text(
+            name, 
+            font ='SimSun',
+            size = 0.6,
+        )
+
+        if self.legend_style == "Dot":
+            item = Dot(color = arc_color).scale(2.5)
+        elif self.legend_style == "Rect":
+            item = Square(
+                color = arc_color,
+                fill_color = arc_color,
+                fill_opacity = 1,
+            ).scale(0.16)
+        
+        item.shift(self.legend_loc)
+        name_text.next_to(item, RIGHT)
+        per_text.next_to(item, LEFT)
+        return VGroup(item, name_text, per_text)
+
+    def create_legends(self, *args):
+        legend_group = VGroup()
+        i = 0
+        for per, color, name in args:
+            legend_group.add(
+                self.create_legend(
+                    per, color, name,
+                ).shift(0.8*(i-(len(args)-1)/2)*DOWN)
+            )
+            i += 1
+        self.legends = legend_group.scale(self.legend_scale)
+        return self.legends
+
+    def create_title(self, title):
+        return Text(title)
+
+    def highlight_items(self):
+        pass
+    
+class PieChartScene(Scene):
+    def construct(self):
+        pc_data = [
+            # 百分比形式
+            (40, BLUE, "广东"),
+            (20, RED, "四川"),
+            (30, YELLOW, "湖南"),
+            (10, PINK, "江西"),
+        ]
+        pie_chart = PieChart()
+        pc_circle = pie_chart.craet_arcs(*pc_data)
+        pc_legends = pie_chart.create_legends(*pc_data)
+        VGroup(pc_circle,pc_legends).arrange(RIGHT, buff=LARGE_BUFF*2)
+        self.play(
+            LaggedStartMap(ShowCreation,[obj for obj in pc_circle],lag_ratio=1),
+            LaggedStartMap(Write,[obj for obj in pc_legends],lag_ratio=1),
+            run_time=5,
+        )
+        self.wait()
+
+class PlotBarChart1(GraphFromData):
+    CONFIG = {
+        "x_max" : 8,
+        "x_min" : 0,
+        "y_max" : 30,
+        "y_min" : 0,
+        "x_tick_frequency" : 1, 
+        "y_tick_frequency" : 5, 
+        "axes_color" : BLUE, 
+        "x_axis_label": "x",
+        "y_axis_label": "y",
+    }
+    def construct(self):
+        self.setup_axes()
+        x = [1, 2, 3, 4,  5,  6, 7]
+        y = [2, 4, 6, 8, 10, 20, 25]
+
+        coords = [[px,py] for px,py in zip(x,y)]
+        points = self.get_points_from_coords(coords)
+
+        bars = BarChartRectangle(points,0.618)
+        bars.set_color_by_gradient(BLUE, YELLOW)
+        self.play(
+            LaggedStart(
+                *[FadeIn(xy) for xy in it.chain(*bars)], 
+            lag_ratio = 0.1618,
+            run_time = 2
+        ))
+        self.wait()
+
+class PlotBarChart2(GraphFromData):
+    CONFIG = {
+        "x_max" : 8,
+        "x_min" : 0,
+        "y_max" : 30,
+        "y_min" : -5,
+        "x_tick_frequency" : 1, 
+        "y_tick_frequency" : 10, 
+        "y_labeled_nums": range(-5,31,5),
+        "axes_color" : BLUE, 
+        "x_axis_label": "x",
+        "y_axis_label": "y",
+    }
+    def construct(self):
+        self.setup_axes()
+        x0 = [1, 2, 3, 4,  5,  6, 7 ]
+        y0 = [1e-3] * len(x0)
+        y1 = [-1, 2, -5, 10, 10, 20, 25]
+        y2 = [dy+4 for dy in y1]
+
+        coords0 = [[px,py] for px,py in zip(x0,y0)]
+        points0 = self.get_points_from_coords(coords0)
+
+        coords1 = [[px,py] for px,py in zip(x0,y1)]
+        points1 = self.get_points_from_coords(coords1)
+
+        coords2 = [[px,py] for px,py in zip(x0,y2)]
+        points2 = self.get_points_from_coords(coords2)
+
+        bars = BarChartRectangle(points0,0.618)
+        bars.set_color_by_gradient(YELLOW, RED)
+
+        self.add(bars.set_opacity(0))
+        self.play(
+                bars.set_style,{"stroke_opacity":1,"fill_opacity":0.5},
+                bars.change_bar_values,
+                [dp[1] for dp in points1],
+                lag_ratio = 0.5,
+                run_time = 2
+            )
+        self.play(
+                bars.change_bar_values,
+                [dp[1] for dp in points2],
+                lag_ratio = 0.5,
+                run_time = 2
+            )
+        self.wait(2)
+
 class Plot1(GraphScene):
     CONFIG = {
         "y_max" : 1,
@@ -171,169 +438,6 @@ class Plot2(GraphScene):
             tex.next_to(self.coords_to_point(0, y_val), LEFT)
             self.y_axis_labels.add(tex)
         self.add(self.y_axis_labels)
-
-class GraphFromData(GraphScene):
-    # Covert the data coords to the graph points
-    def get_points_from_coords(self,coords):
-        return [
-            # Convert COORDS -> POINTS
-            self.coords_to_point(px,py)
-            # See manimlib/scene/graph_scene.py
-            for px,py in coords
-        ]
-
-    # Return the dots of a set of points
-    def get_dots_from_coords(self,coords,radius=0.1):
-        points = self.get_points_from_coords(coords)
-        dots = VGroup(*[
-            Dot(radius=radius).move_to([px,py,pz])
-            for px,py,pz in points
-            ]
-        )
-        return dots
-
-def get_coords_from_csv(file_name):
-    import csv
-    coords = []
-    with open(f'{file_name}.csv', 'r') as csvFile:
-        reader = csv.reader(csvFile)
-        for row in reader:
-            x,y = row
-            coord = [float(x),float(y)]
-            coords.append(coord)
-    csvFile.close()
-    return coords
-
-class SmoothGraphFromSetPoints(VMobject):
-    def __init__(self,set_of_points,**kwargs):
-        super().__init__(**kwargs)
-        self.set_points_smoothly(set_of_points)
-
-class DiscreteGraphFromSetPoints(VMobject):
-    def __init__(self,set_of_points,**kwargs):
-        super().__init__(**kwargs)
-        self.set_points_as_corners(set_of_points)
-
-class BarChartRectangle(VGroup):
-    CONFIG = {
-        "stroke_opacity":0.8,
-        "fill_opacity":0.5,
-        "graph_origin_down":2.6,
-    }
-    def __init__(self,values, width, **kwargs):
-        # graph_origin_down是坐标系的原点值
-        VGroup.__init__(self, **kwargs)
-        for value in values:
-            # print(value)
-            bar = Rectangle(
-                height = abs(value[1]+self.graph_origin_down),
-                width = width,
-                stroke_opacity = self.stroke_opacity,
-                fill_opacity = self.fill_opacity,
-            )
-            bar.next_to(np.array(value),DOWN,buff=0)
-            self.add(bar)
-            
-    def change_bar_values(self, values):
-        for bar, value in zip(self, values):
-            bar_bottom = bar.get_bottom()
-            bar_top = bar.get_top()
-            bar_height = value+self.graph_origin_down
-            if bar_height>0:
-                # 1e-3是柱图有边框导致的偏移
-                if bar_bottom[1]<-self.graph_origin_down-1e-3:
-                    bar.stretch_to_fit_height(-bar_height)
-                    bar.move_to(bar_top, DOWN)    
-                else: 
-                    bar.stretch_to_fit_height(bar_height)
-                    bar.move_to(bar_bottom, DOWN)
-            else:
-                # 1e-3是柱图有边框导致的偏移
-                if bar_top[1]<-self.graph_origin_down+1e-3:
-                    bar.stretch_to_fit_height(-bar_height)
-                    bar.move_to(bar_top, UP)
-                else:
-                    bar.stretch_to_fit_height(bar_height)
-                    bar.move_to(bar_bottom, UP)
-
-
-class PlotBarChart1(GraphFromData):
-    CONFIG = {
-        "x_max" : 8,
-        "x_min" : 0,
-        "y_max" : 30,
-        "y_min" : 0,
-        "x_tick_frequency" : 1, 
-        "y_tick_frequency" : 5, 
-        "axes_color" : BLUE, 
-        "x_axis_label": "x",
-        "y_axis_label": "y",
-    }
-    def construct(self):
-        self.setup_axes()
-        x = [1, 2, 3, 4,  5,  6, 7]
-        y = [2, 4, 6, 8, 10, 20, 25]
-
-        coords = [[px,py] for px,py in zip(x,y)]
-        points = self.get_points_from_coords(coords)
-
-        bars = BarChartRectangle(points,0.618)
-        bars.set_color_by_gradient(BLUE, YELLOW)
-        self.play(
-            LaggedStart(
-                *[FadeIn(xy) for xy in it.chain(*bars)], 
-            lag_ratio = 0.1618,
-            run_time = 2
-        ))
-        self.wait()
-
-class PlotBarChart2(GraphFromData):
-    CONFIG = {
-        "x_max" : 8,
-        "x_min" : 0,
-        "y_max" : 30,
-        "y_min" : -5,
-        "x_tick_frequency" : 1, 
-        "y_tick_frequency" : 10, 
-        "y_labeled_nums": range(-5,31,5),
-        "axes_color" : BLUE, 
-        "x_axis_label": "x",
-        "y_axis_label": "y",
-    }
-    def construct(self):
-        self.setup_axes()
-        x0 = [1, 2, 3, 4,  5,  6, 7 ]
-        y0 = [1e-3] * len(x0)
-        y1 = [-1, 2, 5, 10, 10, 20, 25]
-        y2 = [dy+4 for dy in y1]
-
-        coords0 = [[px,py] for px,py in zip(x0,y0)]
-        points0 = self.get_points_from_coords(coords0)
-
-        coords1 = [[px,py] for px,py in zip(x0,y1)]
-        points1 = self.get_points_from_coords(coords1)
-
-        coords2 = [[px,py] for px,py in zip(x0,y2)]
-        points2 = self.get_points_from_coords(coords2)
-
-        bars = BarChartRectangle(points0,0.618)
-        bars.set_color_by_gradient(YELLOW, RED)
-
-        self.add(bars.set_opacity(0))
-        self.play(
-                bars.set_style,{"stroke_opacity":1,"fill_opacity":0.5},
-                bars.change_bar_values,
-                [dp[1] for dp in points1],
-                lag_ratio = 0.5,
-                run_time = 2
-            )
-        self.play(
-                bars.change_bar_values,
-                [dp[1] for dp in points2],
-                lag_ratio = 0.5,
-                run_time = 2
-            )
-        self.wait(2)
 
 class Plot3(GraphFromData):
     CONFIG = {
@@ -710,20 +814,10 @@ class Plot6(Scene):
         self.wait(15)
         self.play(FadeOutAndShiftDown(allParts),FadeOutAndShiftDown(allVG))
 
-def get_coords_from_csvdata(file_name):
-    import csv
-    coords = []
-    with open(f'{file_name}.csv', 'r', encoding='UTF-8') as csvFile:
-        reader = csv.reader(csvFile)
-        for row in reader:
-            coords.append(row)
-    csvFile.close()
-    return coords
-
-class Plot7(Scene):
-    # CONFIG = {
-    #     "camera_config": {"background_color": GRAY},   
-    # }
+class Table1(Scene):
+    CONFIG = {
+        "camera_config": {"background_color": BLACK},   
+    }
     def construct(self):
         data = get_coords_from_csvdata(r"Ag\MyCode\InsuranceData4")
         dataArray=np.array(data)
@@ -779,7 +873,8 @@ class Plot7(Scene):
         VGroupHeadForeground=VGroup(
                 Rectangle(
                     width=column*dx,
-                    height=dy,
+                    # +2是向上增加
+                    height=dy+2,
                     color=BLACK,
                     fill_color=BLACK,
                     fill_opacity=1,

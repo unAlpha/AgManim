@@ -89,7 +89,6 @@ def palyALL1(self,allParts):
     self.wait(15)
     self.play(FadeOutAndShiftDown(allParts))
 
-
 class Gastr1(Scene):
     def construct(self):
         allParts = ObjAnd1Text(
@@ -109,7 +108,6 @@ class Gastr2(Scene):
                         0.5
             )
         palyALL1(self,allParts)
-
 
 class Gastr3(Scene):
     def construct(self):
@@ -227,7 +225,6 @@ class Gastr15(Scene):
             )
         palyALL1(self,allParts)
 
-
 script = [
 """（1）胃癌高发地区人群；""",
 """（2）幽门螺杆菌感染者；""",
@@ -270,7 +267,6 @@ class Gastr16(Scene):
 
         self.play(FadeOutAndShiftDown(allParts),FadeOutAndShiftDown(allVG))
 
-
 class Gastr18(Scene):
     def construct(self):
         allParts = ObjAnd1Text(
@@ -278,7 +274,6 @@ class Gastr18(Scene):
                         "医生给自己做肠镜图",
             )
         palyALL1(self,allParts)
-
 
 class Gastr20(Scene):
     def construct(self):
