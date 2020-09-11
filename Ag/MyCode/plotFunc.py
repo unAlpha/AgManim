@@ -223,25 +223,25 @@ class PieChart(VMobject):
         )
 
         if self.legend_style == "Dot":
-            item = Dot(color = arc_color).scale(2.5)
+            dot_color = Dot(color = arc_color).scale(2.5)
         elif self.legend_style == "Rect":
-            item = Square(
+            dot_color = Square(
                 color = arc_color,
                 fill_color = arc_color,
                 fill_opacity = 1,
             ).scale(0.16)
         
-        item.shift(self.legend_loc)
-        name_text.next_to(item, RIGHT)
-        per_text.next_to(item, LEFT)
-        return VGroup(item, name_text, per_text)
+        dot_color.shift(self.legend_loc)
+        name_text.next_to(dot_color, RIGHT)
+        per_text.next_to(dot_color, LEFT)
+        return VGroup(dot_color, name_text, per_text)
 
     def create_legends(self, *args):
         legend_group = VGroup()
-        for per, item, name in args:
+        for per, dot, name in args:
             legend_group.add(
                 self.create_legend(
-                    per, item, name,
+                    per, dot, name,
                 )
             )
         self.legends = legend_group.scale(self.legend_scale).arrange(
@@ -259,7 +259,7 @@ class PieChart(VMobject):
         return arcs
 
     def highlight_items_legends(self, legends, item=0):
-        legends[item].scale(1.5)
+        legends[item].scale(1.5,about_point=legends[item][0].get_center())
         legends.arrange(
             DOWN,
             center=False,
@@ -289,7 +289,7 @@ class PieChartScene(Scene):
             run_time=5,
         )
 
-        highlight_items = [1, 2]
+        highlight_items = [0, 1, 2, 3, 4]
         for item in highlight_items:
             self.play(
                 Transform(
