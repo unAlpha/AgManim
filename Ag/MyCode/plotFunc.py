@@ -237,15 +237,17 @@ class PieChart(VMobject):
 
     def create_legends(self, *args):
         legend_group = VGroup()
-        i = 0
         for per, item, name in args:
             legend_group.add(
                 self.create_legend(
                     per, item, name,
-                ).shift(0.85*(i-(len(args)-1)/2)*DOWN)
+                )
             )
-            i += 1
-        self.legends = legend_group.scale(self.legend_scale)
+        self.legends = legend_group.scale(self.legend_scale).arrange(
+                DOWN,
+                buff=MED_SMALL_BUFF,
+                index_of_submobject_to_align=0
+            )
         return self.legends
 
     def create_title(self, title):
@@ -271,15 +273,13 @@ class PieChartScene(Scene):
         VGroup(pc_circle,pc_legends).arrange(RIGHT, buff=LARGE_BUFF*2)
 
         def vgroup_transform_to_part(vgroup):
-            vg_center = vgroup.get_center()
             vgroup[2].scale(1.5)
             vgroup.arrange(
                 DOWN,
                 center=False,
-                buff=MED_LARGE_BUFF,
+                buff=MED_SMALL_BUFF,
                 index_of_submobject_to_align=0
-            ) 
-            vgroup.move_to(vg_center)
+            )
             return vgroup
 
         self.play(
