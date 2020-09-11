@@ -764,19 +764,19 @@ class Mobject(Container):
         index = np.argmax(np.dot(all_points, np.array(direction).T))
         return all_points[index]
 
-    # 获得对象top的坐标 obj.get_top()
+    # 获得对象top的坐标
     def get_top(self):
         return self.get_edge_center(UP)
 
-    # 获得对象bottom的坐标 obj.get_bottom()
+    # 获得对象bottom的坐标
     def get_bottom(self):
         return self.get_edge_center(DOWN)
 
-    # 获得对象right的坐标 obj.get_right()
+    # 获得对象right的坐标
     def get_right(self):
         return self.get_edge_center(RIGHT)
 
-    # 获得对象left的坐标 obj.get_left()
+    # 获得对象left的坐标
     def get_left(self):
         return self.get_edge_center(LEFT)
 

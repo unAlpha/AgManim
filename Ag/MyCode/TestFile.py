@@ -1,6 +1,29 @@
 from manimlib.imports import *
 import fractions
 
+class VGroupTransfrom(Scene):
+    def construct(self):
+        txt_list = [Text(str(txtn)) for txtn in range(99,102)]
+        txt_vgroup = VGroup(*txt_list).arrange(DOWN, buff= MED_LARGE_BUFF)
+        
+        def vgroup_transform_to_part(vgroup):
+            vgroup[1].scale(2)
+            vgroup.arrange(DOWN, buff=MED_LARGE_BUFF*1.2)
+            return vgroup
+
+        self.add(txt_vgroup)
+        # # 方法1 不太可行
+        # self.play(       
+        #     txt_vgroup.arrange, DOWN, {"buff" : LARGE_BUFF},
+        #     txt_vgroup[1].scale, 2,
+        # )
+        # 方法2 可行的
+        self.play(
+            ApplyFunction(vgroup_transform_to_part,txt_vgroup)
+        )
+
+        self.wait()
+
 class testTransform(Scene):
     def construct(self):
         dot = Dot()
@@ -50,7 +73,7 @@ class MyThreeDScene(ThreeDScene):
         self.wait()
         self.play(ShowCreation(sqr))
         
-        self.play(Write(cube))
+        self.play(FadeIn(cube))
         self.wait()
 
 class Equation(Scene):
@@ -61,9 +84,11 @@ class Equation(Scene):
         # list对象
         equation = VGroup(equation1,equation2,equation3).arrange(DOWN)
         equation1.next_to(equation3, DOWN, MED_LARGE_BUFF)
-        equation1.shift_onto_screen(buff=5)
+        # equation1.shift_onto_screen(buff=5)
         # equation1.center()
         self.add(equation)
+        self.play(equation1.shift_onto_screen,{"buff":5})
+        self.wait()
 
 class FuncGraphSin(Scene):
     CONFIG={
@@ -76,8 +101,9 @@ class FuncGraphSin(Scene):
     }
     def construct(self):
         sinGraph = self.get_sin_graph(0)
-        sinGraph.scale(0.2)
+        sinGraph.scale(0.5)
         self.add(sinGraph)
+        self.wait()
 
     def get_sin_graph(self, dx):
         sin_graph = FunctionGraph(
@@ -93,7 +119,7 @@ class SumTyping(Scene):
         # https://github.com/xy-23/manim/commit/f4d45d13017e3c061fce4a0fd907e4247626ccda
         # self.play(Typing(text1),run_time=1)
 
-        text1 = Text("D 这是一个测试")
+        text1 = Text("第一段文字")
         always_shift(text1, rate=0.5)
         self.add(text1)
         self.wait(2)
@@ -119,7 +145,7 @@ class vectors(GraphScene):
         # 3 add_updater
         vector1.add_updater(lambda obj: obj.become(self.vector(1,1,5,vlu.get_value(),True)))
 
-        dashV = self.dashVector(1,1,8,1)
+        dashV = self.dashVector(1,1,6,2)
 
         # 4 show
         self.play(ShowCreation(vector1))
@@ -440,7 +466,7 @@ class TexTest(Scene):
         rect = Rectangle(
             height = 3.5, width = 6.5,
             stroke_width = 0,
-            fill_color = BLACK,
+            fill_color = BLUE,
             fill_opacity = 0.8
         )
         rect.to_corner(UP+LEFT, buff = 0)
@@ -456,6 +482,7 @@ class TexTest(Scene):
             [(0, 2, 5), (1, 1, 6), (0, 3, 7)],
             [(0, 2, 8), (0, 3, 9), (1, 3, 10)],
         ]
+        self.add(rect,top_line)
         for index_alignment in index_alignment_lists:
             self.play(*[
                 ReplacementTransform(
@@ -562,6 +589,7 @@ class MoveToTargetScene(Scene):
         self.play(*list(map(MoveToTarget, [dot, line])))
         self.wait()
 
+# SVGMobject中获得点
 class ShpaeTest(Scene):
     def construct(self):
         path1 = self.get_path().shift(3*LEFT)
@@ -593,9 +621,8 @@ class ShpaeTest(Scene):
         path = shape.family_members_with_points()[0]
         # path.set_height(5)
         path.set_fill(opacity=0)
-        path.set_stroke(WHITE, 1)
+        path.set_stroke(WHITE, 3)
         return path
-
 
 class ComplexPlaneScene(Scene):
     def construct(self):
@@ -671,7 +698,6 @@ class ComplexPlaneScene(Scene):
             self.wait()
         self.play(*list(map(FadeOut, [line, label])))
 
-
 class Cycloid(ParametricFunction):
     CONFIG = {
         "point_a": 3*LEFT+2*UP,
@@ -746,7 +772,6 @@ class RollAlongVectorTest2(Scene):
             ShowCreation(vector)
         )
 
-
 class CycloidScene(Scene):
     CONFIG = {
         "point_a": 6*LEFT+3*UP,
@@ -819,7 +844,6 @@ class CycloidScene(Scene):
             *anims
         )
         self.generate_cycloid()
-
 
 class DrawCycloid(CycloidScene):
     def construct(self):

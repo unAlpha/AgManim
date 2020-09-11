@@ -238,11 +238,11 @@ class PieChart(VMobject):
     def create_legends(self, *args):
         legend_group = VGroup()
         i = 0
-        for per, color, name in args:
+        for per, item, name in args:
             legend_group.add(
                 self.create_legend(
-                    per, color, name,
-                ).shift(0.8*(i-(len(args)-1)/2)*DOWN)
+                    per, item, name,
+                ).shift(0.85*(i-(len(args)-1)/2)*DOWN)
             )
             i += 1
         self.legends = legend_group.scale(self.legend_scale)
@@ -250,10 +250,11 @@ class PieChart(VMobject):
 
     def create_title(self, title):
         return Text(title)
-
-    def highlight_items(self):
-        pass
     
+    def highlight_items(self, item):
+        self.arcs[item].scale(1.1,about_point=self.arcs.get_center())
+        return self
+   
 class PieChartScene(Scene):
     def construct(self):
         pc_data = [
@@ -261,16 +262,35 @@ class PieChartScene(Scene):
             (40, BLUE, "广东"),
             (20, RED, "四川"),
             (30, YELLOW, "湖南"),
-            (10, PINK, "江西"),
+            (5, PINK, "江西"),
+            (5, GOLD, "河南"),
         ]
         pie_chart = PieChart()
         pc_circle = pie_chart.craet_arcs(*pc_data)
         pc_legends = pie_chart.create_legends(*pc_data)
         VGroup(pc_circle,pc_legends).arrange(RIGHT, buff=LARGE_BUFF*2)
+
+        def vgroup_transform_to_part(vgroup):
+            vg_center = vgroup.get_center()
+            vgroup[2].scale(1.5)
+            vgroup.arrange(
+                DOWN,
+                center=False,
+                buff=MED_LARGE_BUFF,
+                index_of_submobject_to_align=0
+            ) 
+            vgroup.move_to(vg_center)
+            return vgroup
+
         self.play(
             LaggedStartMap(ShowCreation,[obj for obj in pc_circle],lag_ratio=1),
-            LaggedStartMap(Write,[obj for obj in pc_legends],lag_ratio=1),
+            LaggedStartMap(FadeInFromDown,[obj for obj in pc_legends],lag_ratio=1),
             run_time=5,
+        )
+        self.play(
+            pie_chart.arcs[2].scale,1.1,{"about_point":pie_chart.arcs.get_center()},
+            ApplyFunction(vgroup_transform_to_part, pc_legends),
+            run_time = 1
         )
         self.wait()
 
@@ -840,8 +860,8 @@ class Table1(Scene):
                 target_i = Rectangle(
                     width=column*dx,
                     height=dy,
-                    color=GRAY,
-                    fill_color=GRAY,
+                    color=BLUE,
+                    fill_color=BLUE,
                     fill_opacity=0.236,
                     stroke_opacity=0
                     ).move_to(target_ij).shift(np.array([-int(column/2)*dx,0,0]))
@@ -875,8 +895,8 @@ class Table1(Scene):
                     width=column*dx,
                     # +2是向上增加
                     height=dy+2,
-                    color=BLACK,
-                    fill_color=BLACK,
+                    color=self.camera_config["background_color"],
+                    fill_color=self.camera_config["background_color"],
                     fill_opacity=1,
                     ).align_to(allGroupHead,DOWN),
                 *allGroupHead

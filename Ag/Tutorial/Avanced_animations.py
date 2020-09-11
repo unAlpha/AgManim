@@ -253,6 +253,7 @@ class RotationAndMoveFail(Scene):
 
         square2.save_state()
         def update_rotate_move(mob,alpha):
+            # 具有时间保持效果
             square2.restore()
             square2.shift(RIGHT*10*alpha)
             square2.rotate(3*PI*alpha)
