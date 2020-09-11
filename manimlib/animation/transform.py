@@ -269,7 +269,6 @@ class ApplyComplexFunction(ApplyMethod):
 
 ###
 
-
 class CyclicReplace(Transform):
     CONFIG = {
         "path_arc": 90 * DEGREES,

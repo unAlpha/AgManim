@@ -187,7 +187,8 @@ class PieChart(VMobject):
         "stroke" : 100,
         "legend_style" : "Dot",
         "legend_loc" : 3.6*RIGHT + 0*UP,
-        "legend_scale" : 0.618
+        "legend_scale" : 0.618,
+        "scale_k" : 1,
     }
 
     def create_arc(self, percentage, arc_color):
@@ -253,10 +254,20 @@ class PieChart(VMobject):
     def create_title(self, title):
         return Text(title)
     
-    def highlight_items(self, item):
-        self.arcs[item].scale(1.1,about_point=self.arcs.get_center())
-        return self
-   
+    def highlight_items_arcs(self, arcs, item=0):
+        arcs[item].scale(1.1,about_point=arcs.get_center())
+        return arcs
+
+    def highlight_items_legends(self, legends, item=0):
+        legends[item].scale(1.5)
+        legends.arrange(
+            DOWN,
+            center=False,
+            buff=MED_SMALL_BUFF,
+            index_of_submobject_to_align=0
+        )
+        return legends
+
 class PieChartScene(Scene):
     def construct(self):
         pc_data = [
@@ -268,30 +279,31 @@ class PieChartScene(Scene):
             (5, GOLD, "河南"),
         ]
         pie_chart = PieChart()
-        pc_circle = pie_chart.craet_arcs(*pc_data)
+        pc_arcs = pie_chart.craet_arcs(*pc_data)
         pc_legends = pie_chart.create_legends(*pc_data)
-        VGroup(pc_circle,pc_legends).arrange(RIGHT, buff=LARGE_BUFF*2)
-
-        def vgroup_transform_to_part(vgroup):
-            vgroup[2].scale(1.5)
-            vgroup.arrange(
-                DOWN,
-                center=False,
-                buff=MED_SMALL_BUFF,
-                index_of_submobject_to_align=0
-            )
-            return vgroup
-
+        VGroup(pc_arcs,pc_legends).arrange(RIGHT, buff=LARGE_BUFF*2)
+            
         self.play(
-            LaggedStartMap(ShowCreation,[obj for obj in pc_circle],lag_ratio=1),
+            LaggedStartMap(ShowCreation,[obj for obj in pc_arcs],lag_ratio=1),
             LaggedStartMap(FadeInFromDown,[obj for obj in pc_legends],lag_ratio=1),
             run_time=5,
         )
-        self.play(
-            pie_chart.arcs[2].scale,1.1,{"about_point":pie_chart.arcs.get_center()},
-            ApplyFunction(vgroup_transform_to_part, pc_legends),
-            run_time = 1
-        )
+
+        highlight_items = [1, 2]
+        for item in highlight_items:
+            self.play(
+                Transform(
+                    pc_arcs,
+                    pie_chart.highlight_items_arcs(pc_arcs.copy(),item)
+                ),
+                Transform(
+                    pc_legends,
+                    pie_chart.highlight_items_legends(pc_legends.copy(),item)
+                ),
+                rate_func=there_and_back_with_pause,
+                run_time = 2,
+            )
+
         self.wait()
 
 class PlotBarChart1(GraphFromData):
