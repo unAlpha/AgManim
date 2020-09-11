@@ -65,8 +65,8 @@ def palyALL2(self,allParts):
         FadeInFromLarge(allParts[:2]),
         AnimationGroup(
                     Animation(Mobject(),run_time=0.1),
-                    FadeInFromDirections(allParts[2]),
-                    FadeInFromDirections(allParts[3]),
+                    FadeInFrom(allParts[2]),
+                    FadeInFrom(allParts[3]),
                     lag_ratio=0.1
             )
         )
@@ -78,7 +78,7 @@ def palyALL1(self,allParts):
         FadeInFromLarge(allParts[:2]),
         AnimationGroup(
                     Animation(Mobject(),run_time=0.1),
-                    FadeInFromDirections(allParts[2]),
+                    FadeInFrom(allParts[2]),
                     lag_ratio=0.1
             )
         )
@@ -142,14 +142,14 @@ class BarChartRectangle(VGroup):
         "stroke_opacity":0.8,
         "fill_opacity":0.5,
         # graph_origin_down是坐标系的原点值
-        "graph_origin_down":2.6,
+        "graph_origin_down":-2.6,
     }
     def __init__(self,values, width, **kwargs):
         VGroup.__init__(self, **kwargs)
         for value in values:
             # print(value)
             bar = Rectangle(
-                height = abs(value[1]+self.graph_origin_down),
+                height = abs(value[1]-self.graph_origin_down),
                 width = width,
                 stroke_opacity = self.stroke_opacity,
                 fill_opacity = self.fill_opacity,
@@ -161,10 +161,10 @@ class BarChartRectangle(VGroup):
         for bar, value in zip(self, values):
             bar_bottom = bar.get_bottom()
             bar_top = bar.get_top()
-            bar_height = value+self.graph_origin_down
+            bar_height = value-self.graph_origin_down
             if bar_height>0:
                 # 1e-3是柱图有边框导致的偏移
-                if bar_bottom[1]<-self.graph_origin_down-1e-3:
+                if bar_bottom[1]<self.graph_origin_down-1e-3:
                     bar.stretch_to_fit_height(-bar_height)
                     bar.move_to(bar_top, DOWN)    
                 else: 
@@ -172,7 +172,7 @@ class BarChartRectangle(VGroup):
                     bar.move_to(bar_bottom, DOWN)
             else:
                 # 1e-3是柱图有边框导致的偏移
-                if bar_top[1]<-self.graph_origin_down+1e-3:
+                if bar_top[1]<self.graph_origin_down+1e-3:
                     bar.stretch_to_fit_height(-bar_height)
                     bar.move_to(bar_top, UP)
                 else:
@@ -343,7 +343,7 @@ class PlotBarChart2(GraphFromData):
         "y_max" : 30,
         "y_min" : -5,
         "x_tick_frequency" : 1, 
-        "y_tick_frequency" : 10, 
+        "y_tick_frequency" : 5, 
         "y_labeled_nums": range(-5,31,5),
         "axes_color" : BLUE, 
         "x_axis_label": "x",
@@ -365,7 +365,7 @@ class PlotBarChart2(GraphFromData):
         coords2 = [[px,py] for px,py in zip(x0,y2)]
         points2 = self.get_points_from_coords(coords2)
 
-        bars = BarChartRectangle(points0,0.618)
+        bars = BarChartRectangle(points0, 0.618)
         bars.set_color_by_gradient(YELLOW, RED)
 
         self.add(bars.set_opacity(0))
@@ -383,6 +383,212 @@ class PlotBarChart2(GraphFromData):
                 run_time = 2
             )
         self.wait(2)
+
+class PlotBarChart3(GraphFromData):
+    CONFIG = {
+        "x_max" : 8,
+        "x_min" : 0,
+        "y_max" : 30,
+        "y_min" : 0,
+        "x_tick_frequency" : 1, 
+        "y_tick_frequency" : 5, 
+        "axes_color" : BLUE, 
+        "x_axis_label": "x",
+        "y_axis_label": "y",
+        "graph_origin": 2.6 * DOWN + 4 * LEFT,
+    }
+    def construct(self):
+        self.setup_axes()
+        x0 = [1, 2, 3, 4,  5,  6, 7 ]
+        y0 = [1e-3] * len(x0)
+        y1 = [1, 2, 5, 10, 10, 20, 12]
+        y2 = [dy+5 for dy in y1]
+
+        coords0 = [[px,py] for px,py in zip(x0,y0)]
+        points0 = self.get_points_from_coords(coords0)
+
+        coords1 = [[px,py] for px,py in zip(x0,y1)]
+        points1 = self.get_points_from_coords(coords1)
+
+        coords2 = [[px,py] for px,py in zip(x0,y2)]
+        points2 = self.get_points_from_coords(coords2)
+
+        bars = BarChartRectangle(points0, 0.618, graph_origin_down=self.graph_origin[1])
+        bars.set_color_by_gradient(YELLOW, RED)
+
+        self.add(bars.set_opacity(0))
+        self.play(
+                bars.set_style,{"stroke_opacity":1,"fill_opacity":0.5},
+                bars.change_bar_values,
+                [dp[1] for dp in points1],
+                lag_ratio = 0.5,
+                run_time = 2
+            )
+        self.play(
+                bars.change_bar_values,
+                [dp[1] for dp in points2],
+                lag_ratio = 0.5,
+                run_time = 2
+            )
+        self.wait(2)
+        
+    def setup_axes(self):
+        GraphScene.setup_axes(self)
+        
+        values_decimal_y=[value_y for value_y in range(self.y_min, self.y_max+1, self.y_tick_frequency)]
+        list_y = [*["%s"%i for i in values_decimal_y]]
+        values_y = [
+            (i,j)
+            for i,j in zip(values_decimal_y,list_y)
+        ]
+        self.y_axis_labels = VGroup()
+        for y_val, y_tex in values_y:
+            tex = TexMobject(str(y_tex)+"\\%")
+            tex.scale(0.75)
+            tex.next_to(self.coords_to_point(0, y_val), LEFT)
+            self.y_axis_labels.add(tex)
+        self.y_axis.add(self.y_axis_labels)  
+
+        values_decimal_x=[*[value_x for value_x in range(self.x_min+1, self.x_max, self.x_tick_frequency)]]
+        list_x = [
+            "2019/01",
+            "2019/02",
+            "2019/03",
+            "2019/04",
+            "2019/05",
+            "2019/06",
+            "2019/07",
+            ]
+        values_x = [
+            (i,j)
+            for i,j in zip(values_decimal_x,list_x)
+        ]
+        self.x_axis_labels = VGroup()
+        for x_val, x_tex in values_x:
+            tex = TextMobject(x_tex)
+            tex.scale(0.5)
+            tex.next_to(self.coords_to_point(x_val, 0), 1.8*DOWN)
+            tex.rotate(PI/4)
+            self.x_axis_labels.add(tex)
+        self.x_axis.add(self.x_axis_labels)   
+
+        self.add(self.x_axis,self.y_axis)
+
+class PlotBarChart4(GraphFromData):
+    CONFIG = {
+        "x_max" : 8,
+        "x_min" : 0,
+        "y_max" : 30,
+        "y_min" : 0,
+        "x_tick_frequency" : 1, 
+        "y_tick_frequency" : 5, 
+        "axes_color" : BLUE, 
+        "x_axis_label": "x",
+        "y_axis_label": "y",
+        "graph_origin": 2.6 * DOWN + 4 * LEFT,
+        "camera_config":{
+                "frame_width": FRAME_WIDTH+5,
+        },
+    }
+    def construct(self):
+        axes = self.setup_axes(reback=True)
+        x0 = [1, 2, 3, 4,  5,  6, 7 ]
+        y0 = [1e-3] * len(x0)
+        y1 = [1, 2, 5, 10, 10, 20, 12]
+        y2 = [dy+5 for dy in y1]
+
+        coords0 = [[px,py] for px,py in zip(x0,y0)]
+        points0 = self.get_points_from_coords(coords0)
+
+        coords1 = [[px,py] for px,py in zip(x0,y1)]
+        points1 = self.get_points_from_coords(coords1)
+
+        coords2 = [[px,py] for px,py in zip(x0,y2)]
+        points2 = self.get_points_from_coords(coords2)
+
+        bars = BarChartRectangle(points0, 0.618, graph_origin_down=self.graph_origin[1])
+        bars.set_color_by_gradient(YELLOW, RED)
+
+        # 把内容全部合并
+        allVG = VGroup(axes,bars).scale(1).shift(ORIGIN)
+        # 加入背景和文字
+        allParts = ObjAnd1Text(
+                allVG,
+                "“相互宝”参与人数与时间的关系"         
+        )
+        # 展示进入
+        self.play(
+            FadeInFromLarge(allParts[:2]),
+            FadeInFromLarge(axes),
+            AnimationGroup(
+                    Animation(Mobject(),run_time=0.1),
+                    FadeInFrom(allParts[2]),
+                    lag_ratio=5
+            )
+        )    
+        # 正常的动画
+        self.add(bars.set_opacity(0))
+        self.play(
+                bars.set_style,{"stroke_opacity":1,"fill_opacity":0.5},
+                bars.change_bar_values,
+                [dp[1] for dp in points1],
+                lag_ratio = 0.5,
+                run_time = 2
+            )
+        self.play(
+                bars.change_bar_values,
+                [dp[1] for dp in points2],
+                lag_ratio = 0.5,
+                run_time = 2
+            )
+        self.wait(2)
+
+        # 渐隐消失
+        self.play(FadeOutAndShiftDown(allParts),FadeOutAndShiftDown(allVG))
+        
+    def setup_axes(self, reback=False):
+        GraphScene.setup_axes(self)
+  
+        values_decimal_y=[value_y for value_y in range(self.y_min, self.y_max+1, self.y_tick_frequency)]
+        list_y = [*["%s"%i for i in values_decimal_y]]
+        values_y = [
+            (i,j)
+            for i,j in zip(values_decimal_y,list_y)
+        ]
+        self.y_axis_labels = VGroup()
+        for y_val, y_tex in values_y:
+            tex = TexMobject(str(y_tex)+"\\%")
+            tex.scale(0.75)
+            tex.next_to(self.coords_to_point(0, y_val), LEFT)
+            self.y_axis_labels.add(tex)
+        self.y_axis.add(self.y_axis_labels)  
+
+        values_decimal_x=[*[value_x for value_x in range(self.x_min+1, self.x_max, self.x_tick_frequency)]]
+        list_x = [
+            "2019/01",
+            "2019/02",
+            "2019/03",
+            "2019/04",
+            "2019/05",
+            "2019/06",
+            "2019/07",
+            ]
+        values_x = [
+            (i,j)
+            for i,j in zip(values_decimal_x,list_x)
+        ]
+        self.x_axis_labels = VGroup()
+        for x_val, x_tex in values_x:
+            tex = TextMobject(x_tex)
+            tex.scale(0.5)
+            tex.next_to(self.coords_to_point(x_val, 0), 1.8*DOWN)
+            tex.rotate(PI/4)
+            self.x_axis_labels.add(tex)
+        self.x_axis.add(self.x_axis_labels)   
+
+        if reback:
+            return VGroup(self.x_axis, self.y_axis)
+
 
 class Plot1(GraphScene):
     CONFIG = {
@@ -506,7 +712,7 @@ class Plot3(GraphFromData):
             FadeInFromLarge(axes),
             AnimationGroup(
                         Animation(Mobject(),run_time=0.1),
-                        FadeInFromDirections(allParts[2]),
+                        FadeInFrom(allParts[2]),
                         lag_ratio=5
                 )
             )        
