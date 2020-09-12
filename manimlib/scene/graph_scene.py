@@ -54,6 +54,7 @@ class GraphScene(Scene):
         "xyStrokeOpacity": 1,
         "x_num_decimal_places":0,
         "y_num_decimal_places":0,
+        "add_coordinate_grid":False
     }
 
     def setup(self):
@@ -140,14 +141,26 @@ class GraphScene(Scene):
         self.x_axis, self.y_axis = self.axes = VGroup(x_axis, y_axis)
         self.default_graph_colors = it.cycle(self.default_graph_colors)
 
+        if self.add_coordinate_grid:
+            self.lines_x_axis = self.get_vertical_lines_to_axis(num_lines=len(np.arange(self.x_min, self.x_max, self.x_tick_frequency))+1)
+            self.lines_y_axis = self.get_horizontal_lines_to_axis(num_lines=len(np.arange(self.y_min, self.y_max, self.y_tick_frequency))+1)
+            
         if reback:
-            return VGroup(x_axis, y_axis)
-        else:
-            if animate:
-                self.play(Write(VGroup(x_axis, y_axis)))
+            if self.add_coordinate_grid:
+                return VGroup(self.lines_x_axis, self.lines_y_axis, x_axis, y_axis, )
             else:
-                self.add(x_axis, y_axis)
-
+                return VGroup(x_axis, y_axis)
+        else:
+            if self.add_coordinate_grid:
+                if animate:
+                    self.play(Write(VGroup(self.lines_x_axis, self.lines_y_axis, x_axis, y_axis,)))
+                else:
+                    self.add(self.lines_x_axis, self.lines_y_axis, x_axis, y_axis,)
+            else:  
+                if animate:
+                    self.play(Write(VGroup(x_axis, y_axis)))
+                else:
+                    self.add(x_axis, y_axis)
 
     # 坐标到点
     def coords_to_point(self, x, y):
@@ -335,6 +348,59 @@ class GraphScene(Scene):
             Transform(curr_rects, new_rects, **transform_kwargs),
             *added_anims
         )
+
+    # Ag add in 2020-09-13
+    # ----------------------------------------------------
+    def get_vertical_line_to_axis(self, x, **line_kwargs):
+        if "color" not in line_kwargs:
+            line_kwargs["color"] = DARK_GRAY
+        if "stroke_width" not in line_kwargs:
+            line_kwargs["stroke_width"] = 1.5
+        return Line(
+            self.coords_to_point(x, 0),
+            self.coords_to_point(x, self.y_max),
+            **line_kwargs
+        )
+
+    def get_vertical_lines_to_axis(
+        self,
+        x_min=None,
+        x_max=None,
+        num_lines=20,
+        **kwargs
+    ):
+        x_min = x_min or self.x_min
+        x_max = x_max or self.x_max
+        return VGroup(*[
+            self.get_vertical_line_to_axis(x, **kwargs)
+            for x in np.linspace(x_min, x_max, num_lines)
+        ])
+
+    def get_horizontal_line_to_axis(self, y, **line_kwargs):
+        if "color" not in line_kwargs:
+            line_kwargs["color"] = DARK_GRAY
+        if "stroke_width" not in line_kwargs:
+            line_kwargs["stroke_width"] = 1.5
+        return Line(
+            self.coords_to_point(0, y),
+            self.coords_to_point(self.x_max, y),
+            **line_kwargs
+        )
+
+    def get_horizontal_lines_to_axis(
+        self,
+        y_min=None,
+        y_max=None,
+        num_lines=20,
+        **kwargs
+    ):
+        y_min = y_min or self.y_min
+        y_max = y_max or self.y_max
+        return VGroup(*[
+            self.get_horizontal_line_to_axis(y, **kwargs)
+            for y in np.linspace(y_min, y_max, num_lines)
+        ])
+    # ----------------------------------------------------
 
     def get_vertical_line_to_graph(
         self,

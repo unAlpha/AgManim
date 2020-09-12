@@ -41,7 +41,7 @@ def ObjAnd1Text(Obj, text2, dframe=0.22, txt_height=0.28):
             width = Obj.get_width() + 1.2,
             stroke_color = BLACK,
             fill_color = BLACK,
-            fill_opacity = 0.618,
+            fill_opacity = 1,
             ).move_to(Obj)
     else:
         pic = ImageMobject(Obj).scale(2)
@@ -323,10 +323,10 @@ class YYaxis(GraphScene):
         "y2_num_decimal_places":0,
         "y2_label_direction":RIGHT,
         "y2_axes_color":RED,
+        "graph_origin": 2.6 * DOWN + 4.5 * LEFT,
     }
     def setup_axes(self, animate=False, reback=False):
         GraphScene.setup_axes(self, animate=False, reback=False)
-
         y2_num_range = float(self.y2_max - self.y2_min)
         self.space_unit_to_y2 = self.y2_axis_height / y2_num_range
 
@@ -411,7 +411,6 @@ class YYaxis(GraphScene):
         graph.underlying_function = func
         return graph
 
-
 class Plotyy1(YYaxis):
     CONFIG = {
         "y_max" : 1,
@@ -422,12 +421,14 @@ class Plotyy1(YYaxis):
         "x_tick_frequency" : 10, 
         "axes_color" : BLUE, 
         "x_labeled_nums": range(0,121,10),
-        "y_labeled_nums": list(np.arange(0, 1, 0.1)),
+        "y_labeled_nums": list(np.arange(0, 1.01, 0.1)),
         "x_num_decimal_places": 0,
         "y_num_decimal_places": 1,
         "x_axis_label": None,
         "y_axis_label": None,
         "y2_axis_label": None,
+        "y2_labeled_nums": list(np.arange(0, 1001, 100)),
+        "add_coordinate_grid":True
     }
     def construct(self):
         self.setup_axes(animate=True)
@@ -452,14 +453,13 @@ class Plotyy1(YYaxis):
         y2_graph_label = self.get_graph_label(y2_graph, label="10x", x_val=90, direction=UP,buff=0)
 
         self.play(
-        	ShowCreation(y_graph),
+            ShowCreation(y_graph),
             ShowCreation(y2_graph),
             Write(y_graph_label),
             Write(y2_graph_label),
             run_time = 2
         )
         self.wait()
-
 
 class PlotBarChart1(GraphFromData):
     CONFIG = {
@@ -755,12 +755,13 @@ class Plot1(GraphScene):
         "y_tick_frequency" : 0.1, 
         "x_tick_frequency" : 10, 
         "axes_color" : BLUE, 
-        "x_labeled_nums": range(0,120,10),
-        "y_labeled_nums": list(np.arange(0, 1, 0.1)),
+        "x_labeled_nums": range(0,121,10),
+        "y_labeled_nums": list(np.arange(0, 1.01, 0.1)),
         "x_num_decimal_places": 0,
         "y_num_decimal_places": 1,
         "x_axis_label": "$N(year)$",
         "y_axis_label": "$P(probability)$",
+        "add_coordinate_grid":True,
     }
     def construct(self):
         self.setup_axes(animate=True)
@@ -793,10 +794,11 @@ class Plot2(GraphScene):
         "y_tick_frequency" : 0.1, 
         "x_tick_frequency" : 10, 
         "axes_color" : BLUE, 
-        "x_labeled_nums": range(0,120,10),
+        "x_labeled_nums": range(0,121,10),
         "x_num_decimal_places": 0,
         "x_axis_label": "$N(year)$",
         "y_axis_label": "$P(probability)$",
+        "add_coordinate_grid":True
     }
     def construct(self):
         self.setup_axes()
@@ -819,8 +821,8 @@ class Plot2(GraphScene):
 
     def setup_axes(self):
         GraphScene.setup_axes(self)
-        values_decimal_y=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9]
-        list_y = [*["%s"%i for i in range(10,100,10)]]
+        values_decimal_y=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1]
+        list_y = [*["%s"%i for i in range(10,101,10)]]
         values_y = [
             (i,j)
             for i,j in zip(values_decimal_y,list_y)
@@ -838,14 +840,15 @@ class Plot3(GraphFromData):
         "y_max" : 14000,
         "y_min" : 0,
         "x_max" : 50,
-        "x_min" : 1,
-        "y_tick_frequency" : 1000, 
-        "x_tick_frequency" : 2, 
+        "x_min" : 0,
+        "y_tick_frequency" : 2000, 
+        "x_tick_frequency" : 2,
         "axes_color" : BLUE, 
-        "y_labeled_nums": range(0,14000,2000),
+        "y_labeled_nums": range(0,14001,2000),
         "x_num_decimal_places": 0,
         "x_axis_label": "\\heiti{时间(年/月)}",
         "y_axis_label": "\\heiti{参与分摊人数(万人)}",
+        "add_coordinate_grid":True
     }
     def construct(self):
         axes = self.setup_axes(reback=True)
@@ -874,10 +877,9 @@ class Plot3(GraphFromData):
             )        
         self.play(ShowCreation(graph,run_time=4))
         self.wait(15)
-        self.play(FadeOutAndShiftDown(allParts),FadeOutAndShiftDown(allVG))
+        # self.play(FadeOutAndShiftDown(allParts),FadeOutAndShiftDown(allVG))
 
-
-    def setup_axes(self,reback=False):
+    def setup_axes(self, reback=False):
         GraphScene.setup_axes(self)
         values_decimal_x=[*[i for i in range(6,46,2)]]
         list_x = [
@@ -915,21 +917,24 @@ class Plot3(GraphFromData):
             self.x_axis_labels.add(tex)
         self.x_axis.add(self.x_axis_labels)
         if reback:
-            return VGroup(self.x_axis, self.y_axis)
+            return VGroup(self.lines_x_axis, self.lines_y_axis, self.x_axis, self.y_axis,)
+        else:
+            self.add(self.lines_x_axis, self.lines_y_axis, self.x_axis, self.y_axis,)
 
 class Plot31(GraphFromData):
     CONFIG = {
         "y_max" : 14000,
         "y_min" : 0,
         "x_max" : 50,
-        "x_min" : 1,
-        "y_tick_frequency" : 1000, 
+        "x_min" : 0,
+        "y_tick_frequency" : 2000, 
         "x_tick_frequency" : 2, 
         "axes_color" : BLUE, 
-        "y_labeled_nums": range(0,14000,2000),
+        "y_labeled_nums": range(0,14001,2000),
         "x_num_decimal_places": 0,
         "x_axis_label": "\\heiti{时间(年/月)}",
         "y_axis_label": "\\heiti{参与分摊人数(万人)}",
+        "add_coordinate_grid":True
     }
     def construct(self):
         axes = self.setup_axes(reback=True)
@@ -987,7 +992,7 @@ class Plot31(GraphFromData):
             self.x_axis_labels.add(tex)
         self.x_axis.add(self.x_axis_labels)
         if reback:
-            return VGroup(self.x_axis, self.y_axis)
+            return VGroup(self.lines_x_axis, self.lines_y_axis, self.x_axis, self.y_axis)
 
 class Plot4(GraphFromData):
     CONFIG = {
@@ -1030,7 +1035,7 @@ class Plot4(GraphFromData):
             )        
         self.play(ShowCreation(graph,run_time=4))
         self.wait(15)
-        self.play(FadeOutAndShiftDown(allParts),FadeOutAndShiftDown(allVG))
+        # self.play(FadeOutAndShiftDown(allParts),FadeOutAndShiftDown(allVG))
 
     def setup_axes(self,reback=False):
         GraphScene.setup_axes(self)
