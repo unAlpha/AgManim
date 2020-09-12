@@ -30,7 +30,6 @@ class GraphScene(Scene):
         "x_min": -1,
         "x_max": 10,
         "x_axis_width": 9,
-        # x刻度间隔
         "x_tick_frequency": 1,
         "x_leftmost_tick": None,  # Change if different from x_min
         "x_labeled_nums": None,
@@ -38,7 +37,6 @@ class GraphScene(Scene):
         "y_min": -1,
         "y_max": 10,
         "y_axis_height": 6,
-        # y刻度间隔
         "y_tick_frequency": 1,
         "y_bottom_tick": None,  # Change if different from y_min
         "y_labeled_nums": None,
@@ -55,7 +53,7 @@ class GraphScene(Scene):
         "num_rects": 50,
         "xyStrokeOpacity": 1,
         "x_num_decimal_places":0,
-        "y_num_decimal_places":0
+        "y_num_decimal_places":0,
     }
 
     def setup(self):
@@ -88,7 +86,8 @@ class GraphScene(Scene):
         x_axis.shift(self.graph_origin - x_axis.number_to_point(0))
         if len(self.x_labeled_nums) > 0:
             if self.exclude_zero_label:
-                self.x_labeled_nums = [x for x in self.x_labeled_nums if x != 0]
+                self.x_labeled_nums = [x for x in self.x_labeled_nums]
+                # self.x_labeled_nums = [x for x in self.x_labeled_nums if x != 0]
             x_axis.add_numbers(*self.x_labeled_nums)
         if self.x_axis_label:
             x_label = TextMobject(self.x_axis_label)

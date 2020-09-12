@@ -311,6 +311,156 @@ class PieChartScene(Scene):
 
         self.wait()
 
+class YYaxis(GraphScene):
+    CONFIG = {
+        "y2_min": 0,
+        "y2_max": 1000,
+        "y2_axis_height": 6,
+        "y2_tick_frequency": 100,
+        "y2_bottom_tick": None,  # Change if different from y_min
+        "y2_labeled_nums": list(np.arange(0, 1000, 100)),
+        "y2_axis_label": "$y2$",
+        "y2_num_decimal_places":0,
+        "y2_label_direction":RIGHT,
+        "y2_axes_color":RED,
+    }
+    def setup_axes(self, animate=False, reback=False):
+        GraphScene.setup_axes(self, animate=False, reback=False)
+
+        y2_num_range = float(self.y2_max - self.y2_min)
+        self.space_unit_to_y2 = self.y2_axis_height / y2_num_range
+
+        if self.y2_labeled_nums is None:
+            self.y2_labeled_nums = []
+        if self.y2_bottom_tick is None:
+            self.y2_bottom_tick = self.y2_min
+        y2_axis = NumberLine(
+            x_min=self.y2_min,
+            x_max=self.y2_max,
+            unit_size=self.space_unit_to_y2,
+            tick_frequency=self.y2_tick_frequency,
+            leftmost_tick=self.y2_bottom_tick,
+            numbers_with_elongated_ticks=self.y2_labeled_nums,
+            color=self.y2_axes_color,
+            line_to_number_vect=LEFT,
+            label_direction=self.y2_label_direction,
+            stroke_opacity=self.xyStrokeOpacity,
+            decimal_number_config={"num_decimal_places": self.y2_num_decimal_places}
+        )
+        y2_axis.shift(self.x_axis.number_to_point(self.x_max) - y2_axis.number_to_point(0))
+        y2_axis.rotate(np.pi / 2, about_point=y2_axis.number_to_point(0))
+        if len(self.y2_labeled_nums) > 0:
+            if self.exclude_zero_label:
+                self.y2_labeled_nums = [y2 for y2 in self.y2_labeled_nums if y2 != 0]
+            y2_axis.add_numbers(*self.y2_labeled_nums)
+        if self.y2_axis_label:
+            y2_label = TextMobject(self.y2_axis_label)
+            y2_label.next_to(
+                y2_axis.get_corner(UP + RIGHT), UP + RIGHT,
+                buff=SMALL_BUFF
+            )
+            y2_label.shift_onto_screen()
+            y2_axis.add(y2_label)
+            self.y2_axis_label_mob = y2_label
+        
+        # 给对象绑定x_axis和y_axis属性
+        # Ag 修改了reback和这里的顺序
+        self.x_axis, self.y_axis, self.y2_axis = self.axes = VGroup(self.x_axis, self.y_axis, y2_axis)
+
+        if reback:
+            return VGroup(self.x_axis, self.y_axis, y2_axis)
+        else:
+            if animate:
+                self.play(Write(VGroup(self.x_axis, self.y_axis, y2_axis)))
+            else:
+                self.add(self.x_axis, self.y_axis, y2_axis)
+
+    # 坐标到点
+    def y2_coords_to_point(self, x, y2):
+        assert(hasattr(self, "x_axis") and hasattr(self, "y_axis"))
+        result = self.x_axis.number_to_point(x)[0] * RIGHT
+        result += self.y2_axis.number_to_point(y2)[1] * UP
+        return result
+
+    def y2_get_graph(
+        self, func,
+        color=None,
+        x_min=None,
+        x_max=None,
+        **kwargs
+    ):
+        if color is None:
+            color = next(self.default_graph_colors_cycle)
+        if x_min is None:
+            x_min = self.x_min
+        if x_max is None:
+            x_max = self.x_max
+
+        def parameterized_function(alpha):
+            x = interpolate(x_min, x_max, alpha)
+            y2 = func(x)
+            if not np.isfinite(y2):
+                y2 = self.y2_max
+            return self.y2_coords_to_point(x, y2)
+
+        graph = ParametricFunction(
+            parameterized_function,
+            color=color,
+            **kwargs
+        )
+        graph.underlying_function = func
+        return graph
+
+
+class Plotyy1(YYaxis):
+    CONFIG = {
+        "y_max" : 1,
+        "y_min" : 0,
+        "x_max" : 120,
+        "x_min" : 0,
+        "y_tick_frequency" : 0.1, 
+        "x_tick_frequency" : 10, 
+        "axes_color" : BLUE, 
+        "x_labeled_nums": range(0,121,10),
+        "y_labeled_nums": list(np.arange(0, 1, 0.1)),
+        "x_num_decimal_places": 0,
+        "y_num_decimal_places": 1,
+        "x_axis_label": None,
+        "y_axis_label": None,
+        "y2_axis_label": None,
+    }
+    def construct(self):
+        self.setup_axes(animate=True)
+        y_graph = self.get_graph(lambda x : 1-0.99**x,  
+                                    color = GREEN,
+                                    x_min = 0, 
+                                    x_max = 100
+                                    )
+
+        y2_graph = self.y2_get_graph(lambda x : 10*x,  
+                                    color = RED,
+                                    x_min = 0, 
+                                    x_max = 100
+                                    )
+        p1=Dot().move_to(self.coords_to_point(self.x_min, self.y_min))
+        p2=Dot().move_to(self.coords_to_point(self.x_max, self.y_min))
+        self.add(p1,p2)
+
+        y_graph.set_stroke(width=10)
+        y2_graph.set_stroke(width=5)
+        y_graph_label = self.get_graph_label(y_graph, label="1-0.99^N", x_val=90, direction=DOWN,buff=0.4)
+        y2_graph_label = self.get_graph_label(y2_graph, label="10x", x_val=90, direction=UP,buff=0)
+
+        self.play(
+        	ShowCreation(y_graph),
+            ShowCreation(y2_graph),
+            Write(y_graph_label),
+            Write(y2_graph_label),
+            run_time = 2
+        )
+        self.wait()
+
+
 class PlotBarChart1(GraphFromData):
     CONFIG = {
         "x_max" : 8,
@@ -551,7 +701,7 @@ class PlotBarChart4(GraphFromData):
         self.wait(2)
 
         # 渐隐消失
-        # self.play(FadeOutAndShiftDown(allParts),FadeOutAndShiftDown(allVG))
+        self.play(FadeOutAndShiftDown(allParts),FadeOutAndShiftDown(allVG))
         
     def setup_axes(self, reback=False):
         GraphScene.setup_axes(self)
