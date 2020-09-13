@@ -38,7 +38,7 @@ def ObjAnd1Text(Obj, text2, dframe=0.22, txt_height=0.28):
     if isinstance(Obj,VMobject):
         pic = Rectangle(
             height = Obj.get_height() + 0.618,
-            width = Obj.get_width() + 1.2,
+            width = Obj.get_width() + 1,
             stroke_color = BLACK,
             fill_color = BLACK,
             fill_opacity = 1,
@@ -366,14 +366,8 @@ class YYaxis(GraphScene):
         # 给对象绑定x_axis和y_axis属性
         # Ag 修改了reback和这里的顺序
         self.x_axis, self.y_axis, self.y2_axis = self.axes = VGroup(self.x_axis, self.y_axis, y2_axis)
-
-        if reback:
-            return VGroup(self.x_axis, self.y_axis, y2_axis)
-        else:
-            if animate:
-                self.play(Write(VGroup(self.x_axis, self.y_axis, y2_axis)))
-            else:
-                self.add(self.x_axis, self.y_axis, y2_axis)
+        
+        return self.reback_or_anim_axis(reback, animate, self.y2_axis)
 
     # 坐标到点
     def y2_coords_to_point(self, x, y2):
@@ -863,7 +857,8 @@ class Plot3(GraphFromData):
 
         allParts = ObjAnd1Text(
                         allVG,
-                        "“相互宝”参与人数与时间的关系"         
+                        "“相互宝”参与人数与时间的关系",
+                        dframe=0.2618
             )
 
         self.play(
@@ -916,6 +911,8 @@ class Plot3(GraphFromData):
             tex.rotate(PI/4)
             self.x_axis_labels.add(tex)
         self.x_axis.add(self.x_axis_labels)
+        
+        # 必须开启add_coordinate_grid
         if reback:
             return VGroup(self.lines_x_axis, self.lines_y_axis, self.x_axis, self.y_axis,)
         else:

@@ -145,23 +145,29 @@ class GraphScene(Scene):
             self.lines_x_axis = self.get_vertical_lines_to_axis(num_lines=len(np.arange(self.x_min, self.x_max, self.x_tick_frequency))+1)
             self.lines_y_axis = self.get_horizontal_lines_to_axis(num_lines=len(np.arange(self.y_min, self.y_max, self.y_tick_frequency))+1)
             
+        return self.reback_or_anim_axis(reback, animate)
+
+    # Ag add in 2020-09-13
+    # ------------------------------------------------------
+    def reback_or_anim_axis(self, reback, animate, *args):
         if reback:
             if self.add_coordinate_grid:
-                return VGroup(self.lines_x_axis, self.lines_y_axis, x_axis, y_axis, )
+                return VGroup(self.lines_x_axis, self.lines_y_axis, self.x_axis, self.y_axis, *args)
             else:
-                return VGroup(x_axis, y_axis)
+                return VGroup(self.x_axis, self.y_axis, *args)
         else:
             if self.add_coordinate_grid:
                 if animate:
-                    self.play(Write(VGroup(self.lines_x_axis, self.lines_y_axis, x_axis, y_axis,)))
+                    self.play(Write(VGroup(self.lines_x_axis, self.lines_y_axis, self.x_axis, self.y_axis, *args)))
                 else:
-                    self.add(self.lines_x_axis, self.lines_y_axis, x_axis, y_axis,)
-            else:  
+                    self.add(self.lines_x_axis, self.lines_y_axis, self.x_axis, self.y_axis, *args)
+            else:
                 if animate:
-                    self.play(Write(VGroup(x_axis, y_axis)))
+                    self.play(Write(VGroup(self.x_axis, self.y_axis, *args)))
                 else:
-                    self.add(x_axis, y_axis)
-
+                    self.add(self.x_axis, self.y_axis, *args)
+    # ------------------------------------------------------
+    
     # 坐标到点
     def coords_to_point(self, x, y):
         assert(hasattr(self, "x_axis") and hasattr(self, "y_axis"))
