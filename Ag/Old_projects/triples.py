@@ -1403,7 +1403,7 @@ class WriteGeneralFormula(GeneralExample):
         self.show_squaring()
         self.expand_square()
         self.draw_triangle()
-        self.show_uv_to_triples()
+        # self.show_uv_to_triples()
 
     def show_squaring(self):
         self.force_skipping()

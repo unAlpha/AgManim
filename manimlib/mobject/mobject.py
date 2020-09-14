@@ -265,6 +265,7 @@ class Mobject(Container):
     def flip(self, axis=UP, **kwargs):
         return self.rotate(TAU / 2, axis, **kwargs)
 
+    # 伸展
     def stretch(self, factor, dim, **kwargs):
         def func(points):
             points[:, dim] *= factor
@@ -350,7 +351,8 @@ class Mobject(Container):
     # In place operations.
     # Note, much of these are now redundant with default behavior of
     # above methods
-
+    
+    # 对点进行方程变换
     def apply_points_function_about_point(self, func, about_point=None, about_edge=None):
         if about_point is None:
             if about_edge is None:
@@ -462,6 +464,8 @@ class Mobject(Container):
         return self.stretch(factor, dim)
 
     # 重新缩放以适合
+    # stretch缩放三个维度中的一个
+    # scale直接缩放目标
     def rescale_to_fit(self, length, dim, stretch=False, **kwargs):
         old_length = self.length_over_dim(dim)
         if old_length == 0:
@@ -522,6 +526,7 @@ class Mobject(Container):
         self.shift((target - point_to_align) * coor_mask)
         return self
 
+    # 取代一个目标，会匹配高度和宽度以及位置信息
     def replace(self, mobject, dim_to_match=0, stretch=False):
         if not mobject.get_num_points() and not mobject.submobjects:
             raise Warning("Attempting to replace mobject with no points")
@@ -728,6 +733,7 @@ class Mobject(Container):
         else:
             return np.max(values)
 
+    # 获得关键点
     def get_critical_point(self, direction):
         """
         Picture a box bounding the mobject.  Such a box has

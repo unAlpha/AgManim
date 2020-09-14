@@ -65,7 +65,8 @@ class GraphScene(Scene):
         self.right_T_label = VGroup()
         self.right_v_line = VGroup()
 
-    def setup_axes(self, animate=False, reback=False):
+    def setup_axes(self, reback=False, animate=False):
+        # reback和animate都为True时，只有reback生效
         # TODO, once eoc is done, refactor this to be less redundant.
         x_num_range = float(self.x_max - self.x_min)
         self.space_unit_to_x = self.x_axis_width / x_num_range

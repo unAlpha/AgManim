@@ -76,7 +76,6 @@ def palyALL1(self,allParts):
     self.wait(15)
     self.play(FadeOutAndShiftDown(allParts))
 
-
 class keju01(Scene):
     def construct(self):
         allParts = imageObjAnd1Text(
@@ -84,7 +83,6 @@ class keju01(Scene):
                         "分封制金字塔", 
             )
         palyALL1(self,allParts)
-
 
 class keju02(Scene):
     def construct(self):
@@ -94,7 +92,6 @@ class keju02(Scene):
             )
         palyALL1(self,allParts)
 
-
 class keju03(Scene):
     def construct(self):
         allParts = imageObjAnd1Text(
@@ -102,7 +99,6 @@ class keju03(Scene):
                         "隋炀帝", 
             )
         palyALL1(self,allParts)
-
 
 class keju04(Scene):
     def construct(self):
@@ -112,7 +108,6 @@ class keju04(Scene):
             )
         palyALL1(self,allParts)
 
-
 class keju05(Scene):
     def construct(self):
         allParts = imageObjAnd1Text(
@@ -120,7 +115,6 @@ class keju05(Scene):
                         "王安石", 
             )
         palyALL1(self,allParts)
-
 
 class keju06(Scene):
     def construct(self):
@@ -130,7 +124,6 @@ class keju06(Scene):
             )
         palyALL1(self,allParts)
 
-
 class keju07(Scene):
     def construct(self):
         allParts = imageObjAnd1Text(
@@ -138,7 +131,6 @@ class keju07(Scene):
                         "欧阳修", 
             )
         palyALL1(self,allParts)
-
 
 class keju08(Scene):
     def construct(self):
@@ -148,7 +140,6 @@ class keju08(Scene):
             )
         palyALL1(self,allParts)
 
-
 class keju09(Scene):
     def construct(self):
         allParts = imageObjAnd1Text(
@@ -157,7 +148,6 @@ class keju09(Scene):
             )
         palyALL1(self,allParts)
 
-
 class keju10(Scene):
     def construct(self):
         allParts = imageObjAnd1Text(
@@ -165,7 +155,6 @@ class keju10(Scene):
                         "慈禧太后", 
             )
         palyALL1(self,allParts)
-
 
 class keju11(Scene):
     def construct(self):
@@ -183,7 +172,6 @@ class keju12(Scene):
             )
         palyALL1(self,allParts)
 
-
 class keju13(Scene):
     def construct(self):
         allParts = imageObjAnd1Text(
@@ -191,7 +179,6 @@ class keju13(Scene):
                         "梁启超", 
             )
         palyALL1(self,allParts)
-
 
 class Txt1(Scene):
     def construct(self):

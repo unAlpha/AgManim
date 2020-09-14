@@ -1,6 +1,14 @@
 from manimlib.imports import *
 import fractions
 
+class funcReplaceTest(Scene):
+    def construct(self):
+        line = Line(UL,DR).to_edge(UP)
+        triangle = Circle()
+        triangle.replace(line, dim_to_match=0, stretch = True)
+        self.add(line,triangle)
+        self.wait()
+
 class VGroupTransfrom(Scene):
     def construct(self):
         txt_list = [Text(str(txtn)) for txtn in range(99,102)]

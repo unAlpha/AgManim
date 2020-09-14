@@ -362,9 +362,7 @@ class YYaxis(GraphScene):
             y2_label.shift_onto_screen()
             y2_axis.add(y2_label)
             self.y2_axis_label_mob = y2_label
-        
-        # 给对象绑定x_axis和y_axis属性
-        # Ag 修改了reback和这里的顺序
+
         self.x_axis, self.y_axis, self.y2_axis = self.axes = VGroup(self.x_axis, self.y_axis, y2_axis)
         
         return self.reback_or_anim_axis(reback, animate, self.y2_axis)
