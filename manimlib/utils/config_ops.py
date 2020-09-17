@@ -52,7 +52,7 @@ def digest_config(obj, kwargs, caller_locals={}):
     # 收集所有的字典
     all_dicts = [kwargs, caller_locals, obj.__dict__]
     all_dicts += static_configs
-    #收集所有的参数在一个对象的字典中，这样对象就用对应的属性了
+    # 收集所有的参数在一个对象的字典中，这样对象就用对应的属性了
     obj.__dict__ = merge_dicts_recursively(*reversed(all_dicts))
 
 

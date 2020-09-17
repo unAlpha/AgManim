@@ -396,13 +396,14 @@ class VMobject(Mobject):
 
     # Points
     def set_points(self, points):
+        # points必需是4倍化的
         self.points = np.array(points)
         return self
 
     def get_points(self):
         return np.array(self.points)
 
-    # 让self有点属性
+    # anchors, handles 锚点，手柄
     def set_anchors_and_handles(self, anchors1, handles1, handles2, anchors2):
         assert(len(anchors1) == len(handles1) == len(handles2) == len(anchors2))
         nppcc = self.n_points_per_cubic_curve  # 4

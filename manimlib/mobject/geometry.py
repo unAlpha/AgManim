@@ -430,7 +430,7 @@ class Line(TipableVMobject):
         digest_config(self, kwargs)
         self.set_start_and_end_attrs(start, end)
         VMobject.__init__(self, **kwargs)
-        
+
     # 在Mobject的初始化中，会调用generate_points
     def generate_points(self):
         if self.path_arc:
@@ -465,6 +465,7 @@ class Line(TipableVMobject):
         )
         return self
 
+    # 设置开始和结束属性
     def set_start_and_end_attrs(self, start, end):
         # If either start or end are Mobjects, this
         # gives their centers

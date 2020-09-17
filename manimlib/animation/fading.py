@@ -117,6 +117,7 @@ class FadeOutFromAngle(Transform):
         target.fade(1)
         return target
 
+
 class FadeInFromDown(FadeInFrom):
     """
     Identical to FadeInFrom, just with a name that

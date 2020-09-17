@@ -1,6 +1,37 @@
 from manimlib.imports import *
 import fractions
 
+class TestVMobject(Scene):
+    def construct(self):
+        ployObj1 = VMobject()
+        ployObj2 = VMobject()
+        ployObj3 = VMobject()
+        ployObj4 = VMobject()
+        ployObj1.set_points([DOWN,LEFT,RIGHT,DOWN])
+        ployObj2.set_points_as_corners([DOWN,LEFT,RIGHT,DOWN])
+        ployObj3.set_anchors_and_handles(DOWN,LEFT,LEFT,RIGHT)
+        ployObj4.set_points_as_corners(ployObj3.points).to_edge(UP)
+
+        ployObj5=Arrow()
+
+        print(ployObj1.points)
+        print("-------------------------")
+        print(ployObj2.points)
+        print("-------------------------")
+        print(ployObj3.points)
+        print("-------------------------")
+        print(ployObj4.points)
+        print("-------------------------------")
+        print(ployObj5.points,"ployObj5")
+
+        self.add(
+            ployObj1,
+            ployObj2,
+            ployObj3,
+            ployObj4,
+            ployObj5
+        )
+
 class funcReplaceTest(Scene):
     def construct(self):
         line = Line(UL,DR).to_edge(UP)
@@ -598,7 +629,7 @@ class MoveToTargetScene(Scene):
         self.wait()
 
 # SVGMobject中获得点
-class ShpaeTest(Scene):
+class ShpaeTest1(Scene):
     def construct(self):
         path1 = self.get_path().shift(3*LEFT)
         self.play(ShowCreation(path1))
