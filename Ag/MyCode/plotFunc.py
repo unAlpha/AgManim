@@ -1009,7 +1009,7 @@ class Plot4(GraphFromData):
         coords = get_coords_from_csv(r"Ag\MyCode\InsuranceData2")
         points = self.get_points_from_coords(coords)
         # Set graph
-        graph = DiscreteGraphFromSetPoints(points,color=RED)
+        graph = DiscreteGraphFromSetPoints(points,color=RED).make_smooth()
         graph.set_stroke(width=10)
 
         allVG = VGroup(axes,graph).scale(0.618).shift(LEFT*0.8+UP*0.2)

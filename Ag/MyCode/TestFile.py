@@ -14,21 +14,22 @@ class TestVMobject(Scene):
 
         ployObj5=Arrow()
 
-        print(ployObj1.points)
-        print("-------------------------")
-        print(ployObj2.points)
-        print("-------------------------")
-        print(ployObj3.points)
-        print("-------------------------")
-        print(ployObj4.points)
+        # print(ployObj1.points)
+        # print("-------------------------")
+        # print(ployObj2.points)
+        # print("-------------------------")
+        # print(ployObj3.points)
+        # print("-------------------------")
+        # print(ployObj4.points)
         print("-------------------------------")
-        print(ployObj5.points,"ployObj5")
+        print(ployObj5.family_members_with_points(),"ployObj5")
+        print(ployObj5.submobjects,"ployObj5")
 
         self.add(
-            ployObj1,
-            ployObj2,
-            ployObj3,
-            ployObj4,
+            # ployObj1,
+            # ployObj2,
+            # ployObj3,
+            # ployObj4,
             ployObj5
         )
 
