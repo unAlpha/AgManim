@@ -298,7 +298,6 @@ class ShowEmergingEllipse(Scene):
         result.move_to(Line(center, e_point))
         return result
 
-
 class ShowFullStory(Scene):
     def construct(self):
         directory = os.path.join(
@@ -352,7 +351,6 @@ class ShowFullStory(Scene):
         )
         self.wait()
 
-
 class FeynmanAndOrbitingPlannetOnEllipseDiagram(ShowEmergingEllipse):
     def construct(self):
         circle = self.get_circle()
@@ -394,7 +392,6 @@ class FeynmanAndOrbitingPlannetOnEllipseDiagram(ShowEmergingEllipse):
         self.play(Write(feynman_name))
         self.wait()
         self.wait(10)
-
 
 class FeynmanFame(Scene):
     def construct(self):
@@ -565,7 +562,6 @@ class FeynmanFame(Scene):
 
         return VGroup(arrows, wave, squiggle, labels)
 
-
 class FeynmanLecturesScreenCaptureFrame(Scene):
     def construct(self):
         url = TextMobject("http://www.feynmanlectures.caltech.edu/")
@@ -577,7 +573,6 @@ class FeynmanLecturesScreenCaptureFrame(Scene):
         self.add(url)
         self.play(ShowCreation(screen_rect))
         self.wait()
-
 
 class TheMotionOfPlanets(Scene):
     CONFIG = {
@@ -682,7 +677,6 @@ class TheMotionOfPlanets(Scene):
 
         return planets, ellipses, orbits
 
-
 class TeacherHoldingUp(TeacherStudentsScene):
     def construct(self):
         self.play(
@@ -691,7 +685,6 @@ class TeacherHoldingUp(TeacherStudentsScene):
         self.change_all_student_modes("pondering")
         self.look_at(ORIGIN)
         self.wait(5)
-
 
 class AskAboutEllipses(TheMotionOfPlanets):
     CONFIG = {
@@ -970,7 +963,6 @@ class AskAboutEllipses(TheMotionOfPlanets):
         )
         return line, line_update
 
-
 class FeynmanSaysItBest(TeacherStudentsScene):
     def construct(self):
         self.teacher_says(
@@ -982,7 +974,6 @@ class FeynmanSaysItBest(TeacherStudentsScene):
             ]
         )
         self.wait(3)
-
 
 class FeynmanElementaryQuote(Scene):
     def construct(self):

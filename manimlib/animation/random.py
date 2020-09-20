@@ -187,11 +187,8 @@ class PassRectangleAbstract(UpdateFromAlphaFunc):
             **self.rectangle_kwargs
             )
         rectangle.move_to(mobject)
-        reference_line_left = Line(rectangle.get_corner(UL),rectangle.get_corner(DL))
-        reference_line_right = Line(rectangle.get_corner(UR),rectangle.get_corner(DR))
         rectangle.init_state = rectangle.copy()
         rectangle_width = rectangle.get_width()
-        rest_opacity = 1 - self.init_opacity
         def return_updater(mob,alpha):
             dx = interpolate(-PI/2,PI/2,alpha)
             mob.become(mob.init_state)

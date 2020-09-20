@@ -1,6 +1,18 @@
 from manimlib.imports import *
 import fractions
 
+class EaseOutBounceScene(Scene):
+    CONFIG={
+        "camera_config": {"background_color": GRAY},
+    }
+    def construct(self):
+        cricle = Circle()
+        self.play(
+            PassRectangleAbstract(cricle),
+            Animation(cricle),
+            rate_func=BounceEaseInOut().func
+        )
+        
 class RotateVector(Scene):
     def construct(self):
         line = RIGHT
@@ -8,7 +20,6 @@ class RotateVector(Scene):
         print(line)
         print(line_rotatae)
         self.wait()
-
         
 class TestVMobject(Scene):
     def construct(self):

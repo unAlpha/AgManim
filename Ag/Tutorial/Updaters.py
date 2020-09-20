@@ -368,20 +368,20 @@ class PlanetScene2(Scene):
 
 class UpdateCurve(Scene):
     def construct(self):
-        def f(dx=1):
+        def func(dx=1):
             return FunctionGraph(lambda x: 2*np.exp(-2 * (x - dx) ** 2))
 
-        c = f()
+        cmob = func()
         axes=Axes(y_min=-3, y_max=3)
  
-        def update_curve(c, alpha):
+        def update_curve(mob, alpha):
             dx = interpolate(1, 4, alpha)
-            c_c = f(dx)
-            c.become(c_c)
+            c_c = func(dx)
+            cmob.become(c_c)
  
-        self.play(ShowCreation(axes), ShowCreation(c))
+        self.play(ShowCreation(axes), ShowCreation(cmob))
         self.wait()
-        self.play(UpdateFromAlphaFunc(c,update_curve),rate_func=there_and_back,run_time=4)
+        self.play(UpdateFromAlphaFunc(cmob,update_curve),rate_func=there_and_back,run_time=4)
         self.wait()
 
 class UpdateSinCurve(Scene):

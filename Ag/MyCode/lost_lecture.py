@@ -1,7 +1,7 @@
 from manimlib.imports import *
 
-from Ag.Old_projects.div_curl import VectorField
-from Ag.Old_projects.div_curl import get_force_field_func
+from Ag.Tutorial.manim_old_project.div_curl import VectorField
+from Ag.Tutorial.manim_old_project.div_curl import get_force_field_func
 
 COBALT = "#0047AB"
 
@@ -78,7 +78,7 @@ class SunAnimation(Group):
 class ShowWord(Animation):
     CONFIG = {
         "time_per_char": 0.06,
-        "rate_func": None,
+        "rate_func": linear,
     }
 
     def __init__(self, word, **kwargs):
@@ -91,7 +91,7 @@ class ShowWord(Animation):
         self.stroke_width = word.get_stroke_width()
         Animation.__init__(self, word, run_time=run_time, **kwargs)
 
-    def update_mobject(self, alpha):
+    def interpolate_mobject(self, alpha):
         word = self.mobject
         stroke_width = self.stroke_width
         count = int(alpha * len(word))
@@ -397,6 +397,9 @@ class FeynmanAndOrbitingPlannetOnEllipseDiagram(ShowEmergingEllipse):
 
 # Feynman介绍
 class FeynmanFame(Scene):
+    CONFIG={
+        "camera_config": {"background_color": GRAY},
+    }
     def construct(self):
         books = Group(
             ImageMobject("Lost_lecture/Feynman_QED_cover"),
@@ -418,7 +421,8 @@ class FeynmanFame(Scene):
             run_time=4
         ))
         self.wait()
-        self.play( 
+        self.play(
+            # 同是AanimationGroup才有前后层级关系
             self.get_book_intro(books[1]),
             self.get_book_outro(books[0]),
             LaggedStartMap(
@@ -455,19 +459,14 @@ class FeynmanFame(Scene):
         )
         joke.move_to(objects)
 
-        self.play(LaggedStart(
-            *map(DrawBorderThenFill, objects),
-            lag_ratio=0.75
-        ))
+        self.play(LaggedStartMap(DrawBorderThenFill, objects),lag_ratio=0.75)
         self.play(self.get_book_intro(feynman_smile))
         self.wait()
         self.play(
             objects.shift, 2 * UP,
-            VFadeOut(objects)
-        )
+            VFadeOut(objects))
         self.play(Write(joke))
         self.wait(2)
-
         self.play(
             self.get_book_intro(books[2]),
             self.get_book_outro(books[1]),
@@ -475,8 +474,7 @@ class FeynmanFame(Scene):
             ApplyMethod(
                 feynman_smile.shift, FRAME_HEIGHT * DOWN,
                 remover=True
-            )
-        )
+            ))
 
         # As a teacher
         feynman_teacher = ImageMobject("Lost_lecture/Feynman_teaching")
@@ -510,7 +508,7 @@ class FeynmanFame(Scene):
         )
 
     def get_book_outro(self, book):
-        return ApplyMethod(book.shift, FRAME_HEIGHT * UP, remover=True)
+        return AnimationGroup(ApplyMethod(book.shift, FRAME_HEIGHT * UP, remover=True))
 
     def get_feynman_diagram(self):
         x_min = -1.5
@@ -566,9 +564,8 @@ class FeynmanFame(Scene):
 
         return VGroup(arrows, wave, squiggle, labels)
 
-
+# 费曼讲座屏幕截图 展示
 class FeynmanLecturesScreenCaptureFrame(Scene):
-#费曼讲座屏幕截图 展示
     def construct(self):
         url = TextMobject("http://www.feynmanlectures.caltech.edu/")
         url.to_edge(UP)
@@ -685,8 +682,9 @@ class TheMotionOfPlanets(Scene):
             
         return planets, ellipses, orbits
 
-class TeacherHoldingUp(TeacherStudentsScene):
 # 关于pi的动作
+class TeacherHoldingUp(TeacherStudentsScene):
+
     def construct(self):
         self.play(
             self.teacher.change, "raise_right_hand"
@@ -695,9 +693,8 @@ class TeacherHoldingUp(TeacherStudentsScene):
         self.look_at(ORIGIN)
         self.wait(5)
 
-
-class AskAboutEllipses(TheMotionOfPlanets):
 # 环绕动画
+class AskAboutEllipses(TheMotionOfPlanets):
     CONFIG = {
         "camera_config": {"background_opacity": 1},
         "sun_height": 0.5,
@@ -725,7 +722,7 @@ class AskAboutEllipses(TheMotionOfPlanets):
         self.title = title
 
     def add_sun(self):
-        sun = ImageMobject("sun", height=self.sun_height)
+        sun = ImageMobject("Lost_lecture/sun", height=self.sun_height)
         sun.move_to(self.sun_center)
         self.sun = sun
         self.add(sun)
@@ -733,7 +730,7 @@ class AskAboutEllipses(TheMotionOfPlanets):
             sun_animation = SunAnimation(sun)
             self.add(sun_animation)
             self.add_foreground_mobjects(
-                sun_animation.mobject
+                sun_animation.sun
             )
         else:
             self.add_foreground_mobjects(sun)
@@ -746,6 +743,7 @@ class AskAboutEllipses(TheMotionOfPlanets):
 
         self.add(ellipse)
         self.add(orbit)
+        self.add(comet)
 
         self.ellipse = ellipse
         self.comet = comet
@@ -763,20 +761,13 @@ class AskAboutEllipses(TheMotionOfPlanets):
             l1.put_start_and_end_on(f1, P)
             l2.put_start_and_end_on(f2, P)
             return lines
-
-        animation = ContinualUpdate(
-            lines, update_lines
-        )
-        self.add(animation)
-        self.wait(8)
-
+        lines.add_updater(update_lines)
+        self.add(lines)
+        self.wait(3)
         self.focus_lines = lines
-        self.focus_lines_animation = animation
 
     def add_force_labels(self):
         radial_line = self.focus_lines[0]
-
-        # Radial line measurement
         radius_measurement_kwargs = {
             "num_decimal_places": 3,
             "color": BLUE,
@@ -794,14 +785,13 @@ class AskAboutEllipses(TheMotionOfPlanets):
             if new_decimal.get_width() > max_width:
                 new_decimal.set_width(max_width)
             new_decimal.next_to(radial_line, UP, SMALL_BUFF)
-            VGroup(new_decimal, radial_line).rotate(
-                -angle, about_point=ORIGIN
-            )
-            Transform(measurement, new_decimal).update(1)
-
-        radius_measurement_animation = ContinualUpdate(
-            radius_measurement, update_radial_measurement
-        )
+            # 把线和数字当成一个整体
+            VGroup(new_decimal, radial_line).rotate(-angle, about_point=ORIGIN)
+            measurement.become(new_decimal)
+        radius_measurement.add_updater(update_radial_measurement)
+        
+        self.add(radius_measurement)
+        self.wait(3)
 
         # Force equation
         force_equation = TexMobject(
@@ -809,28 +799,23 @@ class AskAboutEllipses(TheMotionOfPlanets):
             tex_to_color_map={
                 "F": YELLOW,
                 "0.000": BLACK,
-            }
-        )
+            })
         force_equation.next_to(self.title, DOWN)
         force_equation.to_edge(RIGHT)
+        # 获得0.000对象
         radius_in_denominator_ref = force_equation.get_part_by_tex("0.000")
         radius_in_denominator = DecimalNumber(
             0, **radius_measurement_kwargs
         )
         radius_in_denominator.scale(0.95)
-        update_radius_in_denominator = ContinualChangingDecimal(
-            radius_in_denominator,
-            lambda a: radial_line.get_length(),
-            position_update_func=lambda mob: mob.move_to(
-                radius_in_denominator_ref, LEFT
-            )
-        )
+
+        def r_in_denominator(mob):
+            mob.set_value(radial_line.get_length())
+            mob.move_to(radius_in_denominator_ref)
+        radius_in_denominator.add_updater(r_in_denominator)
 
         # Force arrow
-        force_arrow, force_arrow_animation = self.get_force_arrow_and_update(
-            self.comet
-        )
-
+        force_arrow, force_arrow_animation = self.get_force_arrow_and_update(self.comet)
         inverse_square_law_words = TextMobject(
             "``Inverse square law''"
         )
@@ -844,18 +829,15 @@ class AskAboutEllipses(TheMotionOfPlanets):
                 lambda mob, alpha: mob.set_fill(opacity=alpha)
             )
 
-        self.add(update_radius_in_denominator)
-        self.add(radius_measurement_animation)
         self.play(
             FadeIn(force_equation),
             v_fade_in(radius_in_denominator),
-            v_fade_in(radius_measurement)
         )
         self.add(force_arrow_animation)
         self.play(v_fade_in(force_arrow))
-        self.wait(8)
+        self.wait(2)
         self.play(Write(inverse_square_law_words))
-        self.wait(9)
+        self.wait(3)
 
         self.force_equation = force_equation
         self.inverse_square_law_words = inverse_square_law_words
@@ -875,7 +857,7 @@ class AskAboutEllipses(TheMotionOfPlanets):
 
         self.add(*orbits)
         self.play(ellipses.restore, Animation(planets))
-        self.wait(7)
+        self.wait(5)
         self.play(
             ellipses.scale, scale_factor, {"about_point": center},
             Animation(planets)
@@ -908,13 +890,13 @@ class AskAboutEllipses(TheMotionOfPlanets):
         cross = Cross(equation)
 
         self.play(Write(equation))
-        self.wait(6)
+        self.wait(5)
         self.play(ShowCreation(cross))
-        self.wait(6)
+        self.wait(5)
 
     # Helpers
     def get_comet(self):
-        comet = ImageMobject("comet")
+        comet = ImageMobject("Lost_lecture/comet")
         comet.set_height(self.comet_height)
         return comet
 
@@ -957,7 +939,7 @@ class AskAboutEllipses(TheMotionOfPlanets):
             arrow.shift(
                 radial_line.get_end() - arrow.get_start()
             )
-        force_arrow_animation = ContinualUpdate(
+        force_arrow_animation = Mobject.add_updater(
             force_arrow, update_force_arrow
         )
 
@@ -966,7 +948,7 @@ class AskAboutEllipses(TheMotionOfPlanets):
     def get_radial_line_and_update(self, comet):
         line = Line(LEFT, RIGHT)
         line.set_stroke(LIGHT_GREY, 1)
-        line_update = ContinualUpdate(
+        line_update = Mobject.add_updater(
             line, lambda l: l.put_start_and_end_on(
                 self.sun.get_center(),
                 comet.get_center(),
@@ -974,9 +956,8 @@ class AskAboutEllipses(TheMotionOfPlanets):
         )
         return line, line_update
 
-
-class FeynmanSaysItBest(TeacherStudentsScene):
 # pi说话
+class FeynmanSaysItBest(TeacherStudentsScene):
     def construct(self):
         self.teacher_says(
             "Feynman says \\\\ it best",
@@ -988,8 +969,10 @@ class FeynmanSaysItBest(TeacherStudentsScene):
         )
         self.wait(3)
 
-
 class FeynmanElementaryQuote(Scene):
+    CONFIG={
+        "camera_config": {"background_color": GRAY},
+    }
     def construct(self):
         quote_text = """
             \\large
@@ -1033,7 +1016,7 @@ class FeynmanElementaryQuote(Scene):
                 self.play(ShowWord(nothing))
                 self.wait(0.2)
                 nothing.sort_submobjects(lambda p: -p[0])
-                self.play(LaggedStart(
+                self.play(LaggedStartMap(
                     FadeOut, nothing,
                     run_time=1
                 ))
@@ -1049,8 +1032,8 @@ class FeynmanElementaryQuote(Scene):
 
         # Show thumbnails
         images = Group(
-            ImageMobject("Calculus_Thumbnail"),
-            ImageMobject("Fourier_Thumbnail"),
+            ImageMobject("Lost_lecture/Calculus_Thumbnail"),
+            ImageMobject("Lost_lecture/Fourier_Thumbnail"),
         )
         for image in images:
             image.set_height(3)
@@ -1058,7 +1041,7 @@ class FeynmanElementaryQuote(Scene):
         images.to_edge(DOWN, buff=LARGE_BUFF)
         images[1].move_to(images[0])
         crosses = VGroup(*list(map(Cross, images)))
-        crosses.set_stroke("RED", 10)
+        crosses.set_stroke(color=RED, width=20)
 
         for image, cross in zip(images, crosses):
             image.rect = SurroundingRectangle(
@@ -1083,7 +1066,6 @@ class FeynmanElementaryQuote(Scene):
         )
         self.play(ShowCreation(crosses[1]))
         self.wait()
-
 
 class LostLecturePicture(TODOStub):
     CONFIG = {"camera_config": {"background_opacity": 1}}

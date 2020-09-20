@@ -551,6 +551,7 @@ class Mobject(Container):
         self.scale_in_place((length + buff) / length)
         return self
 
+    # 对对象重新设置起点和终点
     def put_start_and_end_on(self, start, end):
         curr_start, curr_end = self.get_start_and_end()
         curr_vect = curr_end - curr_start

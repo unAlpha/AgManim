@@ -1,7 +1,7 @@
 import itertools as it
 import numpy as np
 
-
+# 删除列表冗余
 def remove_list_redundancies(l):
     """
     Used instead of list(set(l)) to maintain order
