@@ -53,6 +53,7 @@ def quaternion_conjugate(quaternion):
     return result
 
 
+# 让向量点旋转一个角度
 def rotate_vector(vector, angle, axis=OUT):
     if len(vector) == 2:
         # Use complex numbers...because why not

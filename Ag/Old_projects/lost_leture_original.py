@@ -1,3 +1,4 @@
+
 from manimlib.imports import *
 
 from Ag.Old_projects.div_curl import VectorField
@@ -5,25 +6,34 @@ from Ag.Old_projects.div_curl import get_force_field_func
 
 COBALT = "#0047AB"
 
-# 环绕类
-class Orbiting(VGroup):
 
+# Warning, this file uses ContinualChangingDecimal,
+# which has since been been deprecated.  Use a mobject
+# updater instead
+
+
+# TODO, this is untested after turning it from a
+# ContinualAnimation into a VGroup
+class Orbiting(VGroup):
     CONFIG = {
         "rate": 7.5,
     }
+
     def __init__(self, planet, star, ellipse, **kwargs):
         VGroup.__init__(self, **kwargs)
+        self.add(planet)
         self.planet = planet
         self.star = star
         self.ellipse = ellipse
         # Proportion of the way around the ellipse
         self.proportion = 0
-        # 初始值有必要
         planet.move_to(ellipse.point_from_proportion(0))
-        self.add_updater(self.update)
-        
+
+        self.add_updater(lambda m, dt: m.update(dt))
+
     def update(self, dt):
         # time = self.internal_time
+
         planet = self.planet
         star = self.star
         ellipse = self.ellipse
@@ -46,7 +56,9 @@ class Orbiting(VGroup):
             ellipse.point_from_proportion(self.proportion)
         )
 
-# 太阳燃烧的效果
+
+# TODO, this is untested after turning it from a
+# ContinualAnimation into a Group
 class SunAnimation(Group):
     CONFIG = {
         "rate": 0.2,
@@ -61,7 +73,7 @@ class SunAnimation(Group):
         self.time = 0
 
         self.add(self.sun, self.rotated_sun)
-        self.add_updater(self.update)
+        self.add_updater(lambda m, dt: m.update(dt))
 
     def update(self, dt):
         time = self.time
@@ -78,7 +90,7 @@ class SunAnimation(Group):
 class ShowWord(Animation):
     CONFIG = {
         "time_per_char": 0.06,
-        "rate_func": None,
+        "rate_func": linear,
     }
 
     def __init__(self, word, **kwargs):
@@ -91,7 +103,7 @@ class ShowWord(Animation):
         self.stroke_width = word.get_stroke_width()
         Animation.__init__(self, word, run_time=run_time, **kwargs)
 
-    def update_mobject(self, alpha):
+    def interpolate_mobject(self, alpha):
         word = self.mobject
         stroke_width = self.stroke_width
         count = int(alpha * len(word))
@@ -105,10 +117,7 @@ class ShowWord(Animation):
             word[count + 1:].set_stroke(width=0)
 
 # Animations
-
-# 开头简易动画
 class TakeOver(PiCreatureScene):
-
     CONFIG = {
         "default_pi_creature_kwargs": {
             "color": GREY_BROWN,
@@ -118,20 +127,19 @@ class TakeOver(PiCreatureScene):
     }
 
     def construct(self):
-        gradient = ImageMobject("Lost_lecture/white_black_gradient")
-        # white black gradient 白色黑色渐变
+        gradient = ImageMobject("white_black_gradient")
         gradient.set_height(FRAME_HEIGHT)
         self.add(gradient)
 
         morty = self.pi_creatures
-        henry = ImageMobject("Lost_lecture/Henry_As_Stick")
+        henry = ImageMobject("Henry_As_Stick")
         henry.set_height(4)
         henry.to_edge(LEFT)
         henry.to_edge(DOWN)
 
         self.add(morty, henry)
         self.pi_creature_says(
-            "Muahaha!  All \\\\ mine now.",  # \\\换行
+            "Muahaha!  All \\\\ mine now.",
             bubble_kwargs={"fill_opacity": 0.5},
             bubble_creation_class=FadeIn,
             target_mode="conniving",
@@ -139,7 +147,6 @@ class TakeOver(PiCreatureScene):
         )
         self.wait(2)
 
-# 显示出现的椭圆，并做散线动画
 class ShowEmergingEllipse(Scene):
     CONFIG = {
         "circle_radius": 3,
@@ -161,7 +168,7 @@ class ShowEmergingEllipse(Scene):
 
         fade_rect = FullScreenFadeRectangle()
 
-        line = lines[len(lines) // 5]  # 向下取整  取得取中一根线
+        line = lines[len(lines) // 5]
         line_dot = Dot(line.get_center(), color=YELLOW)
         line_dot.scale(0.5)
 
@@ -171,7 +178,7 @@ class ShowEmergingEllipse(Scene):
         rot_words = TextMobject("Rotate $90^\\circ$ \\\\ about center")
         rot_words.next_to(line_dot, RIGHT)
 
-        elbow = self.get_elbow(line)  # 直角标示
+        elbow = self.get_elbow(line)
 
         eccentric_words = TextMobject("``Eccentric'' point")
         eccentric_words.next_to(circle.get_center(), DOWN)
@@ -187,32 +194,28 @@ class ShowEmergingEllipse(Scene):
 
         self.play(ShowCreation(circle))
         self.play(
-            FadeInFrom(e_dot, LEFT),  # 淡入然后再移动到
+            FadeInFrom(e_dot, LEFT),
             Write(eccentric_words, run_time=1)
         )
         self.wait()
-
         self.play(
-            LaggedStartMap(ShowCreation, shuffled_lines),  #对VGroup 生成动画
+            LaggedStartMap(ShowCreation, shuffled_lines),
             Animation(VGroup(e_dot, circle)),
             FadeOut(eccentric_words)
         )
         self.add(ghost_lines)
         self.add(e_dot, circle)
         self.wait()
-
         self.play(
-            FadeIn(fade_rect),  # 变暗0.7整个屏幕
+            FadeIn(fade_rect),
             Animation(line),
-            GrowFromCenter(line_dot),  # 从中间变大呈现
-            FadeInFromDown(rot_words),  # 从下方淡入进去
+            GrowFromCenter(line_dot),
+            FadeInFromDown(rot_words),
         )
         self.wait()
         self.add(ghost_line)
         self.play(
-            # 生成新和目标 给定属性 并有动画
-            # path_arc=90 * DEGREES 这里无效，本身动画也是这个效果
-            MoveToTarget(line, path_arc=90 * DEGREES),  
+            MoveToTarget(line, path_arc=90 * DEGREES),
             Animation(rot_words),
             ShowCreation(elbow)
         )
@@ -242,14 +245,14 @@ class ShowEmergingEllipse(Scene):
             color=self.circle_color
         )
         return circle
-    # 获得偏心点
+
     def get_eccentricity_point(self):
         return self.circle.get_center() + self.eccentricity_vector
 
     def get_lines(self):
         center = self.circle.get_center()
-        radius = self.circle.get_width() / 2   # 半径
-        e_point = self.get_eccentricity_point()  # 偏心点
+        radius = self.circle.get_width() / 2
+        e_point = self.get_eccentricity_point()
         lines = VGroup(*[
             Line(
                 e_point,
@@ -258,7 +261,6 @@ class ShowEmergingEllipse(Scene):
             for angle in np.linspace(0, TAU, self.num_lines)
         ])
         lines.set_stroke(width=self.lines_stroke_width)
-        # 为对象生成所有目标
         for line in lines:
             line.generate_target()
             line.target.rotate(90 * DEGREES)
@@ -296,12 +298,12 @@ class ShowEmergingEllipse(Scene):
         result.move_to(Line(center, e_point))
         return result
 
-# 很牛逼的切屏转场
-class ShowFullStory(Scene):  
+
+class ShowFullStory(Scene):
     def construct(self):
         directory = os.path.join(
             MEDIA_DIR,
-            "assets/raster_images/Lost_lecture/images"
+            "animations/active_projects/lost_lecture/images"
         )
         scene_names = [
             "ShowEmergingEllipse",
@@ -350,19 +352,21 @@ class ShowFullStory(Scene):
         )
         self.wait()
 
-# 加入Feynman的图
+
 class FeynmanAndOrbitingPlannetOnEllipseDiagram(ShowEmergingEllipse):
     def construct(self):
         circle = self.get_circle()
         lines = self.get_lines()
         ghost_lines = self.get_ghost_lines(lines)
+        for line in lines:
+            MoveToTarget(line).update(1)
         ellipse = self.get_ellipse()
         e_dot = Dot(self.get_eccentricity_point())
         e_dot.set_color(YELLOW)
 
         comet = ImageMobject("Lost_lecture/earth")
         comet.set_width(0.3)
-        
+
         feynman = ImageMobject("Lost_lecture/Feynman")
         feynman.set_height(6)
         feynman.next_to(ORIGIN, LEFT)
@@ -377,13 +381,9 @@ class FeynmanAndOrbitingPlannetOnEllipseDiagram(ShowEmergingEllipse):
 
         group = VGroup(circle, ghost_lines, lines, e_dot, ellipse)
 
-        self.add(circle, ghost_lines, lines, e_dot, )
-        self.play(LaggedStartMap(MoveToTarget, lines, run_time=4))
-        self.play(FadeIn(ellipse))
-        self.add(Orbiting(comet, e_dot, ellipse, rate=2))
-        # 这个很重要相当于add
+        self.add(group)
+        self.add(Orbiting(comet, e_dot, ellipse))
         self.add_foreground_mobjects(comet)
-
         self.wait()
         self.play(
             feynman.restore,
@@ -395,13 +395,13 @@ class FeynmanAndOrbitingPlannetOnEllipseDiagram(ShowEmergingEllipse):
         self.wait()
         self.wait(10)
 
-# Feynman介绍
+
 class FeynmanFame(Scene):
     def construct(self):
-        books = Group(
-            ImageMobject("Lost_lecture/Feynman_QED_cover"),
-            ImageMobject("Lost_lecture/Surely_Youre_Joking_cover"),
-            ImageMobject("Lost_lecture/Feynman_Lectures_cover"),
+        books = VGroup(
+            ImageMobject("Feynman_QED_cover"),
+            ImageMobject("Surely_Youre_Joking_cover"),
+            ImageMobject("Feynman_Lectures_cover"),
         )
         for book in books:
             book.set_height(6)
@@ -418,7 +418,7 @@ class FeynmanFame(Scene):
             run_time=4
         ))
         self.wait()
-        self.play( 
+        self.play(
             self.get_book_intro(books[1]),
             self.get_book_outro(books[0]),
             LaggedStartMap(
@@ -444,19 +444,19 @@ class FeynmanFame(Scene):
 
         objects = VGroup(safe, bongo)
 
-        feynman_smile = ImageMobject("Lost_lecture/Feynman_Los_Alamos")
+        feynman_smile = ImageMobject("Feynman_Los_Alamos")
         feynman_smile.set_height(4)
         feynman_smile.next_to(objects, DOWN)
 
-        Group(objects, feynman_smile).next_to(ORIGIN, RIGHT)
+        VGroup(objects, feynman_smile).next_to(ORIGIN, RIGHT)
 
         joke = TextMobject(
             "``Science is the belief \\\\ in the ignorance of \\\\ experts.''"
         )
         joke.move_to(objects)
 
-        self.play(LaggedStart(
-            *map(DrawBorderThenFill, objects),
+        self.play(LaggedStartMap(
+            DrawBorderThenFill, objects,
             lag_ratio=0.75
         ))
         self.play(self.get_book_intro(feynman_smile))
@@ -479,7 +479,7 @@ class FeynmanFame(Scene):
         )
 
         # As a teacher
-        feynman_teacher = ImageMobject("Lost_lecture/Feynman_teaching")
+        feynman_teacher = ImageMobject("Feynman_teaching")
         feynman_teacher.set_width(FRAME_WIDTH / 2 - 1)
         feynman_teacher.next_to(ORIGIN, RIGHT)
 
@@ -491,7 +491,7 @@ class FeynmanFame(Scene):
                            animated_shift,
                            opacity_func
                            ):
-        rect = BackgroundRectangle(book, fill_opacity=1, buff=0.1)
+        rect = BackgroundRectangle(book, fill_opacity=1)
         book.shift(initial_shift)
 
         return AnimationGroup(
@@ -515,8 +515,7 @@ class FeynmanFame(Scene):
     def get_feynman_diagram(self):
         x_min = -1.5
         x_max = 1.5
-        arrow = Arrow(LEFT, RIGHT, buff=0, use_rectangular_stem=False)
-        # Arrow里有tip对象
+        arrow = Arrow(LEFT, RIGHT, buff=0)
         arrow.tip.move_to(arrow.get_center())
         arrows = VGroup(*[
             arrow.copy().rotate(angle).next_to(point, vect, buff=0)
@@ -568,7 +567,6 @@ class FeynmanFame(Scene):
 
 
 class FeynmanLecturesScreenCaptureFrame(Scene):
-#费曼讲座屏幕截图 展示
     def construct(self):
         url = TextMobject("http://www.feynmanlectures.caltech.edu/")
         url.to_edge(UP)
@@ -580,7 +578,7 @@ class FeynmanLecturesScreenCaptureFrame(Scene):
         self.play(ShowCreation(screen_rect))
         self.wait()
 
-# 行星围绕太阳转
+
 class TheMotionOfPlanets(Scene):
     CONFIG = {
         "camera_config": {"background_opacity": 1},
@@ -618,25 +616,24 @@ class TheMotionOfPlanets(Scene):
         book.set_height(4)
         book.next_to(alt_name, DOWN)
 
-        sun_anim = SunAnimation(sun)
-        self.add(sun_anim)
+        self.add(SunAnimation(sun))
         self.add(ellipses, planets)
         self.add(self.title)
         self.add(*orbits)
         self.add_foreground_mobjects(planets)
-        self.wait(3)
+        self.wait(10)
         self.play(
-            Group(ellipses,*sun_anim).shift, 3 * RIGHT,
+            VGroup(ellipses, sun).shift, 3 * RIGHT,
             FadeInFromDown(archivist_words),
             Animation(self.title)
         )
         self.add_foreground_mobjects(archivist_words)
-        self.wait(2)
+        self.wait(3)
         self.play(FadeInFromDown(alt_name))
         self.add_foreground_mobjects(alt_name)
         self.wait()
         self.play(FadeInFromDown(book))
-        self.wait(5)
+        self.wait(15)
 
     def get_planets_ellipses_and_orbits(self, sun):
         planets = Group(
@@ -647,8 +644,8 @@ class TheMotionOfPlanets(Scene):
             ImageMobject("Lost_lecture/comet")
         )
         sizes = [0.383, 0.95, 1.0, 0.532, 0.3]
-        orbit_radii = [0.254, 0.475, 0.656, 1.0, 3.0]  # 轨道半径
-        orbit_eccentricies = [0.206, 0.006, 0.0167, 0.0934, 0.967]  # 轨道偏心率
+        orbit_radii = [0.254, 0.475, 0.656, 1.0, 3.0]
+        orbit_eccentricies = [0.206, 0.006, 0.0167, 0.0934, 0.967]
 
         for planet, size in zip(planets, sizes):
             planet.set_height(0.5)
@@ -676,17 +673,17 @@ class TheMotionOfPlanets(Scene):
         orbits = [
             Orbiting(
                 planet, sun, circle,
-                rate=3 * r**(2 / 3)
+                rate=0.25 * r**(2 / 3)
             )
             for planet, circle, r in zip(planets, ellipses, orbit_radii)
         ]
         orbits[-1].proportion = 0.15
         orbits[-1].rate = 0.5
-            
+
         return planets, ellipses, orbits
 
+
 class TeacherHoldingUp(TeacherStudentsScene):
-# 关于pi的动作
     def construct(self):
         self.play(
             self.teacher.change, "raise_right_hand"
@@ -697,7 +694,6 @@ class TeacherHoldingUp(TeacherStudentsScene):
 
 
 class AskAboutEllipses(TheMotionOfPlanets):
-# 环绕动画
     CONFIG = {
         "camera_config": {"background_opacity": 1},
         "sun_height": 0.5,
@@ -764,7 +760,7 @@ class AskAboutEllipses(TheMotionOfPlanets):
             l2.put_start_and_end_on(f2, P)
             return lines
 
-        animation = ContinualUpdate(
+        animation = Mobject.add_updater(
             lines, update_lines
         )
         self.add(animation)
@@ -799,7 +795,7 @@ class AskAboutEllipses(TheMotionOfPlanets):
             )
             Transform(measurement, new_decimal).update(1)
 
-        radius_measurement_animation = ContinualUpdate(
+        radius_measurement_animation = Mobject.add_updater(
             radius_measurement, update_radial_measurement
         )
 
@@ -901,7 +897,7 @@ class AskAboutEllipses(TheMotionOfPlanets):
         ]), element_alignment_corner=ORIGIN)
 
         equation = VGroup(d_dt, in_vect, equals, out_vect)
-        equation.arrange_submobjects(RIGHT, buff=SMALL_BUFF)
+        equation.arrange(RIGHT, buff=SMALL_BUFF)
         equation.set_width(6)
 
         equation.to_corner(DR, buff=MED_LARGE_BUFF)
@@ -957,7 +953,7 @@ class AskAboutEllipses(TheMotionOfPlanets):
             arrow.shift(
                 radial_line.get_end() - arrow.get_start()
             )
-        force_arrow_animation = ContinualUpdate(
+        force_arrow_animation = Mobject.add_updater(
             force_arrow, update_force_arrow
         )
 
@@ -966,7 +962,7 @@ class AskAboutEllipses(TheMotionOfPlanets):
     def get_radial_line_and_update(self, comet):
         line = Line(LEFT, RIGHT)
         line.set_stroke(LIGHT_GREY, 1)
-        line_update = ContinualUpdate(
+        line_update = Mobject.add_updater(
             line, lambda l: l.put_start_and_end_on(
                 self.sun.get_center(),
                 comet.get_center(),
@@ -976,7 +972,6 @@ class AskAboutEllipses(TheMotionOfPlanets):
 
 
 class FeynmanSaysItBest(TeacherStudentsScene):
-# pi说话
     def construct(self):
         self.teacher_says(
             "Feynman says \\\\ it best",
@@ -1032,8 +1027,8 @@ class FeynmanElementaryQuote(Scene):
                 self.add_foreground_mobjects(nothing)
                 self.play(ShowWord(nothing))
                 self.wait(0.2)
-                nothing.sort_submobjects(lambda p: -p[0])
-                self.play(LaggedStart(
+                nothing.sort(lambda p: -p[0])
+                self.play(LaggedStartMap(
                     FadeOut, nothing,
                     run_time=1
                 ))
@@ -1054,7 +1049,7 @@ class FeynmanElementaryQuote(Scene):
         )
         for image in images:
             image.set_height(3)
-        images.arrange_submobjects(RIGHT, buff=LARGE_BUFF)
+        images.arrange(RIGHT, buff=LARGE_BUFF)
         images.to_edge(DOWN, buff=LARGE_BUFF)
         images[1].move_to(images[0])
         crosses = VGroup(*list(map(Cross, images)))
@@ -1130,7 +1125,7 @@ class TableOfContents(Scene):
             TextMobject("Kepler's 2nd law"),
             TextMobject("The shape of velocities"),
         )
-        items.arrange_submobjects(  # 安排子项
+        items.arrange(
             DOWN, buff=LARGE_BUFF, aligned_edge=LEFT
         )
         items.to_edge(LEFT, buff=1.5)
@@ -1143,7 +1138,7 @@ class TableOfContents(Scene):
         scale_factor = 1.2
 
         self.add(title)
-        self.play(LaggedStart(  #对Group 使用
+        self.play(LaggedStartMap(
             FadeIn, items,
             run_time=1,
             lag_ratio=0.7,
@@ -1193,9 +1188,9 @@ class ShowEllipseDefiningProperty(Scene):
     }
 
     def construct(self):
-        self.add_ellipse()  # 屏幕上显示Ellipse
-        self.add_focal_lines()  # 添加焦线
-        self.add_distance_labels()  # 显示数字
+        self.add_ellipse()
+        self.add_focal_lines()
+        self.add_distance_labels()
         self.label_foci()
         self.label_focal_sum()
 
@@ -1203,7 +1198,7 @@ class ShowEllipseDefiningProperty(Scene):
         a = self.a
         b = self.b
         ellipse = Circle(radius=a, color=self.ellipse_color)
-        ellipse.stretch(fdiv(b, a), dim=1)  # stretch 拉伸
+        ellipse.stretch(fdiv(b, a), dim=1)
         ellipse.to_edge(LEFT, buff=LARGE_BUFF)
         self.ellipse = ellipse
         self.add(ellipse)
@@ -1217,39 +1212,36 @@ class ShowEllipseDefiningProperty(Scene):
                 height=0.5,
             ).move_to(point, DR).shift(0.05 * RIGHT)
             for point in self.get_foci()
-        ])  # 导入push_pin.svg图，然后定好位置
+        ])
 
         dot = Dot()
         dot.scale(0.5)
-        position_tracker = ValueTracker(0.125)  # 位置跟踪器
-        dot_update = ContinualUpdate(
+        position_tracker = ValueTracker(0.125)
+        dot_update = Mobject.add_updater(
             dot,
             lambda d: d.move_to(
-                self.ellipse.point_from_proportion(  #获取对象上的点坐标
+                self.ellipse.point_from_proportion(
                     position_tracker.get_value() % 1
                 )
             )
         )
-        position_tracker_wander = ContinualMovement(  #在对象上移动
-            position_tracker, rate=0.05,  # rate 是移动的快慢
-        )
+        always_shift(position_tracker, rate=0.05)
 
         lines, lines_update_animation = self.get_focal_lines_and_update(
             self.get_foci, dot
         )
 
-        self.add_foreground_mobjects(push_pins, dot)  # 添加前景对象
+        self.add_foreground_mobjects(push_pins, dot)
         self.add(dot_update)
-        self.play(LaggedStart(   # push_pins的动画
-            FadeInAndShiftFromDirection, push_pins,
+        self.play(LaggedStartMap(
+            FadeInFrom, push_pins,
             lambda m: (m, 2 * UP + LEFT),
             run_time=1,
-            lag_ratio=0.75  # 滞后率
+            lag_ratio=0.75
         ))
-
         self.play(ShowCreation(lines))
         self.add(lines_update_animation)
-        self.add(position_tracker_wander)
+        self.add(position_tracker)
         self.wait(2)
 
         self.position_tracker = position_tracker
@@ -1268,7 +1260,7 @@ class ShowEllipseDefiningProperty(Scene):
             )
 
         sum_expression_fading_rect = BackgroundRectangle(
-            sum_expression, fill_opacity=0
+            sum_expression, fill_opacity=1
         )
 
         sum_rect = SurroundingRectangle(numbers[-1])
@@ -1276,11 +1268,11 @@ class ShowEllipseDefiningProperty(Scene):
         constant_words.next_to(sum_rect, DOWN, aligned_edge=RIGHT)
         VGroup(sum_rect, constant_words).set_color(BLUE)
 
-        self.add(distance_labels_animation)  # 添加线上的数字
-        self.add(*number_updates)  # 添加右上角的数字
-        # self.add(sum_expression)  # 总和表达
-        self.add_foreground_mobjects(sum_expression_fading_rect)  # 添加前景对象 (就是遮挡)
-        self.play(  # 开始移动
+        self.add(distance_labels_animation)
+        self.add(*number_updates)
+        self.add(sum_expression)
+        self.add_foreground_mobjects(sum_expression_fading_rect)
+        self.play(
             VFadeIn(distance_labels),
             FadeOut(sum_expression_fading_rect),
         )
@@ -1372,7 +1364,7 @@ class ShowEllipseDefiningProperty(Scene):
         self.wait(8)
 
     # Helpers
-    def get_foci(self):  # 获得焦点 返回一个list
+    def get_foci(self):
         ellipse = self.ellipse
         a = ellipse.get_width() / 2
         b = ellipse.get_height() / 2
@@ -1394,7 +1386,7 @@ class ShowEllipseDefiningProperty(Scene):
                     focus, focal_sum_point.get_center()
                 )
             lines[1].rotate(np.pi)
-        lines_update_animation = ContinualUpdate(
+        lines_update_animation = Mobject.add_updater(
             lines, update_lines
         )
         return lines, lines_update_animation
@@ -1429,7 +1421,7 @@ class ShowEllipseDefiningProperty(Scene):
                 )
                 label.submobjects = list(new_decimal.submobjects)
 
-        distance_labels_animation = ContinualUpdate(
+        distance_labels_animation = Mobject.add_updater(
             distance_labels, update_distance_labels
         )
 
@@ -1444,7 +1436,7 @@ class ShowEllipseDefiningProperty(Scene):
         for number, color in zip(numbers, colors):
             number.set_color(color)
 
-        # Not the most elegant...  不是最好的
+        # Not the most elegant...
         number_updates = [
             ContinualChangingDecimal(
                 numbers[0], lambda a: lines[0].get_length(),
@@ -1470,7 +1462,6 @@ class ShowEllipseDefiningProperty(Scene):
 
 
 class GeometryProofLand(Scene):
-# 孤形字样 效果爆炸
     CONFIG = {
         "colors": [
             PINK, RED, YELLOW, GREEN, GREEN_A, BLUE,
@@ -1481,14 +1472,13 @@ class GeometryProofLand(Scene):
 
     def construct(self):
         word = self.get_geometry_proof_land_word()
-        word_outlines = word.deepcopy()  # 深度复制
+        word_outlines = word.deepcopy()
         word_outlines.set_fill(opacity=0)
         word_outlines.set_stroke(WHITE, 1)
         colors = list(self.colors)
         random.shuffle(colors)
         word_outlines.set_color_by_gradient(*colors)
         word_outlines.set_stroke(width=5)
-        self.add(word_outlines)
 
         circles = VGroup()
         for letter in word:
@@ -1502,23 +1492,23 @@ class GeometryProofLand(Scene):
             circle.target = letter
 
         self.play(
-            LaggedStart(MoveToTarget, circles),
+            LaggedStartMap(MoveToTarget, circles),
             run_time=2
         )
         self.add(word_outlines, circles)
-        self.play(LaggedStart(
+        self.play(LaggedStartMap(
             FadeIn, word_outlines,
             run_time=3,
             rate_func=there_and_back,
         ), Animation(circles))
         self.wait()
 
-    def get_geometry_proof_land_word(self):  # 返回一个最终效果
+    def get_geometry_proof_land_word(self):
         word = TextMobject(self.text)
         word.rotate(-90 * DEGREES)
         word.scale(0.25)
         word.shift(3 * RIGHT)
-        word.apply_complex_function(np.exp)  # 应用复杂的功能
+        word.apply_complex_function(np.exp)
         word.rotate(90 * DEGREES)
         word.set_width(9)
         word.center()
@@ -1557,7 +1547,7 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
 
         self.add(ghost_lines, circle, lines, ep_dot)
         self.play(
-            LaggedStart(MoveToTarget, lines),
+            LaggedStartMap(MoveToTarget, lines),
             Animation(ep_dot),
         )
         self.play(ShowCreation(ellipse))
@@ -1595,20 +1585,20 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
             arrows.add(arrow)
 
         labels_target = labels.copy()
-        labels_target.arrange_submobjects(
+        labels_target.arrange(
             DOWN, aligned_edge=LEFT
         )
         guess_start = TextMobject("Guess: Foci = ")
         brace = Brace(labels_target, LEFT)
         full_guess = VGroup(guess_start, brace, labels_target)
-        full_guess.arrange_submobjects(RIGHT)
+        full_guess.arrange(RIGHT)
         full_guess.to_corner(UR)
 
         self.play(
             FadeInFromDown(labels[1]),
             GrowArrow(arrows[1]),
         )
-        self.play(LaggedStart(
+        self.play(LaggedStartMap(
             ShowPassingFlash, ghost_lines_copy
         ))
         self.wait()
@@ -1737,7 +1727,7 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
         P_label.next_to(P_dot, UP, SMALL_BUFF)
 
         self.add_foreground_mobjects(self.ellipse)
-        self.play(LaggedStart(Restore, lines))
+        self.play(LaggedStartMap(Restore, lines))
         self.play(
             FadeOut(to_fade),
             ghost_line.set_stroke, YELLOW, 3,
@@ -1790,7 +1780,7 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
         # Dot defining Q point
         Q_dot = Dot(color=GREEN)
         Q_dot.move_to(self.focal_sum_point)
-        focal_sum_point_animation = NormalAnimationAsContinualAnimation(
+        focal_sum_point_animation = turn_animation_into_updater(
             MaintainPositionRelativeTo(
                 self.focal_sum_point, Q_dot
             )
@@ -1804,7 +1794,7 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
         Q_label.match_color(Q_dot)
         Q_label.add_to_back(Q_label.copy().set_stroke(BLACK, 5))
         Q_label.next_to(Q_dot, UL, buff=0)
-        Q_label_animation = NormalAnimationAsContinualAnimation(
+        Q_label_animation = turn_animation_into_updater(
             MaintainPositionRelativeTo(Q_label, Q_dot)
         )
 
@@ -1814,7 +1804,7 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
             if line.get_end()[0] > line.get_start()[0]:
                 vect = label.get_center() - line.get_center()
                 label.shift(-2 * vect)
-        distance_label_shift_update_animation = ContinualUpdate(
+        distance_label_shift_update_animation = Mobject.add_updater(
             self.distance_labels[0],
             distance_label_shift_update
         )
@@ -1825,7 +1815,7 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
         # Define QP line
         QP_line = Line(LEFT, RIGHT)
         QP_line.match_style(self.focal_lines)
-        QP_line_update = ContinualUpdate(
+        QP_line_update = Mobject.add_updater(
             QP_line, lambda l: l.put_start_and_end_on(
                 Q_dot.get_center(), P_dot.get_center(),
             )
@@ -1833,7 +1823,7 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
 
         QE_line = Line(LEFT, RIGHT)
         QE_line.set_stroke(YELLOW, 3)
-        QE_line_update = ContinualUpdate(
+        QE_line_update = Mobject.add_updater(
             QE_line, lambda l: l.put_start_and_end_on(
                 Q_dot.get_center(),
                 self.get_eccentricity_point()
@@ -1863,7 +1853,7 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
             label.rotate(angle, about_point=Q_dot.get_center())
             return label
 
-        distance_label_rotate_update_animation = ContinualUpdate(
+        distance_label_rotate_update_animation = Mobject.add_updater(
             self.distance_labels[0],
             distance_label_rotate_update
         )
@@ -2068,10 +2058,10 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
             line.generate_target()
             line.target.rotate(90 * DEGREES)
         self.play(
-            LaggedStart(FadeIn, ghost_lines),
-            LaggedStart(FadeIn, lines),
+            LaggedStartMap(FadeIn, ghost_lines),
+            LaggedStartMap(FadeIn, lines),
         )
-        self.play(LaggedStart(MoveToTarget, lines))
+        self.play(LaggedStartMap(MoveToTarget, lines))
         self.wait()
 
     def show_orbiting_planet(self):
@@ -2098,7 +2088,7 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
                 else:
                     line.set_stroke(WHITE, 1)
 
-        lines_update_animation = ContinualUpdate(
+        lines_update_animation = Mobject.add_updater(
             lines, update_lines
         )
 
@@ -2129,7 +2119,7 @@ class SimpleThinking(Scene):
         self.wait()
 
 
-class EndOfGeometryProofiness(GeometryProofLand):  #可以用#
+class EndOfGeometryProofiness(GeometryProofLand):
     def construct(self):
         geometry_word = self.get_geometry_proof_land_word()
         orbital_mechanics = TextMobject("Orbital Mechanics")
@@ -2139,7 +2129,7 @@ class EndOfGeometryProofiness(GeometryProofLand):  #可以用#
         underline.match_width(orbital_mechanics)
         underline.next_to(orbital_mechanics, DOWN, SMALL_BUFF)
 
-        self.play(LaggedStart(FadeOutAndShiftDown, geometry_word))  #向下慢慢淡出
+        self.play(LaggedStartMap(FadeOutAndShiftDown, geometry_word))
         self.play(FadeInFromDown(orbital_mechanics))
         self.play(ShowCreation(underline))
         self.wait()
@@ -2197,10 +2187,9 @@ class KeplersSecondLaw(AskAboutEllipses):
         orbit = self.orbit
         sun_point = self.sun.get_center()
 
-        start_prop = 0.9  #会进入死循环
+        start_prop = 0.9
         self.wait_until_proportion(start_prop)
         self.show_area_sweep()
-        # end_prop = 0
         end_prop = orbit.proportion
         arc = self.get_arc(start_prop, end_prop)
         radius = Line(sun_point, arc.points[0])
@@ -2380,7 +2369,7 @@ class NonEllipticalKeplersLaw(KeplersSecondLaw):
         arrow, arrow_update = self.get_force_arrow_and_update(
             comet
         )
-        alt_arrow_update = ContinualUpdate(
+        alt_arrow_update = Mobject.add_updater(
             arrow, lambda a: a.scale(
                 1.0 / a.get_length(),
                 about_point=a.get_start()
@@ -2475,7 +2464,7 @@ class AngularMomentumArgument(KeplersSecondLaw):
             ),
             ApplyMethod(
                 comet.move_to, comet_end,
-                rate_func=None,
+                rate_func=linear,
             ),
             run_time=2,
         )
@@ -2570,7 +2559,7 @@ class AngularMomentumArgument(KeplersSecondLaw):
 
         v_perp_delta_t = VGroup(v_perp_label.copy(), delta_t.copy())
         v_perp_delta_t.generate_target()
-        v_perp_delta_t.target.arrange_submobjects(RIGHT, buff=SMALL_BUFF)
+        v_perp_delta_t.target.arrange(RIGHT, buff=SMALL_BUFF)
         v_perp_delta_t.target.next_to(height, RIGHT, SMALL_BUFF)
         self.small_time_label.add(v_perp_delta_t[1])
 
@@ -2619,7 +2608,7 @@ class AngularMomentumArgument(KeplersSecondLaw):
             get_force_field_func((sun_center, -1))
         )
         vector_field.set_fill(opacity=0.8)
-        vector_field.sort_submobjects(
+        vector_field.sort(
             lambda p: -get_norm(p - sun_center)
         )
 
@@ -2659,12 +2648,12 @@ class AngularMomentumArgument(KeplersSecondLaw):
         self.wait()
         foreground = VGroup(*self.get_mobjects())
         self.play(
-            LaggedStart(GrowArrow, vector_field),
+            LaggedStartMap(GrowArrow, vector_field),
             Animation(foreground)
         )
         for x in range(3):
             self.play(
-                LaggedStart(
+                LaggedStartMap(
                     ApplyFunction, vector_field,
                     lambda mob: (lambda m: m.scale(1.1).set_fill(opacity=1), mob),
                     rate_func=there_and_back,
@@ -2715,7 +2704,7 @@ class HistoryOfAngularMomentum(TeacherStudentsScene):
         arrow = Arrow(ORIGIN, RIGHT)
 
         group = VGroup(am, arrow, k2l)
-        group.arrange_submobjects(RIGHT)
+        group.arrange(RIGHT)
         group.next_to(self.hold_up_spot, UL)
 
         k2l_image = ImageMobject("Kepler2ndLaw")
@@ -2779,7 +2768,7 @@ class FeynmanRecountingNewton(Scene):
         )
         self.wait()
         self.play(*[
-            FadeInAndShiftFromDirection(
+            FadeInFrom(
                 mob, direction=3 * LEFT
             )
             for mob in (principia, principia.rect)
@@ -2863,7 +2852,7 @@ class IntroduceShapeOfVelocities(AskAboutEllipses, MovingCameraScene):
 
         moving_vector, moving_vector_animation = self.get_velocity_vector_and_update()
 
-        self.play(LaggedStart(
+        self.play(LaggedStartMap(
             ShowCreation, vectors,
             lag_ratio=0.2,
             run_time=3,
@@ -2878,7 +2867,7 @@ class IntroduceShapeOfVelocities(AskAboutEllipses, MovingCameraScene):
         self.wait(10)
         vectors.set_fill(opacity=0.5)
         self.play(
-            LaggedStart(ShowCreation, vectors),
+            LaggedStartMap(ShowCreation, vectors),
             Animation(moving_vector)
         )
         self.wait(5)
@@ -2926,7 +2915,7 @@ class IntroduceShapeOfVelocities(AskAboutEllipses, MovingCameraScene):
                 frame.shift, frame_shift,
                 run_time=2,
             ),
-            LaggedStart(
+            LaggedStartMap(
                 MoveToTarget, vectors,
                 run_time=4,
             ),
@@ -2987,7 +2976,7 @@ class IntroduceShapeOfVelocities(AskAboutEllipses, MovingCameraScene):
             )
             Transform(vector, new_vector).update(1)
 
-        moving_vector_animation = ContinualUpdate(
+        moving_vector_animation = Mobject.add_updater(
             moving_vector, update_moving_vector
         )
         return moving_vector, moving_vector_animation
@@ -3135,7 +3124,7 @@ class ShowEqualAngleSlices(IntroduceShapeOfVelocities):
             *list(map(ShowCreation, lines))
         )
         self.play(*[
-            LaggedStart(
+            LaggedStartMap(
                 ApplyMethod, fader,
                 lambda m: (m.set_fill, {"opacity": 1}),
                 **kwargs
@@ -3188,14 +3177,14 @@ class ShowEqualAngleSlices(IntroduceShapeOfVelocities):
             Animation(foreground),
             frame.scale, 1.2,
         )
-        self.play(MoveAlongPath(comet, arc1, rate_func=None))
+        self.play(MoveAlongPath(comet, arc1, rate_func=linear))
         self.play(
             Write(words2),
             wedge2.set_fill, {"opacity": 1},
             Write(arrow2),
             Animation(foreground),
         )
-        self.play(MoveAlongPath(comet, arc2, rate_func=None, run_time=3))
+        self.play(MoveAlongPath(comet, arc2, rate_func=linear, run_time=3))
         self.wait()
 
         self.area_questions = VGroup(words1, words2)
@@ -3379,7 +3368,7 @@ class ShowEqualAngleSlices(IntroduceShapeOfVelocities):
             delta_t_numerator.scale, 1.5, {"about_edge": DOWN},
             delta_t_numerator.set_color, YELLOW
         )
-        self.play(CircleThenFadeAround(prop_exp[:-2]))
+        self.play(ShowCreationThenFadeAround(prop_exp[:-2]))
         self.play(
             delta_t_numerator.fade, 1,
             MoveToTarget(moving_R_squared),
@@ -3466,7 +3455,7 @@ class ShowEqualAngleSlices(IntroduceShapeOfVelocities):
         polygon.set_fill(BLUE_E, opacity=0.8)
         polygon.set_stroke(WHITE, 3)
 
-        self.play(CircleThenFadeAround(v1))
+        self.play(ShowCreationThenFadeAround(v1))
         self.play(
             MoveToTarget(v1),
             GrowFromCenter(root_dot),
@@ -3501,8 +3490,8 @@ class ShowEqualAngleSlices(IntroduceShapeOfVelocities):
         self.add(self.orbit)
         self.wait()
         self.play(
-            LaggedStart(ShowCreation, external_angle_lines),
-            LaggedStart(ShowCreation, external_angle_arcs),
+            LaggedStartMap(ShowCreation, external_angle_lines),
+            LaggedStartMap(ShowCreation, external_angle_arcs),
             Animation(difference_vectors),
         )
         self.add_foreground_mobjects(difference_vectors)
@@ -3563,7 +3552,7 @@ class PonderOverOffCenterDiagram(PiCreatureScene):
         words.next_to(rect.get_top(), DOWN)
 
         self.play(
-            LaggedStart(GrowFromCenter, velocity_diagram),
+            LaggedStartMap(GrowFromCenter, velocity_diagram),
             randy.change, "pondering",
             morty.change, "confused",
         )
@@ -3693,7 +3682,7 @@ class UseVelocityDiagramToDeduceCurve(ShowEqualAngleSlices):
         self.play(ApplyWave(ellipse))
         self.play(*list(map(GrowArrow, vectors)))
         self.play(
-            LaggedStart(
+            LaggedStartMap(
                 MoveToTarget, vectors,
                 lag_ratio=1,
                 run_time=2
@@ -3878,7 +3867,7 @@ class UseVelocityDiagramToDeduceCurve(ShowEqualAngleSlices):
         )
 
         self.play(
-            LaggedStart(MoveToTarget, vectors),
+            LaggedStartMap(MoveToTarget, vectors),
             highlighted_vector.scale, 0,
             {"about_point": root_dot.get_center()},
             Animation(highlighted_vector),
@@ -3889,7 +3878,7 @@ class UseVelocityDiagramToDeduceCurve(ShowEqualAngleSlices):
         )
         self.remove(vectors, highlighted_vector)
         self.play(
-            LaggedStart(ShowCreation, lines),
+            LaggedStartMap(ShowCreation, lines),
             ShowCreation(highlighted_line),
             Animation(highlighted_vector),
         )
@@ -4033,7 +4022,7 @@ class UseVelocityDiagramToDeduceCurve(ShowEqualAngleSlices):
 
         self.add(ghost_lines)
         self.play(
-            LaggedStart(
+            LaggedStartMap(
                 MoveToTarget, lines,
                 lag_ratio=0.1,
                 run_time=8,
@@ -4150,7 +4139,7 @@ class ShowSunVectorField(Scene):
             get_force_field_func((sun_center, -1))
         )
         vector_field.set_fill(opacity=0.8)
-        vector_field.sort_submobjects(
+        vector_field.sort(
             lambda p: -get_norm(p - sun_center)
         )
 
@@ -4160,7 +4149,7 @@ class ShowSunVectorField(Scene):
             vector.target.set_stroke(YELLOW, 0.5)
 
         for x in range(3):
-            self.play(LaggedStart(
+            self.play(LaggedStartMap(
                 MoveToTarget, vector_field,
                 rate_func=there_and_back,
                 lag_ratio=0.5,

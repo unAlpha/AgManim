@@ -76,7 +76,6 @@ def palyALL1(self,allParts):
     self.wait(15)
     self.play(FadeOutAndShiftDown(allParts))
 
-
 class WTI200501(Scene):
     def construct(self):
         allParts = imageObjAnd1Text(

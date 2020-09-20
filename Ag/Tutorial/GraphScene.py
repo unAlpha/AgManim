@@ -786,3 +786,5 @@ class PlotSinCos(GraphScene):
             ],
             run_time=2
         )
+
+

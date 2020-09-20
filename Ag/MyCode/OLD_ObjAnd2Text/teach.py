@@ -93,7 +93,6 @@ class Tech02(Scene):
             )
         palyALL1(self,allParts)
 
-
 class Tech03(Scene):
     def construct(self):
         allParts = imageObjAnd2Text(
