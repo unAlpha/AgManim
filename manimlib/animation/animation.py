@@ -121,6 +121,7 @@ class Animation(object):
         """
         self.interpolate(alpha)
     
+    # 对画的插值
     def interpolate_mobject(self, alpha):
         families = list(self.get_all_families_zipped())
         for i, mobs in enumerate(families):

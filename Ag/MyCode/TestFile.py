@@ -1,6 +1,7 @@
 from manimlib.imports import *
+from Ag.MyCode.debugTexPoints import debugPoints
+from Ag.MyCode.debugTexPoints import debugTeX
 import fractions
-from Ag.MyCode.lost_lecture import ShowWord
 
 class EaseOutBounceScene(Scene):
     CONFIG={
@@ -13,18 +14,18 @@ class EaseOutBounceScene(Scene):
             font="OpenSans",
             weight=BOLD,
             )
-        word = TextMobject("nothing")
+        word = TextMobject("Do you have anything anything",color=YELLOW)
         VGroup(cricle,text,word).arrange(DOWN)
         self.add(text)
-        self.play(
-            ShowWord(word),
-            run_time=3
-        )
+        self.wait(0.2)
+        self.play(ShowWord(*word))
+        self.wait(1)
         self.play(
             PassRectangleAbstract(cricle),
             Animation(cricle),
             rate_func=BounceEaseInOut().func
         )
+        self.wait()
         
 class RotateVector(Scene):
     def construct(self):

@@ -12,7 +12,7 @@ class WriteRandomScene(Scene):
 class FadeFromRandomScene(Scene):
     def construct(self):
         text = TextMobject("This is some text").set_width(FRAME_WIDTH-0.5)
-        self.play(FadeInFromRandom(text[0]))
+        self.play(FadeInFromRandomA(text[0]))
         self.wait()
         self.play(FadeOutFromRandom(text[0]))
         self.wait(3)

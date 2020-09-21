@@ -7,7 +7,9 @@ from manimlib.mobject.types.vectorized_mobject import VMobject
 from manimlib.utils.bezier import interpolate
 from manimlib.utils.rate_functions import there_and_back
 from manimlib.constants import OUT
-
+from manimlib.mobject.svg.tex_mobject import SingleStringTexMobject
+from manimlib.utils.rate_functions import linear
+from manimlib.utils.config_ops import digest_config
 
 DEFAULT_FADE_LAG_RATIO = 0
 
@@ -25,7 +27,6 @@ class FadeOut(Transform):
         super().clean_up_from_scene(scene)
         self.interpolate(0)
 
-
 class FadeIn(Transform):
     CONFIG = {
         "lag_ratio": DEFAULT_FADE_LAG_RATIO,
@@ -41,7 +42,6 @@ class FadeIn(Transform):
             start.set_stroke(width=0)
             start.set_fill(opacity=0)
         return start
-
 
 class FadeInFrom(Transform):
     CONFIG = {
@@ -117,6 +117,35 @@ class FadeOutFromAngle(Transform):
         target.fade(1)
         return target
 
+# Ag add 2020-09-21
+class ShowWord(Animation):
+    CONFIG = {
+        "time_per_char": 0.06,
+        "rate_func": linear,
+    }
+
+    def __init__(self, word, **kwargs):
+        assert(isinstance(word, SingleStringTexMobject))
+        digest_config(self, kwargs)
+        run_time = kwargs.pop(
+            "run_time",
+            self.time_per_char * len(word)
+        )
+        self.stroke_width = word.get_stroke_width()
+        Animation.__init__(self, word, run_time=run_time, **kwargs)
+
+    def interpolate_mobject(self, alpha):
+        word = self.mobject
+        stroke_width = self.stroke_width
+        count = int(alpha * (len(word)-2))+1
+        remainder = (alpha * len(word)) % 1
+        word[:count].set_fill(opacity=1)
+        word[:count].set_stroke(width=stroke_width)
+        if count < len(word):
+            word[count].set_fill(opacity=remainder)
+            word[count].set_opacity(1)
+            word[count].set_stroke(width=remainder * stroke_width)
+            word[count + 1:].set_opacity(0)
 
 class FadeInFromDown(FadeInFrom):
     """
@@ -127,7 +156,6 @@ class FadeInFromDown(FadeInFrom):
         "direction": DOWN,
         "lag_ratio": DEFAULT_ANIMATION_LAG_RATIO,
     }
-
 
 class FadeOutAndShift(FadeOut):
     CONFIG = {
@@ -144,7 +172,6 @@ class FadeOutAndShift(FadeOut):
         target.shift(self.direction)
         return target
 
-
 class FadeOutAndShiftDown(FadeOutAndShift):
     """
     Identical to FadeOutAndShift, just with a name that
@@ -153,7 +180,6 @@ class FadeOutAndShiftDown(FadeOutAndShift):
     CONFIG = {
         "direction": DOWN,
     }
-
 
 class FadeInFromPoint(FadeIn):
     def __init__(self, mobject, point, **kwargs):
@@ -165,7 +191,6 @@ class FadeInFromPoint(FadeIn):
         start.scale(0)
         start.move_to(self.point)
         return start
-
 
 class FadeInFromLarge(FadeIn):
     CONFIG = {
@@ -181,7 +206,6 @@ class FadeInFromLarge(FadeIn):
         start = super().create_starting_mobject()
         start.scale(self.scale_factor)
         return start
-
 
 class VFadeIn(Animation):
     """
@@ -199,7 +223,6 @@ class VFadeIn(Animation):
             opacity=interpolate(0, start.get_fill_opacity(), alpha)
         )
 
-
 class VFadeOut(VFadeIn):
     CONFIG = {
         "remover": True
@@ -207,7 +230,6 @@ class VFadeOut(VFadeIn):
 
     def interpolate_submobject(self, submob, start, alpha):
         super().interpolate_submobject(submob, start, 1 - alpha)
-
 
 class VFadeInThenOut(VFadeIn):
     CONFIG = {
