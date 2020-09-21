@@ -131,21 +131,28 @@ class ShowWord(Animation):
             "run_time",
             self.time_per_char * len(word)
         )
-        self.stroke_width = word.get_stroke_width()
         Animation.__init__(self, word, run_time=run_time, **kwargs)
 
     def interpolate_mobject(self, alpha):
         word = self.mobject
-        stroke_width = self.stroke_width
-        count = int(alpha * (len(word)-2))+1
+        count = int(alpha * len(word))
         remainder = (alpha * len(word)) % 1
-        word[:count].set_fill(opacity=1)
-        word[:count].set_stroke(width=stroke_width)
+        word[:count].set_style(
+            stroke_opacity=1,
+            fill_opacity=1,
+            background_stroke_opacity=1,
+            )
         if count < len(word):
-            word[count].set_fill(opacity=remainder)
-            word[count].set_opacity(1)
-            word[count].set_stroke(width=remainder * stroke_width)
-            word[count + 1:].set_opacity(0)
+            word[count].set_style(
+                stroke_opacity=remainder,
+                fill_opacity=remainder,
+                background_stroke_opacity=remainder,
+                )
+            word[count+1:].set_style(
+                stroke_opacity=0,
+                fill_opacity=0,
+                background_stroke_opacity=0,
+                )
 
 class FadeInFromDown(FadeInFrom):
     """

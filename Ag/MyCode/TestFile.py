@@ -14,11 +14,13 @@ class EaseOutBounceScene(Scene):
             font="OpenSans",
             weight=BOLD,
             )
-        word = TextMobject("Do you have anything anything",color=YELLOW)
+        word = TextMobject("Do you have anything anything anything",color=YELLOW)
+        wordcopy = word.copy()
         VGroup(cricle,text,word).arrange(DOWN)
         self.add(text)
         self.wait(0.2)
         self.play(ShowWord(*word))
+        self.add(wordcopy.next_to(word,DOWN))
         self.wait(1)
         self.play(
             PassRectangleAbstract(cricle),
