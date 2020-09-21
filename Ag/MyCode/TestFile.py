@@ -1,5 +1,6 @@
 from manimlib.imports import *
 import fractions
+from Ag.MyCode.lost_lecture import ShowWord
 
 class EaseOutBounceScene(Scene):
     CONFIG={
@@ -7,6 +8,18 @@ class EaseOutBounceScene(Scene):
     }
     def construct(self):
         cricle = Circle()
+        text = Text(
+            "There is no nothing import",
+            font="OpenSans",
+            weight=BOLD,
+            )
+        word = TextMobject("nothing")
+        VGroup(cricle,text,word).arrange(DOWN)
+        self.add(text)
+        self.play(
+            ShowWord(word),
+            run_time=3
+        )
         self.play(
             PassRectangleAbstract(cricle),
             Animation(cricle),
