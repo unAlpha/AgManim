@@ -75,7 +75,7 @@ class SunAnimation(Group):
             dtype=self.sun.pixel_array.dtype
         )
 
-class ShowWord(Animation):
+class ShowWordOneByeOne(Animation):
     CONFIG = {
         "time_per_char": 0.06,
         "rate_func": linear,
@@ -93,16 +93,24 @@ class ShowWord(Animation):
 
     def interpolate_mobject(self, alpha):
         word = self.mobject
-        stroke_width = self.stroke_width
         count = int(alpha * len(word))
         remainder = (alpha * len(word)) % 1
-        word[:count].set_fill(opacity=1)
-        word[:count].set_stroke(width=stroke_width)
+        word[:count].set_style(
+            stroke_opacity=1,
+            fill_opacity=1,
+            background_stroke_opacity=1,
+            )
         if count < len(word):
-            word[count].set_fill(opacity=remainder)
-            word[count].set_stroke(width=remainder * stroke_width)
-            word[count + 1:].set_fill(opacity=0)
-            word[count + 1:].set_stroke(width=0)
+            word[count].set_style(
+                stroke_opacity=remainder,
+                fill_opacity=remainder,
+                background_stroke_opacity=remainder,
+                )
+            word[count+1:].set_style(
+                stroke_opacity=0,
+                fill_opacity=0,
+                background_stroke_opacity=0,
+                )
 
 # Animations
 
@@ -969,6 +977,7 @@ class FeynmanSaysItBest(TeacherStudentsScene):
         )
         self.wait(3)
 
+# 费曼讲话字幕显示
 class FeynmanElementaryQuote(Scene):
     CONFIG={
         "camera_config": {"background_color": GRAY},
@@ -1013,7 +1022,7 @@ class FeynmanElementaryQuote(Scene):
         for word in quote:
             if word is very:
                 self.add_foreground_mobjects(nothing)
-                self.play(ShowWord(nothing))
+                self.play(ShowWordOneByeOne(nothing))
                 self.wait(0.2)
                 nothing.sort_submobjects(lambda p: -p[0])
                 self.play(LaggedStartMap(
@@ -1024,8 +1033,8 @@ class FeynmanElementaryQuote(Scene):
             back_word = word.copy().set_stroke(BLACK, 5)
             self.add_foreground_mobjects(back_word, word)
             self.play(
-                ShowWord(back_word),
-                ShowWord(word),
+                ShowWordOneByeOne(back_word),
+                ShowWordOneByeOne(word),
             )
             self.wait(0.005 * len(word)**1.5)
         self.wait()
@@ -1041,7 +1050,7 @@ class FeynmanElementaryQuote(Scene):
         images.to_edge(DOWN, buff=LARGE_BUFF)
         images[1].move_to(images[0])
         crosses = VGroup(*list(map(Cross, images)))
-        crosses.set_stroke(color=RED, width=20)
+        crosses.set_stroke(color=RED, width=10)
 
         for image, cross in zip(images, crosses):
             image.rect = SurroundingRectangle(
@@ -1067,11 +1076,12 @@ class FeynmanElementaryQuote(Scene):
         self.play(ShowCreation(crosses[1]))
         self.wait()
 
+# 费曼演讲图展示
 class LostLecturePicture(TODOStub):
     CONFIG = {"camera_config": {"background_opacity": 1}}
 
     def construct(self):
-        picture = ImageMobject("Feynman_teaching")
+        picture = ImageMobject("Lost_lecture/Feynman_teaching")
         picture.set_height(FRAME_WIDTH)
         picture.to_corner(UL, buff=0)
         picture.fade(0.5)
@@ -1084,7 +1094,7 @@ class LostLecturePicture(TODOStub):
             rate_func=bezier([0, 0, 1, 1])
         )
 
-
+# pi讲话
 class AskAboutInfiniteIntelligence(TeacherStudentsScene):
     def construct(self):
         self.student_says(
@@ -1104,7 +1114,7 @@ class AskAboutInfiniteIntelligence(TeacherStudentsScene):
         self.look_at(self.screen)
         self.wait(5)
 
-
+# 项点列表展示
 class TableOfContents(Scene):
     def construct(self):
         items = VGroup(
@@ -1112,7 +1122,7 @@ class TableOfContents(Scene):
             TextMobject("Kepler's 2nd law"),
             TextMobject("The shape of velocities"),
         )
-        items.arrange_submobjects(  # 安排子项
+        items.arrange_submobjects(
             DOWN, buff=LARGE_BUFF, aligned_edge=LEFT
         )
         items.to_edge(LEFT, buff=1.5)
@@ -1125,7 +1135,7 @@ class TableOfContents(Scene):
         scale_factor = 1.2
 
         self.add(title)
-        self.play(LaggedStart(  #对Group 使用
+        self.play(LaggedStartMap(
             FadeIn, items,
             run_time=1,
             lag_ratio=0.7,
@@ -1142,7 +1152,7 @@ class TableOfContents(Scene):
             )
             self.wait()
 
-
+# 画个椭圆
 class DrawEllipseOverlay(Scene):
     def construct(self):
         ellipse = Circle()
@@ -1151,23 +1161,18 @@ class DrawEllipseOverlay(Scene):
         ellipse.shift(1.05 * UP + 0.48 * LEFT)
         ellipse.set_stroke(RED, 8)
 
-        image = ImageMobject(
-            os.path.join(
-                get_image_output_directory(self.__class__),
-                "HeldUpEllipse.jpg"
-            )
-        )
+        image = ImageMobject("Lost_lecture/HeldUpEllipse")
         image.set_height(FRAME_HEIGHT)
 
-        # self.add(image)
+        self.add(image)
         self.play(ShowCreation(ellipse))
         self.wait()
         self.play(FadeOut(ellipse))
 
-
+# 椭圆及生成线
 class ShowEllipseDefiningProperty(Scene):
     CONFIG = {
-        "camera_config": {"background_opacity": 1},
+        "camera_config": {"background_color": GRAY},
         "ellipse_color": BLUE,
         "a": 4.0,
         "b": 3.0,
@@ -1197,43 +1202,32 @@ class ShowEllipseDefiningProperty(Scene):
                 color=LIGHT_GREY,
                 fill_opacity=0.8,
                 height=0.5,
-            ).move_to(point, DR).shift(0.05 * RIGHT)
+            ).rotate(-PI/10).move_to(point, DR)
             for point in self.get_foci()
         ])  # 导入push_pin.svg图，然后定好位置
 
         dot = Dot()
+        dotTest = Dot(color=RED).scale(2)
         dot.scale(0.5)
         position_tracker = ValueTracker(0.125)  # 位置跟踪器
-        dot_update = ContinualUpdate(
-            dot,
-            lambda d: d.move_to(
-                self.ellipse.point_from_proportion(  #获取对象上的点坐标
-                    position_tracker.get_value() % 1
-                )
-            )
-        )
-        position_tracker_wander = ContinualMovement(  #在对象上移动
-            position_tracker, rate=0.05,  # rate 是移动的快慢
-        )
+        dot.add_updater(lambda d: d.move_to(
+                self.ellipse.point_from_proportion(
+                    position_tracker.get_value() % 1)))
 
-        lines, lines_update_animation = self.get_focal_lines_and_update(
-            self.get_foci, dot
-        )
+        always_shift(position_tracker, rate=0.05)
+        dotTest.add_updater(lambda mob: mob.move_to(dot))
+        lines= self.get_focal_lines_and_update(self.get_foci, dot)
 
-        self.add_foreground_mobjects(push_pins, dot)  # 添加前景对象
-        self.add(dot_update)
-        self.play(LaggedStart(   # push_pins的动画
-            FadeInAndShiftFromDirection, push_pins,
-            lambda m: (m, 2 * UP + LEFT),
+        self.add_foreground_mobjects(push_pins)  # 添加前景对象(不能用于add_updater的对象)
+        
+        self.play(
+            LaggedStart(*[FadeInFrom(mob, 2 * UP + LEFT) for mob in push_pins]),
             run_time=1,
-            lag_ratio=0.75  # 滞后率
-        ))
-
+            lag_ratio=0.75)
+        self.add(dot)
         self.play(ShowCreation(lines))
-        self.add(lines_update_animation)
-        self.add(position_tracker_wander)
-        self.wait(2)
-
+        self.add(position_tracker)
+        self.wait(1)
         self.position_tracker = position_tracker
         self.focal_lines = lines
 
@@ -1241,38 +1235,23 @@ class ShowEllipseDefiningProperty(Scene):
         lines = self.focal_lines
         colors = [YELLOW, PINK]
 
-        distance_labels, distance_labels_animation = \
-            self.get_distance_labels_and_update(lines, colors)
-
-        sum_expression, numbers, number_updates = \
-            self.get_sum_expression_and_update(
-                lines, colors, lambda mob: mob.to_corner(UR)
-            )
-
-        sum_expression_fading_rect = BackgroundRectangle(
-            sum_expression, fill_opacity=0
-        )
+        distance_labels = self.get_distance_labels_and_update(lines, colors)
+        sum_expression, numbers = self.get_sum_expression_and_update(lines, colors, lambda mob: mob.to_corner(UR))
 
         sum_rect = SurroundingRectangle(numbers[-1])
         constant_words = TextMobject("Stays constant")
         constant_words.next_to(sum_rect, DOWN, aligned_edge=RIGHT)
         VGroup(sum_rect, constant_words).set_color(BLUE)
 
-        self.add(distance_labels_animation)  # 添加线上的数字
-        self.add(*number_updates)  # 添加右上角的数字
-        # self.add(sum_expression)  # 总和表达
-        self.add_foreground_mobjects(sum_expression_fading_rect)  # 添加前景对象 (就是遮挡)
-        self.play(  # 开始移动
-            VFadeIn(distance_labels),
-            FadeOut(sum_expression_fading_rect),
-        )
-        self.remove_foreground_mobject(sum_expression_fading_rect)
-        self.wait(7)
+        self.play(Write(distance_labels))      # 添加线上的数字
+        self.add(sum_expression)                # 总和表达
+        self.add(*numbers)                      # 添加右上角的数字
+        self.wait(5)
         self.play(
             ShowCreation(sum_rect),
             Write(constant_words)
         )
-        self.wait(7)
+        self.wait(1)
         self.play(FadeOut(sum_rect), FadeOut(constant_words))
 
         self.sum_expression = sum_expression
@@ -1302,7 +1281,7 @@ class ShowEllipseDefiningProperty(Scene):
         )
         translation.to_edge(RIGHT)
         translation.shift(UP)
-        sun = ImageMobject("sun", height=0.5)
+        sun = ImageMobject("Lost_lecture/sun", height=0.5)
         sun.move_to(foci[0])
         sun_animation = SunAnimation(sun)
 
@@ -1360,10 +1339,7 @@ class ShowEllipseDefiningProperty(Scene):
         b = ellipse.get_height() / 2
         c = np.sqrt(a**2 - b**2)
         center = ellipse.get_center()
-        return [
-            center + c * RIGHT,
-            center + c * LEFT,
-        ]
+        return [center+c*RIGHT, center+c*LEFT]
 
     def get_focal_lines_and_update(self, get_foci, focal_sum_point):
         lines = VGroup(Line(LEFT, RIGHT), Line(LEFT, RIGHT))
@@ -1376,10 +1352,10 @@ class ShowEllipseDefiningProperty(Scene):
                     focus, focal_sum_point.get_center()
                 )
             lines[1].rotate(np.pi)
-        lines_update_animation = ContinualUpdate(
-            lines, update_lines
-        )
-        return lines, lines_update_animation
+
+        lines.add_updater(update_lines)
+        
+        return lines
 
     def get_distance_labels_and_update(self, lines, colors):
         distance_labels = VGroup(
@@ -1409,46 +1385,36 @@ class ShowEllipseDefiningProperty(Scene):
                 VGroup(new_decimal, line).rotate(
                     -angle, about_point=ORIGIN
                 )
-                label.submobjects = list(new_decimal.submobjects)
+                label.become(new_decimal)
 
-        distance_labels_animation = ContinualUpdate(
-            distance_labels, update_distance_labels
-        )
+        distance_labels.add_updater(update_distance_labels)
 
-        return distance_labels, distance_labels_animation
+        return distance_labels
 
     def get_sum_expression_and_update(self, lines, colors, sum_position_func):
         sum_expression = TexMobject("0.00", "+", "0.00", "=", "0.00")
         sum_position_func(sum_expression)
         number_refs = sum_expression.get_parts_by_tex("0.00")
-        number_refs.set_fill(opacity=0)
+        number_refs.set_opacity(0)
         numbers = VGroup(*[DecimalNumber(0) for ref in number_refs])
         for number, color in zip(numbers, colors):
             number.set_color(color)
 
-        # Not the most elegant...  不是最好的
-        number_updates = [
-            ContinualChangingDecimal(
-                numbers[0], lambda a: lines[0].get_length(),
-                position_update_func=lambda m: m.move_to(
-                    number_refs[1], LEFT
-                )
-            ),
-            ContinualChangingDecimal(
-                numbers[1], lambda a: lines[1].get_length(),
-                position_update_func=lambda m: m.move_to(
-                    number_refs[0], LEFT
-                )
-            ),
-            ContinualChangingDecimal(
-                numbers[2], lambda a: sum(map(Line.get_length, lines)),
-                position_update_func=lambda m: m.move_to(
-                    number_refs[2], LEFT
-                )
-            ),
-        ]
+        def fun_num0(numMob):
+            numMob.set_value(lines[0].get_length())
+            numMob.move_to(number_refs[1])
+        def fun_num1(numMob):
+            numMob.set_value(lines[1].get_length())
+            numMob.move_to(number_refs[0])  
+        def fun_num2(numMob):
+            numMob.set_value(sum(map(Line.get_length, lines)))
+            numMob.move_to(number_refs[2])  
 
-        return sum_expression, numbers, number_updates
+        numbers[0].add_updater(fun_num0)
+        numbers[1].add_updater(fun_num1)
+        numbers[2].add_updater(fun_num2)
+
+        return sum_expression, numbers
 
 
 class GeometryProofLand(Scene):
@@ -1463,36 +1429,35 @@ class GeometryProofLand(Scene):
 
     def construct(self):
         word = self.get_geometry_proof_land_word()
-        word_outlines = word.deepcopy()  # 深度复制
+        # word的外轮空
+        word_outlines = word.deepcopy()
         word_outlines.set_fill(opacity=0)
         word_outlines.set_stroke(WHITE, 1)
         colors = list(self.colors)
         random.shuffle(colors)
         word_outlines.set_color_by_gradient(*colors)
-        word_outlines.set_stroke(width=5)
-        self.add(word_outlines)
+        word_outlines.set_stroke(width=3)
 
+        # word的填充色
         circles = VGroup()
-        for letter in word:
+        # print(len(word[0]),len(*word),len(word))
+        for letter in word[0]:
             circle = Circle()
-            # circle = letter.copy()
             circle.replace(letter, dim_to_match=1)
-            circle.scale(3)
             circle.set_stroke(WHITE, 0)
+            circle.scale(3)
             circle.set_fill(letter.get_color(), 0)
             circles.add(circle)
             circle.target = letter
 
         self.play(
-            LaggedStart(MoveToTarget, circles),
-            run_time=2
-        )
-        self.add(word_outlines, circles)
-        self.play(LaggedStart(
-            FadeIn, word_outlines,
+            LaggedStartMap(MoveToTarget, circles),
+            run_time=2,
+            )
+        self.play(
+            LaggedStartMap(Write, word_outlines[0], lag_ratio=0.1, rate_func=there_and_back),
             run_time=3,
-            rate_func=there_and_back,
-        ), Animation(circles))
+            )
         self.wait()
 
     def get_geometry_proof_land_word(self):  # 返回一个最终效果

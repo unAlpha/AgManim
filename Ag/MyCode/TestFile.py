@@ -18,10 +18,12 @@ class EaseOutBounceScene(Scene):
         wordcopy = word.copy()
         VGroup(cricle,text,word).arrange(DOWN)
         self.add(text)
-        self.wait(0.2)
+        self.wait(1)
         self.play(ShowWord(*word))
+        self.wait(1)
         self.add(wordcopy.next_to(word,DOWN))
         self.wait(1)
+        debugTeX(self,wordcopy[0])
         self.play(
             PassRectangleAbstract(cricle),
             Animation(cricle),
