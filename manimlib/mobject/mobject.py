@@ -261,10 +261,11 @@ class Mobject(Container):
         )
         return self
 
+    # 翻转
     def flip(self, axis=UP, **kwargs):
         return self.rotate(TAU / 2, axis, **kwargs)
 
-    # 伸展
+    # 拉伸变换
     def stretch(self, factor, dim, **kwargs):
         def func(points):
             points[:, dim] *= factor

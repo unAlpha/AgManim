@@ -204,10 +204,11 @@ class PieChart(VMobject):
             color = arc_color,
             stroke_width = self.stroke,
         )
+        # 很有启示
         self.start_per += percentage
         return arc
 
-    def craet_arcs(self, *args):
+    def craet_arcs(self, args):
         arc_group = VGroup()
         for per, color, name in args:
             arc_group.add(self.create_arc(per, color))
@@ -218,13 +219,13 @@ class PieChart(VMobject):
         per_text = Text(
             str(per)+"%", 
             font ='SimSun',
-            size = 0.6,
+            size = 1,
         )
 
         name_text = Text(
             name, 
             font ='SimSun',
-            size = 0.6,
+            size = 1,
         )
 
         if self.legend_style == "Dot":
@@ -241,7 +242,7 @@ class PieChart(VMobject):
         per_text.next_to(dot_color, LEFT)
         return VGroup(dot_color, name_text, per_text)
 
-    def create_legends(self, *args):
+    def create_legends(self, args):
         legend_group = VGroup()
         for per, dot, name in args:
             legend_group.add(
@@ -284,8 +285,8 @@ class PieChartScene(Scene):
             (5, GOLD, "河南"),
         ]
         pie_chart = PieChart()
-        pc_arcs = pie_chart.craet_arcs(*pc_data)
-        pc_legends = pie_chart.create_legends(*pc_data)
+        pc_arcs = pie_chart.craet_arcs(pc_data)
+        pc_legends = pie_chart.create_legends(pc_data)
         VGroup(pc_arcs,pc_legends).arrange(RIGHT, buff=LARGE_BUFF*2)
             
         self.play(
@@ -369,7 +370,7 @@ class YYaxis(GraphScene):
 
     # 坐标到点
     def y2_coords_to_point(self, x, y2):
-        assert(hasattr(self, "x_axis") and hasattr(self, "y_axis"))
+        assert(hasattr(self, "x_axis") and hasattr(self, "y2_axis"))
         result = self.x_axis.number_to_point(x)[0] * RIGHT
         result += self.y2_axis.number_to_point(y2)[1] * UP
         return result
@@ -379,8 +380,7 @@ class YYaxis(GraphScene):
         color=None,
         x_min=None,
         x_max=None,
-        **kwargs
-    ):
+        **kwargs):
         if color is None:
             color = next(self.default_graph_colors_cycle)
         if x_min is None:
@@ -398,8 +398,7 @@ class YYaxis(GraphScene):
         graph = ParametricFunction(
             parameterized_function,
             color=color,
-            **kwargs
-        )
+            **kwargs)
         graph.underlying_function = func
         return graph
 

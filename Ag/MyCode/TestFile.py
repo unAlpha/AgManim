@@ -3,6 +3,25 @@ from Ag.MyCode.debugTexPoints import debugPoints
 from Ag.MyCode.debugTexPoints import debugTeX
 import fractions
 
+class AddToBackScene(Scene):
+    def construct(self):
+        arrow = Arrow(
+            LEFT,RIGHT
+            ,buff=SMALL_BUFF
+        ).scale(3)
+        arrow1 = arrow.copy()
+        arrow2 = arrow.add_to_back(arrow.copy().set_stroke(RED, 5))
+        arrow3 = arrow1.copy().add(Dot()).set_stroke(RED, 5).next_to(DOWN,direction=ORIGIN)
+        arrowVG = VGroup(
+            arrow1,
+            arrow2,
+            arrow3).arrange(DOWN)
+        self.add(arrowVG)
+        self.play(LaggedStartMap(
+            ShowPassingFlash, arrow1.copy().set_stroke(YELLOW, 10)
+        ))
+        self.wait()
+
 class EaseOutBounceScene(Scene):
     CONFIG={
         "camera_config": {"background_color": GRAY},
@@ -16,12 +35,13 @@ class EaseOutBounceScene(Scene):
             )
         word = TextMobject("Do you have anything anything anything",color=YELLOW)
         wordcopy = word.copy()
-        VGroup(cricle,text,word).arrange(DOWN)
+        VGroup(cricle,text,word,wordcopy).arrange(DOWN)
         self.add(text)
         self.wait(1)
-        self.play(ShowWord(*word))
-        self.wait(1)
-        self.add(wordcopy.next_to(word,DOWN))
+        self.play(
+            ShowWord(*word),
+            LaggedStartMap(FadeIn,wordcopy[0],lag_ratio=1),
+        )
         self.wait(1)
         debugTeX(self,wordcopy[0])
         self.play(

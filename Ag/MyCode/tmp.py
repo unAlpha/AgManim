@@ -1,29 +1,23 @@
-import time
+# 1. 请写出求巴塞尔问题近似解的python代码
+# （注：巴塞尔问题不了解是什么可以百度，但是请不要试图抄网上的答案）
 
-d = 2  # 计算位数
-m1 = 1  # 小方块质量
-m2 = 10 ** d  # 大方块质量
-v1 = 0  # 小方块初速度
-v2 = -1  # 大方块初速度，负号表示向左
-num = 0  # 碰撞计数
+import math
 
-t1 = time.time()
-while True:
-    # 第一种情况：方块相互碰撞，根据公式计算碰撞后方块速度
-    v1_ = (v1*(m1-m2)+2*m2*v2)/(m1+m2)
-    v2_ = (v2*(m2-m1)+2*m1*v1)/(m1+m2)
-    num += 1
-    # 第二种情况：小方块速度向左时，必定撞墙
-    if v1_ < 0:
-        v1_ = -v1_  # 撞墙后方向取反
-        num += 1
-    # 当大小方块都向右滑动且小方块慢时，不会再发生碰撞
-    if v1_ >= 0 and v2_ >= 0 and v1_ < v2_:
-        break
-    # 获得下一次碰撞的速度
-    v1 = v1_
-    v2 = v2_
-t2 = time.time()
+def TheBaselProblem(N):
+    BP_num = 0
+    for i in range(1,N+1):
+        BP_num+=1/(i*i)
+    return BP_num
 
-print('碰撞次数：', num)
-print('计算用时%f秒' % (t2-t1))
+if __name__ == '__main__':
+    N = int(1e6)
+    BP_value = TheBaselProblem(N)
+    print(
+        "巴塞尔问题近似解:%s\n近似解与实值误差:%s"
+        %(BP_value,math.pi*math.pi/6-BP_value)
+        )
+
+
+# 2. sqrt(1+2*sqrt(1+3*sqrt(1+4*sqrt(1+...))))的值等于? 
+# （提示：第二题可以使用python，也可以手算，给出结果即可）
+# 答案为：3

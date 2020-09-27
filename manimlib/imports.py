@@ -114,3 +114,4 @@ from colour import Color
 
 # Ag
 from manimlib.animation.random import *
+from manimlib.mobject.svg.code_mobject import *

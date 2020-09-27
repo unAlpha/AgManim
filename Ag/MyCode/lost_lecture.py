@@ -1416,9 +1416,8 @@ class ShowEllipseDefiningProperty(Scene):
 
         return sum_expression, numbers
 
-
-class GeometryProofLand(Scene):
 # 孤形字样 效果爆炸
+class GeometryProofLand(Scene):
     CONFIG = {
         "colors": [
             PINK, RED, YELLOW, GREEN, GREEN_A, BLUE,
@@ -1460,7 +1459,7 @@ class GeometryProofLand(Scene):
             )
         self.wait()
 
-    def get_geometry_proof_land_word(self):  # 返回一个最终效果
+    def get_geometry_proof_land_word(self):
         word = TextMobject(self.text)
         word.rotate(-90 * DEGREES)
         word.scale(0.25)
@@ -1486,10 +1485,10 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
         self.setup_ellipse()
         self.hypothesize_foci()
         self.setup_and_show_focal_sum()
-        self.show_circle_radius()
-        self.limit_to_just_one_line()
-        self.look_at_perpendicular_bisector()
-        self.show_orbiting_planet()
+        # self.show_circle_radius()
+        # self.limit_to_just_one_line()
+        # self.look_at_perpendicular_bisector()
+        # self.show_orbiting_planet()
 
     def setup_ellipse(self):
         circle = self.circle = self.get_circle()
@@ -1504,7 +1503,7 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
 
         self.add(ghost_lines, circle, lines, ep_dot)
         self.play(
-            LaggedStart(MoveToTarget, lines),
+            LaggedStartMap(MoveToTarget, lines),
             Animation(ep_dot),
         )
         self.play(ShowCreation(ellipse))
@@ -1538,7 +1537,7 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
                 buff=SMALL_BUFF
             )
             arrow.match_color(dot)
-            arrow.add_to_back(arrow.copy().set_stroke(BLACK, 5))
+            arrow.add_to_back(arrow.copy().set_stroke(RED, 5))
             arrows.add(arrow)
 
         labels_target = labels.copy()
@@ -1555,7 +1554,7 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
             FadeInFromDown(labels[1]),
             GrowArrow(arrows[1]),
         )
-        self.play(LaggedStart(
+        self.play(LaggedStartMap(
             ShowPassingFlash, ghost_lines_copy
         ))
         self.wait()
@@ -1591,21 +1590,14 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
         def get_foci():
             return list(map(Mobject.get_center, dots))
 
-        focal_lines, focal_lines_update_animation = \
-            self.get_focal_lines_and_update(get_foci, focal_sum_point)
-        distance_labels, distance_labels_update_animation = \
-            self.get_distance_labels_and_update(focal_lines, colors)
-        sum_expression, numbers, number_updates = \
-            self.get_sum_expression_and_update(
+        focal_lines = self.get_focal_lines_and_update(get_foci, focal_sum_point)
+        distance_labels = self.get_distance_labels_and_update(focal_lines, colors)
+        sum_expression, numbers = self.get_sum_expression_and_update(
                 focal_lines, colors,
                 lambda mob: mob.to_edge(RIGHT).shift(UP)
             )
 
-        to_add = self.focal_sum_things_to_add = [
-            focal_lines_update_animation,
-            distance_labels_update_animation,
-            sum_expression,
-        ] + list(number_updates)
+        to_add = self.focal_sum_things_to_add = [sum_expression] + list(numbers)
 
         self.play(
             ShowCreation(focal_lines),
@@ -1635,11 +1627,11 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
         ])))
 
         self.set_variables_as_attrs(
-            focal_lines, focal_lines_update_animation,
+            focal_lines,
             focal_sum_point,
-            distance_labels, distance_labels_update_animation,
+            distance_labels,
             sum_expression,
-            numbers, number_updates
+            numbers
         )
 
     def show_circle_radius(self):
@@ -2054,7 +2046,7 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
         self.add_foreground_mobjects(planet)
         self.wait(12)
 
-
+# pi惊讶动作
 class Enthusiast(Scene):
     def construct(self):
         randy = Randolph(color=BLUE_C)
@@ -2063,7 +2055,7 @@ class Enthusiast(Scene):
         self.play(Blink(randy))
         self.wait()
 
-
+# pi思考动作
 class SimpleThinking(Scene):
     def construct(self):
         randy = Randolph(color=BLUE_C)
@@ -2075,8 +2067,8 @@ class SimpleThinking(Scene):
         self.play(Blink(randy))
         self.wait()
 
-
-class EndOfGeometryProofiness(GeometryProofLand):  #可以用#
+# match系列应用
+class EndOfGeometryProofiness(GeometryProofLand):
     def construct(self):
         geometry_word = self.get_geometry_proof_land_word()
         orbital_mechanics = TextMobject("Orbital Mechanics")
@@ -2086,7 +2078,7 @@ class EndOfGeometryProofiness(GeometryProofLand):  #可以用#
         underline.match_width(orbital_mechanics)
         underline.next_to(orbital_mechanics, DOWN, SMALL_BUFF)
 
-        self.play(LaggedStart(FadeOutAndShiftDown, geometry_word))  #向下慢慢淡出
+        self.play(LaggedStartMap(FadeOutAndShiftDown, geometry_word[0]))  #向下慢慢淡出
         self.play(FadeInFromDown(orbital_mechanics))
         self.play(ShowCreation(underline))
         self.wait()

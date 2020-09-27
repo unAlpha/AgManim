@@ -143,8 +143,12 @@ class GraphScene(Scene):
         self.default_graph_colors = it.cycle(self.default_graph_colors)
 
         if self.add_coordinate_grid:
-            self.lines_x_axis = self.get_vertical_lines_to_axis(num_lines=len(np.arange(self.x_min, self.x_max, self.x_tick_frequency))+1)
-            self.lines_y_axis = self.get_horizontal_lines_to_axis(num_lines=len(np.arange(self.y_min, self.y_max, self.y_tick_frequency))+1)
+            self.lines_x_axis = self.get_vertical_lines_to_axis(
+                num_lines=len(np.arange(self.x_min, self.x_max, self.x_tick_frequency))+1
+                )
+            self.lines_y_axis = self.get_horizontal_lines_to_axis(
+                num_lines=len(np.arange(self.y_min, self.y_max, self.y_tick_frequency))+1
+                )
             
         return self.reback_or_anim_axis(reback, animate)
 
@@ -185,8 +189,7 @@ class GraphScene(Scene):
         color=None,
         x_min=None,
         x_max=None,
-        **kwargs
-    ):
+        **kwargs):
         if color is None:
             color = next(self.default_graph_colors_cycle)
         if x_min is None:
@@ -235,8 +238,7 @@ class GraphScene(Scene):
         x_val=None,
         direction=RIGHT,
         buff=MED_SMALL_BUFF,
-        color=None,
-    ):
+        color=None,):
         label = TexMobject(label)
         color = color or graph.get_color()
         label.set_color(color)
@@ -268,8 +270,7 @@ class GraphScene(Scene):
         start_color=None,
         end_color=None,
         show_signed_area=True,
-        width_scale_factor=1.001
-    ):
+        width_scale_factor=1.001):
         x_min = x_min if x_min is not None else self.x_min
         x_max = x_max if x_max is not None else self.x_max
         if start_color is None:
@@ -313,8 +314,7 @@ class GraphScene(Scene):
         max_dx=0.5,
         power_base=2,
         stroke_width=1,
-        **kwargs
-    ):
+        **kwargs):
         return [
             self.get_riemann_rectangles(
                 graph=graph,
@@ -374,8 +374,7 @@ class GraphScene(Scene):
         x_min=None,
         x_max=None,
         num_lines=20,
-        **kwargs
-    ):
+        **kwargs):
         x_min = x_min or self.x_min
         x_max = x_max or self.x_max
         return VGroup(*[
@@ -399,8 +398,7 @@ class GraphScene(Scene):
         y_min=None,
         y_max=None,
         num_lines=20,
-        **kwargs
-    ):
+        **kwargs):
         y_min = y_min or self.y_min
         y_max = y_max or self.y_max
         return VGroup(*[
@@ -413,8 +411,7 @@ class GraphScene(Scene):
         self,
         x, graph,
         line_class=Line,
-        **line_kwargs
-    ):
+        **line_kwargs):
         if "color" not in line_kwargs:
             line_kwargs["color"] = graph.get_color()
         return line_class(
@@ -428,8 +425,7 @@ class GraphScene(Scene):
         x_min=None,
         x_max=None,
         num_lines=20,
-        **kwargs
-    ):
+        **kwargs):
         x_min = x_min or self.x_min
         x_max = x_max or self.x_max
         return VGroup(*[
@@ -447,8 +443,7 @@ class GraphScene(Scene):
         df_label=None,
         include_secant_line=True,
         secant_line_color=None,
-        secant_line_length=10,
-    ):
+        secant_line_length=10,):
         """
         Resulting group is of the form VGroup(
             dx_line,
@@ -566,8 +561,7 @@ class GraphScene(Scene):
         new_t_min,
         new_t_max,
         fade_close_to_origin=True,
-        run_time=1.0
-    ):
+        run_time=1.0):
         curr_t_min = self.x_axis.point_to_number(self.area.get_left())
         curr_t_max = self.x_axis.point_to_number(self.area.get_right())
         if new_t_min is None:
@@ -619,8 +613,7 @@ class GraphScene(Scene):
         target_x=None,
         run_time=3,
         added_anims=None,
-        **anim_kwargs
-    ):
+        **anim_kwargs):
         if target_dx is None and target_x is None:
             raise Exception(
                 "At least one of target_x and target_dx must not be None")
