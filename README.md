@@ -1,4 +1,4 @@
-![logo](logo/cropped.png)
+![logo](https://github.com/3b1b/manim/blob/master/logo/cropped.png)
 
 [![Build Status](https://travis-ci.org/3b1b/manim.svg?branch=master)](https://travis-ci.org/3b1b/manim)
 [![Documentation](https://img.shields.io/badge/docs-EulerTour-blue.svg)](https://www.eulertour.com/docs)
@@ -94,7 +94,7 @@ The command needs to be run as root if your username is not in the docker group.
 
 You can replace `example.scenes.py` with any relative path from your `INPUT_PATH`.
 
-![docker diagram](./manim_docker_diagram.png)
+![docker diagram](https://github.com/3b1b/manim/blob/master/manim_docker_diagram.png)
 
 After running the output will say files ready at `/tmp/output/`, which refers to path inside the container. Your `OUTPUT_PATH` is bind mounted to this `/tmp/output` so any changes made by the container to `/tmp/output` will be mirrored on your `OUTPUT_PATH`. `/media/` will be created in `OUTPUT_PATH`.
 
