@@ -5,7 +5,8 @@ class BasicCodeMobject(Scene):
         "code_config": {
             "file_name": "./assets/code/code_example.py",
             "font": 'Fira Code',
-            "tab_width": 3,
+            'indentation_char': "  ",
+            "tab_width": 2,
             "style": "monokai",  # <- See https://help.farbox.com/pygments.html
             # insert_line_no=False, # <- Insert number lines
             "language": "python" # <- See https://pygments.org/languages/
@@ -13,7 +14,7 @@ class BasicCodeMobject(Scene):
     }
     def setup(self):
         code = Code(**self.code_config)
-        code.set_width(FRAME_WIDTH-4)
+        code.set_width(FRAME_WIDTH-5)
         code.move_to(ORIGIN)
         self.modify_code(code)
         self.draw_code_all_lines_at_a_time(code,run_time=2)

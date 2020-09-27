@@ -60,7 +60,7 @@ def always_rotate(mobject, rate=20 * DEGREES, **kwargs):
     )
     return mobject
 
-
+# 让对象的动画类变成updater
 def turn_animation_into_updater(animation, cycle=False, **kwargs):
     """
     Add an updater to the animation's mobject which applies

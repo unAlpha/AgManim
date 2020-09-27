@@ -16,8 +16,10 @@ class KeyboardScene(Scene):
             self.add_sound("keyboard/key%s"%return_random())
             text[i].set_fill(None, 1)
             self.play(LaggedStartMap(FadeIn, 
-                        text[i], run_time=self.rate_factor*len(text[i]),
-                        lag_ratio=self.lag/len(text[i])))
+                        text[i],
+                        run_time=self.rate_factor*len(text[i]),
+                        lag_ratio=self.lag/len(text[i])
+                        ))
             self.wait(0.3*return_random()*self.time_factor)
             if i < len(text) - 1:
                 pre_ty = text[i].get_center()[1]
@@ -56,7 +58,7 @@ class CodeKeyboardScene(KeyboardScene):
         }
     }
     def setup(self):
-        code = Code(**self.code_config)
+        code = Code(**self.code_config, scale_factor=0.5)
         code.set_width(FRAME_WIDTH-2)
         code.move_to(ORIGIN)
         lines = code[2:]
@@ -107,7 +109,6 @@ class CodeKeyboardScene(KeyboardScene):
             w = line[0].get_width()
             if w > first_letter_width * 1.3:
                 return w
-
 
 class CodeKeyboardExample(CodeKeyboardScene):
     def construct(self):

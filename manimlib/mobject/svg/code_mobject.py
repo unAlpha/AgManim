@@ -40,7 +40,7 @@ class Code(VGroup):
         'stroke_width': 0,
         'margin': 0.3,
         'indentation_char': "  ",
-        "background": "window",  # or rectangle
+        "background": "rectangle",  # or window
         "corner_radius": 0.1,
         'insert_line_no': True,
         'line_no_from': 1,
@@ -140,8 +140,13 @@ class Code(VGroup):
         for line_no in range(0, self.code_json.__len__()):
             number = str(self.line_no_from + line_no)
             line_numbers_array.append(number)
-        line_numbers = Paragraph(*[i for i in line_numbers_array], line_spacing=self.line_spacing,
-                            alignment="right", font=self.font, stroke_width=self.stroke_width).scale(self.scale_factor)
+        line_numbers = Paragraph(
+                *[i for i in line_numbers_array],
+                line_spacing=self.line_spacing,
+                alignment="right",
+                font=self.font,
+                stroke_width=self.stroke_width
+            ).scale(self.scale_factor)
         return line_numbers
 
     def gen_colored_lines(self):
@@ -151,8 +156,13 @@ class Code(VGroup):
             for word_index in range(self.code_json[line_no].__len__()):
                 line_str = line_str + self.code_json[line_no][word_index][0]
             lines_text.append(self.tab_spaces[line_no] * "\t" + line_str)
-        code = Paragraph(*[i for i in lines_text], line_spacing=self.line_spacing, tab_width=self.tab_width,
-                    alignment="left", font=self.font, stroke_width=self.stroke_width).scale(self.scale_factor)
+        code = Paragraph(
+                *[i for i in lines_text],
+                line_spacing=self.line_spacing,
+                tab_width=self.tab_width,
+                alignment="left",
+                font=self.font,
+                stroke_width=self.stroke_width).scale(self.scale_factor)
         for line_no in range(code.__len__()):
             line = code[line_no]
             line_char_index = self.tab_spaces[line_no]
@@ -166,11 +176,20 @@ class Code(VGroup):
         file = open(self.file_path, "r")
         code_str = file.read()
         file.close()
-        self.html_string = hilite_me(code_str, self.language, {}, self.style, self.insert_line_no,
-                                     "border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;")
+        self.html_string = hilite_me(
+                code_str,
+                self.language,
+                {},
+                self.style,
+                self.insert_line_no,
+                "border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;")
         if self.generate_html_file:
-            os.makedirs(os.path.join("assets", "codes", "generated_html_files"), exist_ok=True)
-            file = open(os.path.join("assets", "codes", "generated_html_files", self.file_name + ".html"), "w")
+            os.makedirs(
+                    os.path.join("assets", "codes", "generated_html_files"),
+                    exist_ok=True)
+            file = open(
+                    os.path.join("assets", "codes", "generated_html_files", self.file_name + ".html"),
+                    "w")
             file.write(self.html_string)
             file.close()
 

@@ -60,7 +60,7 @@ class KeyboardExample(KeyboardScene):
         self.keyboard(
             """
             \\tt <hello world!>\\\\
-            你好！
+            你好！ 这是我的新程序。
             """,
             color=BLUE,
             position=UP*2,

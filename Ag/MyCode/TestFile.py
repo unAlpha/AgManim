@@ -210,14 +210,14 @@ class FuncGraphSin(Scene):
                 )
         return sin_graph
 
-class SumTyping(Scene):
+class AlwaysShiftScene(Scene):
     def construct(self):
         # text1 = Text("D 这是一个测试")
         # Add animation Typing (unfinished)\
         # https://github.com/xy-23/manim/commit/f4d45d13017e3c061fce4a0fd907e4247626ccda
         # self.play(Typing(text1),run_time=1)
 
-        text1 = Text("第一段文字")
+        text1 = Text("AAAAAAAAAAAA",font="Fira Code")
         always_shift(text1, rate=0.5)
         self.add(text1)
         self.wait(2)
