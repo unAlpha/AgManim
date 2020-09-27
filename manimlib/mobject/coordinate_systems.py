@@ -12,7 +12,6 @@ from manimlib.utils.config_ops import digest_config
 from manimlib.utils.config_ops import merge_dicts_recursively
 from manimlib.utils.simple_functions import binary_search
 from manimlib.utils.space_ops import angle_of_vector
-from manimlib.mobject.types.vectorized_mobject import VMobject
 
 # TODO: There should be much more code reuse between Axes, NumberPlane and GraphScene
 
@@ -129,7 +128,7 @@ class CoordinateSystem():
 
 class Axes(VGroup, CoordinateSystem):
     CONFIG = {
-        "number_line_config": {
+        "axis_config": {
             "color": LIGHT_GREY,
             "include_tip": True,
             "exclude_zero_from_default_numbers": True,
@@ -159,7 +158,7 @@ class Axes(VGroup, CoordinateSystem):
 
     def create_axis(self, min_val, max_val, axis_config):
         new_config = merge_dicts_recursively(
-            self.number_line_config,
+            self.axis_config,
             {"x_min": min_val, "x_max": max_val},
             axis_config,
         )
@@ -188,8 +187,10 @@ class Axes(VGroup, CoordinateSystem):
         return self.axes
 
     def get_coordinate_labels(self, x_vals=None, y_vals=None):
-        x_vals = x_vals or []
-        y_vals = y_vals or []
+        if x_vals is None:
+            x_vals = []
+        if y_vals is None:
+            y_vals = []
         x_mobs = self.get_x_axis().get_number_mobjects(*x_vals)
         y_mobs = self.get_y_axis().get_number_mobjects(*y_vals)
 
@@ -270,7 +271,6 @@ class ThreeDAxes(Axes):
         texVGroup[2].next_to(self.z_axis, OUT+LEFT, buff = SMALL_BUFF/100)
         self.z_axis.add(texVGroup[2])
 
-
 class NumberPlane(Axes):
     CONFIG = {
         "axis_config": {
@@ -299,9 +299,7 @@ class NumberPlane(Axes):
     }
 
     def __init__(self, **kwargs):
-        digest_config(self, kwargs)
-        kwargs["number_line_config"] = self.axis_config
-        Axes.__init__(self, **kwargs)
+        super().__init__(**kwargs)
         self.init_background_lines()
 
     def init_background_lines(self):
@@ -384,14 +382,6 @@ class NumberPlane(Axes):
             self.coords_to_point(*coords),
             **kwargs
         )
-        
-    def get_complete_vector(self, coords, **kwargs):
-        kwargs["buff"] = 0
-        return Arrow(
-            self.coords_to_point(coords[0], coords[1]),
-            self.coords_to_point(*coords[2:]),
-            **kwargs
-        )
 
     def prepare_for_nonlinear_transform(self, num_inserted_curves=50):
         for mob in self.family_members_with_points():
@@ -402,6 +392,13 @@ class NumberPlane(Axes):
                 )
         return self
 
+    def get_complete_vector(self, coords, **kwargs):
+        kwargs["buff"] = 0
+        return Arrow(
+            self.coords_to_point(coords[0], coords[1]),
+            self.coords_to_point(*coords[2:]),
+            **kwargs
+        )
 
 class ComplexPlane(NumberPlane):
     CONFIG = {
@@ -413,17 +410,21 @@ class ComplexPlane(NumberPlane):
         number = complex(number)
         return self.coords_to_point(number.real, number.imag)
 
+    def n2p(self, number):
+        return self.number_to_point(number)
+
     def point_to_number(self, point):
         x, y = self.point_to_coords(point)
         return complex(x, y)
+
+    def p2n(self, point):
+        return self.point_to_number(point)
 
     def get_default_coordinate_values(self):
         x_numbers = self.get_x_axis().default_numbers_to_display()
         y_numbers = self.get_y_axis().default_numbers_to_display()
         y_numbers = [
-            # Ag需要显示0 原文如下
-            # complex(0, y) for y in y_numbers if y != 0
-            complex(0, y) for y in y_numbers
+            complex(0, y) for y in y_numbers if y != 0
         ]
         return [*x_numbers, *y_numbers]
 
@@ -451,4 +452,3 @@ class ComplexPlane(NumberPlane):
     def add_coordinates(self, *numbers):
         self.add(self.get_coordinate_labels(*numbers))
         return self
-       

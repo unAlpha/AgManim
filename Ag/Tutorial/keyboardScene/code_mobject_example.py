@@ -6,9 +6,8 @@ class BasicCodeMobject(Scene):
             "file_name": "./assets/code/code_example.py",
             "font": 'Fira Code',
             'indentation_char': "  ",
-            "tab_width": 2,
+            "tab_width": 3,
             "style": "monokai",  # <- See https://help.farbox.com/pygments.html
-            # insert_line_no=False, # <- Insert number lines
             "language": "python" # <- See https://pygments.org/languages/
         }
     }

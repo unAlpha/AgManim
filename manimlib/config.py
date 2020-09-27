@@ -11,10 +11,8 @@ import manimlib.constants
 def parse_cli():
     try:
         parser = argparse.ArgumentParser()
-        module_location = parser.add_mutually_exclusive_group()
-        module_location.add_argument(
+        parser.add_argument(
             "file",
-            nargs="?",
             help="path to file holding the python code for the scene",
         )
         parser.add_argument(
@@ -129,35 +127,7 @@ def parse_cli():
             "--tex_dir",
             help="directory to write tex",
         )
-
-        # For live streaming
-        module_location.add_argument(
-            "--livestream",
-            action="store_true",
-            help="Run in streaming mode",
-        )
-        parser.add_argument(
-            "--to-twitch",
-            action="store_true",
-            help="Stream to twitch",
-        )
-        parser.add_argument(
-            "--with-key",
-            dest="twitch_key",
-            help="Stream key for twitch",
-        )
-        args = parser.parse_args()
-
-        if args.file is None and not args.livestream:
-            parser.print_help()
-            sys.exit(2)
-        if args.to_twitch and not args.livestream:
-            print("You must run in streaming mode in order to stream to twitch")
-            sys.exit(2)
-        if args.to_twitch and args.twitch_key is None:
-            print("Specify the twitch stream key with --with-key")
-            sys.exit(2)
-        return args
+        return parser.parse_args()
     except argparse.ArgumentError as err:
         print(str(err))
         sys.exit(2)
@@ -246,6 +216,7 @@ def get_camera_configuration(args):
         camera_config.update(manimlib.constants.HIGH_QUALITY_CAMERA_CONFIG)
     else:
         camera_config.update(manimlib.constants.PRODUCTION_QUALITY_CAMERA_CONFIG)
+
     # If the resolution was passed in via -r
     if args.resolution:
         if "," in args.resolution:

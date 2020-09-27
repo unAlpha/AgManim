@@ -62,6 +62,7 @@ class PiCreature(SVGMobject):
             SVGMobject.__init__(self, file_name=svg_file, **kwargs)
         except Exception:
             warnings.warn("No %s design with mode %s" %
+            # TODO, this needs to change to a different, better directory
                           (self.file_name_prefix, mode))
             svg_file = os.path.join(
                 FILE_DIR,

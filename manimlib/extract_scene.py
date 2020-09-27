@@ -66,6 +66,8 @@ def is_child_scene(obj, module):
         return False
     if obj == Scene:
         return False
+    if not obj.__module__.startswith(module.__name__):
+        return False
     
     # Ag增加 2019-12-05
     # 用于检查字符串是否是以指定子字符串开头，如果是则返回 True，否则返回 False。
@@ -122,18 +124,20 @@ def get_scenes_to_render(scene_classes, config):
             )
     if result:
         return result
-    return prompt_user_for_choice(scene_classes)
+    return [scene_classes[0]] if len(scene_classes) == 1 else prompt_user_for_choice(scene_classes)
 
 
 def get_scene_classes_from_module(module):
-    return [
-        member[1]
-        for member in inspect.getmembers(
-            module,
-            lambda x: is_child_scene(x, module)
-        )
-    ]
-
+    if hasattr(module, "SCENES_IN_ORDER"):
+        return module.SCENES_IN_ORDER
+    else:
+        return [
+            member[1]
+            for member in inspect.getmembers(
+                module,
+                lambda x: is_child_scene(x, module)
+            )
+        ]
 
 def main(config):
     # 获取module

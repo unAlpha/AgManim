@@ -34,6 +34,7 @@ class AnimationGroup(Animation):
             self.group = Group(*remove_list_redundancies(
                 [anim.mobject for anim in animations]
             ))
+        self.init_run_time()
         Animation.__init__(self, self.group, **kwargs)
 
     def get_all_mobjects(self):
@@ -42,7 +43,7 @@ class AnimationGroup(Animation):
     def begin(self):
         for anim in self.animations:
             anim.begin()
-        self.init_run_time()
+        # self.init_run_time()
 
     def finish(self):
         for anim in self.animations:

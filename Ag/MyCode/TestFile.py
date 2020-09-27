@@ -5,6 +5,7 @@ import fractions
 
 class AddToBackScene(Scene):
     def construct(self):
+        Underline()
         arrow = Arrow(
             LEFT,RIGHT
             ,buff=SMALL_BUFF

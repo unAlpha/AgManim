@@ -1,10 +1,8 @@
-Texts/
-Tex/
+media/
 assets/
-videos/
+from_3b1b/
+commit.txt
 __pycache__/
-NONeed/
-Old_Project_Video/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
