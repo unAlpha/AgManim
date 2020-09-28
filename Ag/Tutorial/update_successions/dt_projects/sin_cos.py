@@ -103,7 +103,7 @@ class SinCos(Scene):
             run_time=2.5
         )
         self.wait()
-        # Add updaters, THE ORDER MATTERS
+        # Add updaters, THE ORDER MATTERS
         sine.add_updater(
             self.get_updater_func("sto", SinFunc)
         )

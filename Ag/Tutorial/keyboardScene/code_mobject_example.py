@@ -9,11 +9,12 @@ class BasicCodeMobject(Scene):
             "tab_width": 3,
             "style": "monokai",  # <- See https://help.farbox.com/pygments.html
             "language": "python" # <- See https://pygments.org/languages/
-        }
+        },
+        "code_width_coe":5
     }
     def setup(self):
         code = Code(**self.code_config)
-        code.set_width(FRAME_WIDTH-5)
+        code.set_width(FRAME_WIDTH-self.code_width_coe)
         code.move_to(ORIGIN)
         self.modify_code(code)
         self.draw_code_all_lines_at_a_time(code,run_time=2)
@@ -22,7 +23,7 @@ class BasicCodeMobject(Scene):
     def draw_code_all_lines_at_a_time(self, code, **kwargs):
         self.play(LaggedStart(*[
                 Write(code[i]) 
-                for i in range(code.__len__())
+                for i in range(code.__len__()) if i<3
             ]),
             **kwargs
         )

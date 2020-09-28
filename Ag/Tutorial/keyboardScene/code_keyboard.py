@@ -50,16 +50,16 @@ class CodeKeyboardScene(KeyboardScene):
     CONFIG = {
         "code_config": {
             "file_name": "./assets/code/code_example.py",
-            "font": "Fira Code",
-            "tab_width": 3,
-            "style": "monokai", 
-            "language": "python",
-            "background": "window"
-        }
+            "font": 'Fira Code',
+            "background": "window",
+            "style": "monokai",
+            "language": "python"
+        },
+        "code_width_coe":5
     }
     def setup(self):
-        code = Code(**self.code_config, scale_factor=0.5)
-        code.set_width(FRAME_WIDTH-2)
+        code = Code(**self.code_config)
+        code.set_width(FRAME_WIDTH-self.code_width_coe)
         code.move_to(ORIGIN)
         lines = code[2:]
         no_fade_lines = self.disappear_empty_lines(lines)
@@ -71,7 +71,6 @@ class CodeKeyboardScene(KeyboardScene):
     def disappear_empty_lines(self, lines):
         no_fade_lines = VGroup()
         min_width = lines[0].get_width()
-        tab_width = self.get_tab_width(lines)
         for line in lines[1:]:
             width = line.get_width()
             min_width = width if width <= min_width else min_width

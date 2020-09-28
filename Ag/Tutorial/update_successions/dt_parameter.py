@@ -21,15 +21,22 @@ class OrderMobjects(Scene):
 """
 CONCLUSION
 ==========
+
 Every time we use self.add(mob) we are
                   -------------
 adding the objects to the self.mobjects 
                           -------------
 array, depending on the order in which 
+
 they appear in the array, they will also 
+
 be on the screen.
+
+
 It is important that when using the update 
+
 functions you are aware of the order of your 
+
 objects in self.mobjects, so that the animation 
            -------------
 is displayed correctly.
@@ -125,7 +132,6 @@ class DtExample2(AbstractDtScene):
                 mob.counter += 1
             else:
                 rate = dt * self.velocity_factor
-                print(rate)
             if dt > 0:
                 mob.counter=0
             print(f"n: {mob.counter} - dt : {dt}")
