@@ -320,7 +320,7 @@ class SceneFileWriter(object):
             Pixel array of the frame.
         """
         if self.write_to_movie:
-            self.writing_process.stdin.write(frame.tostring())
+            self.writing_process.stdin.write(frame.tobytes())
 
     def save_final_image(self, image):
         """

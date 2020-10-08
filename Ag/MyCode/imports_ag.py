@@ -1,6 +1,6 @@
 from manimlib.imports import *
 
-def ObjAnd2Text(Obj, text1, text2, dframe=0.22, txt_height=0.28):
+def ObjAnd2Text(Obj, text1, text2, dframe=0.2, txt_height=0.28):
     if isinstance(Obj,VMobject):
         pic = Rectangle(
             height = Obj.get_height() + 0.618,
@@ -34,7 +34,7 @@ def ObjAnd2Text(Obj, text1, text2, dframe=0.22, txt_height=0.28):
     VGroup(picText1,picText2).move_to((pic.get_bottom()+pic.rect.get_bottom())/2)
     return Group(pic.rect,pic,picText1,picText2)
 
-def ObjAnd1Text(Obj, text2, dframe=0.22, txt_height=0.28):
+def ObjAnd1Text(Obj, text2, dframe=0.2, txt_height=0.28):
     if isinstance(Obj,VMobject):
         pic = Rectangle(
             height = Obj.get_height() + 0.618,

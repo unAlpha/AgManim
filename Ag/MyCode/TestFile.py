@@ -125,11 +125,16 @@ class VGroupTransfrom(Scene):
 
 class testTransform(Scene):
     def construct(self):
-        dot = Dot()
-        self.add(dot)
+        dot1 = Dot()
+        dot2 = Dot()
+        text = Text("dot",color=RED).move_to(2*DOWN)
+        dot_copy = dot1.copy().shift(2*RIGHT)
+        self.add(dot1)
         self.play(
-            dot.shift,UP,
-            Transform(self.myLine(ORIGIN),self.myLine(UP))
+            dot1.shift,UP,
+            Transform(self.myLine(ORIGIN),self.myLine(UP)),
+            ReplacementTransform(dot2,dot_copy),
+            MaintainPositionRelativeTo(text,dot2)
         )
         self.wait()
 

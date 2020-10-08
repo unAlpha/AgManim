@@ -1485,9 +1485,9 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
         self.setup_ellipse()
         self.hypothesize_foci()
         self.setup_and_show_focal_sum()
-        # self.show_circle_radius()
-        # self.limit_to_just_one_line()
-        # self.look_at_perpendicular_bisector()
+        self.show_circle_radius()
+        self.limit_to_just_one_line()
+        self.look_at_perpendicular_bisector()
         # self.show_orbiting_planet()
 
     def setup_ellipse(self):
@@ -1537,7 +1537,7 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
                 buff=SMALL_BUFF
             )
             arrow.match_color(dot)
-            arrow.add_to_back(arrow.copy().set_stroke(RED, 5))
+            arrow.add_to_back(arrow.copy().set_stroke(BLACK, 5))
             arrows.add(arrow)
 
         labels_target = labels.copy()
@@ -1676,7 +1676,7 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
         P_label.next_to(P_dot, UP, SMALL_BUFF)
 
         self.add_foreground_mobjects(self.ellipse)
-        self.play(LaggedStart(Restore, lines))
+        self.play(LaggedStartMap(Restore, lines))
         self.play(
             FadeOut(to_fade),
             ghost_line.set_stroke, YELLOW, 3,
@@ -1729,7 +1729,7 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
         # Dot defining Q point
         Q_dot = Dot(color=GREEN)
         Q_dot.move_to(self.focal_sum_point)
-        focal_sum_point_animation = NormalAnimationAsContinualAnimation(
+        focal_sum_point_animation = turn_animation_into_updater(
             MaintainPositionRelativeTo(
                 self.focal_sum_point, Q_dot
             )
@@ -1743,7 +1743,7 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
         Q_label.match_color(Q_dot)
         Q_label.add_to_back(Q_label.copy().set_stroke(BLACK, 5))
         Q_label.next_to(Q_dot, UL, buff=0)
-        Q_label_animation = NormalAnimationAsContinualAnimation(
+        Q_label_animation = turn_animation_into_updater(
             MaintainPositionRelativeTo(Q_label, Q_dot)
         )
 
@@ -1753,7 +1753,7 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
             if line.get_end()[0] > line.get_start()[0]:
                 vect = label.get_center() - line.get_center()
                 label.shift(-2 * vect)
-        distance_label_shift_update_animation = ContinualUpdate(
+        distance_label_shift_update_animation = Mobject.add_updater(
             self.distance_labels[0],
             distance_label_shift_update
         )
@@ -1764,7 +1764,7 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
         # Define QP line
         QP_line = Line(LEFT, RIGHT)
         QP_line.match_style(self.focal_lines)
-        QP_line_update = ContinualUpdate(
+        QP_line_update = Mobject.add_updater(
             QP_line, lambda l: l.put_start_and_end_on(
                 Q_dot.get_center(), P_dot.get_center(),
             )
@@ -1772,7 +1772,7 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
 
         QE_line = Line(LEFT, RIGHT)
         QE_line.set_stroke(YELLOW, 3)
-        QE_line_update = ContinualUpdate(
+        QE_line_update = Mobject.add_updater(
             QE_line, lambda l: l.put_start_and_end_on(
                 Q_dot.get_center(),
                 self.get_eccentricity_point()
@@ -1797,12 +1797,12 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
 
         # Add even more distant label updates
         def distance_label_rotate_update(label):
-            QE_line_update.update(0)
+            # QE_line_update.update(0)
             angle = QP_line.get_angle() - QE_line.get_angle()
             label.rotate(angle, about_point=Q_dot.get_center())
             return label
 
-        distance_label_rotate_update_animation = ContinualUpdate(
+        distance_label_rotate_update_animation = Mobject.add_updater(
             self.distance_labels[0],
             distance_label_rotate_update
         )
@@ -1846,7 +1846,7 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
         )
         elbow_update_animation = UpdateFromFunc(
             elbow,
-            lambda e: Transform(e, self.get_elbow(ghost_line)).update(1)
+            lambda e: Transform(e, self.get_elbow(ghost_line))
         )
 
         P_dot_movement_updates = [
@@ -2007,10 +2007,10 @@ class ProveEllipse(ShowEmergingEllipse, ShowEllipseDefiningProperty):
             line.generate_target()
             line.target.rotate(90 * DEGREES)
         self.play(
-            LaggedStart(FadeIn, ghost_lines),
-            LaggedStart(FadeIn, lines),
+            LaggedStartMap(FadeIn, ghost_lines),
+            LaggedStartMap(FadeIn, lines),
         )
-        self.play(LaggedStart(MoveToTarget, lines))
+        self.play(LaggedStartMap(MoveToTarget, lines))
         self.wait()
 
     def show_orbiting_planet(self):
