@@ -128,6 +128,13 @@ class LeGo8(Scene):
             )
         palyALL1(self,allParts)
 
+class DavidAguilar(Scene):
+    def construct(self):
+        allParts = ObjAnd1Text(
+                        "LeGo/David Aguilar",
+                        "David Aguilar",
+            )
+        palyALL1(self,allParts)
 
 class PiProof1(Scene):
     def construct(self):
@@ -155,3 +162,84 @@ class PiProof3(Scene):
                         "伊万·尼云",
             )
         palyALL2(self,allParts)
+
+
+class AutonomousVehicles1(Scene):
+    def construct(self):
+        allParts = ObjAnd1Text(
+                        "AutonomousVehicles/1、ACC 主动式固定车距巡航系统",
+                        "ACC 高级自适应巡航",
+            )
+        palyALL1(self,allParts)
+
+class AutonomousVehicles2(Scene):
+    def construct(self):
+        allParts = ObjAnd1Text(
+                        "AutonomousVehicles/2、车道维持及偏移警示系统",
+                        "车道维持及偏移警示系统",
+            )
+        palyALL1(self,allParts)
+
+class AutonomousVehicles3(Scene):
+    def construct(self):
+        allParts = ObjAnd1Text(
+                        "AutonomousVehicles/3、车侧盲点警示系统",
+                        "车侧盲点警示系统",
+            )
+        palyALL1(self,allParts)
+
+class AutonomousVehicles4(Scene):
+    def construct(self):
+        allParts = ObjAnd1Text(
+                        "AutonomousVehicles/4、Front Assist车前碰撞预警系统",
+                        "车前碰撞预警系统",
+            )
+        palyALL1(self,allParts)
+
+class AutonomousVehicles5(Scene):
+    def construct(self):
+        allParts = ObjAnd1Text(
+                        "AutonomousVehicles/5、MCB二次碰撞预刹系统",
+                        "二次碰撞预刹车系统",
+            )
+        palyALL1(self,allParts)
+
+class AutonomousVehicles6(Scene):
+    def construct(self):
+        allParts = ObjAnd1Text(
+                        "AutonomousVehicles/6、Park Assist自动停车辅助系统",
+                        "自动停车辅助系统",
+            )
+        palyALL1(self,allParts)
+
+class AutonomousVehicles7(Scene):
+    def construct(self):
+        allParts = ObjAnd1Text(
+                        "AutonomousVehicles/7、RTA后方横向车流警示系统",
+                        "后方横向车流警示系统",
+            )
+        palyALL1(self,allParts)
+
+class AutonomousVehicles8(Scene):
+    def construct(self):
+        allParts = ObjAnd1Text(
+                        "AutonomousVehicles/8、Emergency Assist紧急待援辅助系统",
+                        "紧急待援辅助系统(含方向盘离手监测)",
+            )
+        palyALL1(self,allParts)
+
+class AutonomousVehicles9(Scene):
+    def construct(self):
+        allParts = ObjAnd1Text(
+                        "AutonomousVehicles/9、毫米波雷达角度测量示意",
+                        "毫米波雷达测量角度示意图",
+            )
+        palyALL1(self,allParts)
+
+class AutonomousVehicles10(Scene):
+    def construct(self):
+        allParts = ObjAnd1Text(
+                        "AutonomousVehicles/10、毫米波雷达距离与速度测量的信号原理",
+                        "毫米波雷达距离与速度测量的信号原理",
+            )
+        palyALL1(self,allParts)
