@@ -12,12 +12,14 @@ def ObjAnd2Text(Obj, text1, text2, dframe=0.2, txt_height=0.28):
     else:
         pic = ImageMobject(Obj).scale(2)
     picText1 = Text(text1,
+                    font='Microsoft YaHei',
                     color="#308032"
         )\
         .set_height(txt_height-0.06)\
         .next_to(pic,DOWN,buff=SMALL_BUFF)
-    picText2 = Text(text2, 
-                    color=BLACK
+    picText2 = Text(text2,
+                    font='Microsoft YaHei Bold', 
+                    color=BLACK,
         )\
         .set_height(txt_height)\
         .next_to(picText1,DOWN,buff=SMALL_BUFF)
@@ -46,7 +48,7 @@ def ObjAnd1Text(Obj, text2, dframe=0.2, txt_height=0.28):
     else:
         pic = ImageMobject(Obj).scale(2)
     picText2 = Text(text2, 
-                    # font='Microsoft YaHei',
+                    font='Microsoft YaHei Bold',
                     color=BLACK,
         )\
         .set_height(txt_height)\

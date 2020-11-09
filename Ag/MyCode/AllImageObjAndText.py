@@ -116,75 +116,75 @@ class Autism04(Scene):
 
 class BottomFrog1(Scene):
     def construct(self):
-        allParts = imageObjAndText(
+        allParts = imageObjAnd2Text(
                         "BottomFrog/1、门镜",
                         "Peephole",
                         "门镜"        
             )
-        palyALL(self,allParts)
+        palyALL2(self,allParts)
 
 class BottomFrog2(Scene):
     def construct(self):
-        allParts = imageObjAndText(
+        allParts = imageObjAnd2Text(
                         "BottomFrog/2、门镜图",
                         "View through a peephole",
                         "门镜图像"        
             )
-        palyALL(self,allParts)
+        palyALL2(self,allParts)
 
 class BottomFrog3(Scene):
     def construct(self):
-        allParts = imageObjAndText(
+        allParts = imageObjAnd2Text(
                         "BottomFrog/3、鱼眼图A",
                         "Fisheye picture A",
                         "鱼眼图A"        
             )
-        palyALL(self,allParts)
+        palyALL2(self,allParts)
 
 class BottomFrog4(Scene):
     def construct(self):
-        allParts = imageObjAndText(
+        allParts = imageObjAnd2Text(
                         "BottomFrog/4、鱼眼图B",
                         "Fisheye picture B",
                         "鱼眼图B"        
             )
-        palyALL(self,allParts)
+        palyALL2(self,allParts)
 
 class BottomFrog5(Scene):
     def construct(self):
-        allParts = imageObjAndText(
+        allParts = imageObjAnd2Text(
                         "BottomFrog/5、克劳狄乌斯·托勒密",
                         "Claudius Ptolemaeus",
                         "克劳狄乌斯·托勒密"        
             )
-        palyALL(self,allParts)
+        palyALL2(self,allParts)
 
 class BottomFrog6(Scene):
     def construct(self):
-        allParts = imageObjAndText(
+        allParts = imageObjAnd2Text(
                         "BottomFrog/6、威理博·斯涅尔",
                         "Willebrord Snellius",
                         "威理博·斯涅耳"        
             )
-        palyALL(self,allParts)
+        palyALL2(self,allParts)
 
 class BottomFrog7(Scene):
     def construct(self):
-        allParts = imageObjAndText(
+        allParts = imageObjAnd2Text(
                         "BottomFrog/7、克里斯蒂安·惠更斯",
                         "Christiaan Huygens",
                         "克里斯蒂安·惠更斯"        
             )
-        palyALL(self,allParts)
+        palyALL2(self,allParts)
 
 class BottomFrog8(Scene):
     def construct(self):
-        allParts = imageObjAndText(
+        allParts = imageObjAnd2Text(
                         "BottomFrog/8、笛卡尔",
                         "René Descartes",
                         "勒内·笛卡尔"        
             )
-        palyALL(self,allParts)
+        palyALL2(self,allParts)
 
 
 class DrinkBird01(Scene):
