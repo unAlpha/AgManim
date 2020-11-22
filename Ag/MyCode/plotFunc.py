@@ -1,4 +1,6 @@
 from manimlib.imports import *
+from numpy import mean
+from itertools import groupby
 
 def ObjAnd2Text(Obj, text1, text2, dframe=0.22, txt_height=0.28):
     if isinstance(Obj,VMobject):
@@ -480,6 +482,117 @@ class PlotBarChart1(GraphFromData):
             lag_ratio = 0.1618,
             run_time = 2
         ))
+        self.wait()
+
+class SimulateWaitTimes1(GraphFromData):
+    CONFIG = {
+        "x_max" : 50,
+        "x_min" : 0,
+        "y_max" : 1200,
+        "y_min" : 0,
+        "x_tick_frequency" : 5, 
+        "y_tick_frequency" : 200, 
+        "x_labeled_nums": range(0,51,5),
+        "y_labeled_nums": range(0,1201,200),
+        "axes_color" : BLUE, 
+        "x_axis_label": "\\heiti{等待时间(min)}",
+        "y_axis_label": "\\heiti{次数}",
+        "add_coordinate_grid":True,
+    }
+    def construct(self):
+        self.setup_axes()
+        def data_N_wait_times(carSeed,npSeed,nP=100):
+            N = 6 # 公交车数量
+            tau = 10 # 平均到站间隔
+            N_passengers = nP # 乘客数量
+            rand = np.random.RandomState(carSeed)  # 随机种子
+            bus_arrival_times = N * tau * np.sort(rand.rand(N))
+            # intervals = np.append(np.diff(bus_arrival_times),N*tau-bus_arrival_times[-1]+bus_arrival_times[0])
+            # print(bus_arrival_times,"\n",intervals,"\n-------------------------------")
+            def simulate_wait_times(arrival_times,
+                                    rseed=npSeed,  # Jenny的随机种子
+                                    n_passengers=N_passengers):
+                rand = np.random.RandomState(rseed)
+                arrival_times = np.asarray(arrival_times)
+                passenger_times = N * tau * rand.rand(n_passengers)
+                # 为每个模拟乘客找到下一辆公交车
+                w_times = np.array([])
+                for p_time in passenger_times:
+                    i = np.searchsorted(arrival_times, p_time, side='right')
+                    if i < N:
+                        w_times=np.append(w_times, arrival_times[i] - p_time)
+                    if i == N:
+                        w_times=np.append(w_times, N * tau - p_time + arrival_times.min())
+                if np.any(w_times < 0):
+                    raise Exception("程序有bug")
+                return w_times
+            wait_times = simulate_wait_times(bus_arrival_times) 
+            return wait_times
+        allWaitTimes=np.array([])
+        for k in range(500,600,1):
+            allWaitTimes=np.append(allWaitTimes,data_N_wait_times(k,8))
+        print(len(allWaitTimes))
+        print(mean(allWaitTimes))
+        binsize = 1
+        y = np.bincount((allWaitTimes // binsize).astype(int))
+        x = [i for i in range(1,len(y)+1)]
+        mean_line = self.get_vertical_line_to_axis(mean(allWaitTimes),color=RED,stroke_width=5)
+        self.add(mean_line)
+        coords = [[px,py] for px,py in zip(x,y)]
+        points = self.get_points_from_coords(coords)
+        bars = BarChartRectangle(points,0.11,stroke_opacity=0.8)
+        bars.set_color_by_gradient(YELLOW, RED)
+        self.add(bars)
+        self.wait()
+
+class SimulateWaitTimes2(GraphFromData):
+    CONFIG = {
+        "x_max" : 41,
+        "x_min" : 0,
+        "y_max" : 1200,
+        "y_min" : 0,
+        "x_tick_frequency" : 5, 
+        "y_tick_frequency" : 300, 
+        "x_labeled_nums": range(0,41,5),
+        "y_labeled_nums": range(0,1201,200),
+        "axes_color" : BLUE, 
+        "x_axis_label": "\\heiti{等待时间(min)}",
+        "y_axis_label": "\\heiti{次数}",
+        "add_coordinate_grid":True,
+    }
+    def construct(self):
+        self.setup_axes()
+        def data_N_wait_times(carSeed,npSeed,nP=10000):
+            N_passengers = nP # 乘客数量
+            bus_arrival_times = np.array([5,10,15,20,25,60])
+            intervals = np.diff(bus_arrival_times)
+            print(intervals.mean())
+            def simulate_wait_times(arrival_times,
+                                    rseed=npSeed,  # Jenny的随机种子
+                                    n_passengers=N_passengers):
+                rand = np.random.RandomState(rseed)
+                arrival_times = np.asarray(arrival_times)
+                passenger_times = arrival_times.max() * rand.rand(n_passengers)
+                # 为每个模拟乘客找到下一辆公交车
+                i = np.searchsorted(arrival_times, passenger_times, side='right')
+                return arrival_times[i] - passenger_times
+            wait_times = simulate_wait_times(bus_arrival_times) 
+            # print(wait_times.mean())
+            return wait_times
+        allWaitTimes=np.array([])
+        for k in range(99,100,1):
+            allWaitTimes=np.append(allWaitTimes,data_N_wait_times(k,1))
+        binsize = 1
+        y = np.bincount((allWaitTimes // binsize).astype(int))
+        x = [i for i in range(1,len(y)+1)]
+        print(mean(allWaitTimes))
+        mean_line = self.get_vertical_line_to_axis(mean(allWaitTimes),color=RED,stroke_width=5)
+        self.add(mean_line)
+        coords = [[px,py] for px,py in zip(x,y)]
+        points = self.get_points_from_coords(coords)
+        bars = BarChartRectangle(points,0.12,stroke_opacity=0.8)
+        bars.set_color_by_gradient(YELLOW, RED)
+        self.add(bars)
         self.wait()
 
 class PlotBarChart2(GraphFromData):

@@ -1129,7 +1129,7 @@ class R01(Scene):
                         "Boris Johnson",
                         "鲍里斯·约翰逊"        
             )
-        palyALL(self,allParts)
+        palyALL1(self,allParts)
 
 class R02(Scene):
     def construct(self):
@@ -1138,7 +1138,7 @@ class R02(Scene):
                         "Patrick Vallance",
                         "帕特里克·瓦兰斯"       
             )
-        palyALL(self,allParts)
+        palyALL1(self,allParts)
 
 class R03(Scene):
     def construct(self):
@@ -1147,7 +1147,7 @@ class R03(Scene):
                         "中国工程院院士",
                         "陈薇"       
             )
-        palyALL(self,allParts)
+        palyALL1(self,allParts)
 
 class R04(Scene):
     def construct(self):
@@ -1156,7 +1156,7 @@ class R04(Scene):
                         "Measles",
                         "麻疹"       
             )
-        palyALL(self,allParts)
+        palyALL1(self,allParts)
 
 class R05(Scene):
     def construct(self):
@@ -1165,7 +1165,7 @@ class R05(Scene):
                         "The R0 of some diseases",
                         "部分疾病的R0值"       
             )
-        palyALL(self,allParts)
+        palyALL1(self,allParts)
 
 
 class StockIndex1(Scene):
@@ -1175,7 +1175,7 @@ class StockIndex1(Scene):
                         "Dow Jones Industrial Average",
                         "道琼斯工业平均指数走势图"        
             )
-        palyALL(self,allParts)
+        palyALL1(self,allParts)
 
 class StockIndex2(Scene):
     def construct(self):
@@ -1184,7 +1184,7 @@ class StockIndex2(Scene):
                         "Shanghai Stock Exchange in 1947",
                         "1947年上海证券交易所"        
             )
-        palyALL(self,allParts)
+        palyALL1(self,allParts)
 
 class StockIndex3(Scene):
     def construct(self):
@@ -1193,7 +1193,7 @@ class StockIndex3(Scene):
                         "Charles Henry Dow",
                         "查尔斯·道"        
             )
-        palyALL(self,allParts)
+        palyALL1(self,allParts)
 
 class StockIndex4(Scene):
     def construct(self):
@@ -1202,7 +1202,7 @@ class StockIndex4(Scene):
                         "Teresa Teng",
                         "邓丽君"        
             )
-        palyALL(self,allParts)
+        palyALL1(self,allParts)
 
 class StockIndex5(Scene):
     def construct(self):
@@ -1211,7 +1211,7 @@ class StockIndex5(Scene):
                         "Deng Xiaoping and John Joseph Phelan Jr.",
                         "邓小平和约翰·范尔霖"        
             )
-        palyALL(self,allParts)
+        palyALL1(self,allParts)
 
 class StockIndex61(Scene):
     def construct(self):
@@ -1245,7 +1245,7 @@ class StockIndex62(Scene):
                         "Largest daily point gains",
                         "道琼斯指数涨幅排行"        
             )
-        palyALL(self,allParts)
+        palyALL1(self,allParts)
 
 class StockIndex7(Scene):
     def construct(self):
@@ -1254,7 +1254,7 @@ class StockIndex7(Scene):
                         "John goes to Shanghai",
                         "约翰·范尔霖去上海过户"        
             )
-        palyALL(self,allParts)
+        palyALL1(self,allParts)
 
 class StockIndex8(Scene):
     def construct(self):
@@ -1263,7 +1263,7 @@ class StockIndex8(Scene):
                         "Feilo Acoustics Stock",
                         "飞乐音响股票"        
             )
-        palyALL(self,allParts)
+        palyALL1(self,allParts)
     
 class StockIndex9(Scene):
     def construct(self):
@@ -1272,7 +1272,7 @@ class StockIndex9(Scene):
                         "Philadelphia Stock Exchange",
                         "费城证券交易所"        
             )
-        palyALL(self,allParts)
+        palyALL1(self,allParts)
 
 class StockIndex10(Scene):
     def construct(self):
@@ -1281,7 +1281,7 @@ class StockIndex10(Scene):
                         "The Jing'an Sales Department of ICBC Shanghai",
                         "工商银行上海信托静安营业部"        
             )
-        palyALL(self,allParts)
+        palyALL1(self,allParts)
 
 class StockIndex11(Scene):
     def construct(self):
@@ -1290,7 +1290,7 @@ class StockIndex11(Scene):
                         "The Wall Street Journal",
                         "华尔街日报"        
             )
-        palyALL(self,allParts)
+        palyALL1(self,allParts)
 
 class StockIndex12(Scene):
     def construct(self):
@@ -1299,7 +1299,7 @@ class StockIndex12(Scene):
                         "NASDAQ",
                         "纳斯达克交易所"        
             )
-        palyALL(self,allParts)
+        palyALL1(self,allParts)
 
 class StockIndex13(Scene):
     def construct(self):
@@ -1308,7 +1308,7 @@ class StockIndex13(Scene):
                         "The New York Stock Exchange",
                         "纽约证券交易所"        
             )
-        palyALL(self,allParts)
+        palyALL1(self,allParts)
 
 class StockIndex14(Scene):
     def construct(self):
@@ -1317,7 +1317,7 @@ class StockIndex14(Scene):
                         "Shanghai Stock Exchange",
                         "上海证券交易所"        
             )
-        palyALL(self,allParts)
+        palyALL1(self,allParts)
 
 class StockIndex15(Scene):
     def construct(self):
@@ -1326,7 +1326,7 @@ class StockIndex15(Scene):
                         "SSE Index",
                         "上证综合指数走势图"        
             )
-        palyALL(self,allParts)
+        palyALL1(self,allParts)
 
 class StockIndex16(Scene):
     def construct(self):
@@ -1335,7 +1335,7 @@ class StockIndex16(Scene):
                         "Shenzhen Stock Exchange",
                         "深圳证券交易所"        
             )
-        palyALL(self,allParts)
+        palyALL1(self,allParts)
 
 class StockIndex17(Scene):
     def construct(self):
@@ -1344,7 +1344,7 @@ class StockIndex17(Scene):
                         "Buttonwood Agreement",
                         "梧桐树协议"        
             )
-        palyALL(self,allParts)
+        palyALL1(self,allParts)
 
 class StockIndex18(Scene):
     def construct(self):
@@ -1353,7 +1353,7 @@ class StockIndex18(Scene):
                         "Xinmin Evening News",
                         "新民晚报"        
             )
-        palyALL(self,allParts)
+        palyALL1(self,allParts)
 
 class StockIndex19(Scene):
     def construct(self):
@@ -1362,7 +1362,7 @@ class StockIndex19(Scene):
                         "The original 12 industrials",
                         "道琼斯指数12个原始股"        
             )
-        palyALL(self,allParts)
+        palyALL1(self,allParts)
 
 class StockIndex20(Scene):
     def construct(self):
@@ -1371,7 +1371,7 @@ class StockIndex20(Scene):
                         "SZSE Composite Index",
                         "深圳成份指数"        
             )
-        palyALL(self,allParts)
+        palyALL1(self,allParts)
 
 class StockIndex21(Scene):
     def construct(self):
@@ -1380,7 +1380,7 @@ class StockIndex21(Scene):
                         "The latest data on Dow Jones Industrial Average",
                         "道琼斯指数最近表现"        
             )
-        palyALL(self,allParts)
+        palyALL1(self,allParts)
 
 
 class Tech01(Scene):

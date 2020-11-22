@@ -465,3 +465,54 @@ class AssetSecurities4(Scene):
                         "雷曼兄弟破产",
             )
         palyALL1(self,allParts)
+
+class CheckParadox1(Scene):
+    def construct(self):
+        allParts = ObjAnd2Text(
+                        "CheckParadox/Allen Downey",
+                        "Allen Downey",
+                        "艾伦·唐尼"
+            )
+        palyALL2(self,allParts)
+
+class CheckParadox2(Scene):
+    def construct(self):
+        allParts = ObjAnd2Text(
+                        "CheckParadox/斯科特·费尔德",
+                        "Scott Feld",
+                        "斯科特·费尔德"
+            )
+        palyALL2(self,allParts)
+
+class CheckParadox3(Scene):
+    def construct(self):
+        allParts = ObjAnd1Text(
+                        "CheckParadox/班级规模分布",
+                        "班级大小的分布"
+            )
+        palyALL1(self,allParts)
+
+class CheckParadox4(Scene):
+    def construct(self):
+        allParts = ObjAnd1Text(
+                        "CheckParadox/联邦监狱服刑的分布",
+                        "联邦监狱服刑年限的分布"
+            )
+        palyALL1(self,allParts)
+
+class CheckParadox5(Scene):
+    def construct(self):
+        allParts = ObjAnd1Text(
+                        "CheckParadox/社交网络分布",
+                        "脸书用户好友数量分布"
+            )
+        palyALL1(self,allParts)
+
+class CheckParadox6(Scene):
+    def construct(self):
+        allParts = ObjAnd2Text(
+                        "CheckParadox/SimulateWaitTimes1",
+                        "6辆车循环运行,平均车辆间隔10分钟",  
+                        "10000次模拟,平均等待时间8.8分钟",
+            )
+        palyALL2(self,allParts)

@@ -1,6 +1,15 @@
 from manimlib.imports import *
+import platform
+ 
+sys_str = platform.system()
+if sys_str == "Linux":
+    Font = 'Microsoft YaHei Bold'
+elif sys_str == "Windows":
+    Font = '阿里巴巴普惠体 B'
+else:
+    print("未匹配的操作系统")
 
-def ObjAnd2Text(Obj, text1, text2, dframe=0.2, txt_height=0.28):
+def ObjAnd2Text(Obj, text1, text2, dframe=0.2, txt_height=0.28, OS_font=Font):
     if isinstance(Obj,VMobject):
         pic = Rectangle(
             height = Obj.get_height() + 0.618,
@@ -12,13 +21,13 @@ def ObjAnd2Text(Obj, text1, text2, dframe=0.2, txt_height=0.28):
     else:
         pic = ImageMobject(Obj).scale(2)
     picText1 = Text(text1,
-                    font='Microsoft YaHei',
+                    font=Font,
                     color="#308032"
         )\
         .set_height(txt_height-0.06)\
         .next_to(pic,DOWN,buff=SMALL_BUFF)
     picText2 = Text(text2,
-                    font='Microsoft YaHei Bold', 
+                    font=Font, 
                     color=BLACK,
         )\
         .set_height(txt_height)\
@@ -36,7 +45,7 @@ def ObjAnd2Text(Obj, text1, text2, dframe=0.2, txt_height=0.28):
     VGroup(picText1,picText2).move_to((pic.get_bottom()+pic.rect.get_bottom())/2)
     return Group(pic.rect,pic,picText1,picText2)
 
-def ObjAnd1Text(Obj, text2, dframe=0.2, txt_height=0.28):
+def ObjAnd1Text(Obj, text2, dframe=0.2, txt_height=0.28, OS_font=Font):
     if isinstance(Obj,VMobject):
         pic = Rectangle(
             height = Obj.get_height() + 0.618,
@@ -48,7 +57,7 @@ def ObjAnd1Text(Obj, text2, dframe=0.2, txt_height=0.28):
     else:
         pic = ImageMobject(Obj).scale(2)
     picText2 = Text(text2, 
-                    font='Microsoft YaHei Bold',
+                    font=Font,
                     color=BLACK,
         )\
         .set_height(txt_height)\
